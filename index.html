@@ -16,7 +16,7 @@
   <body>
     <main class="wrapper">
       <div class="wrapper__initial-wager" id="initial-wager">
-        <form class="wager-form" onsubmit="dealNewHand(event)">
+        <form class="wager-form" onsubmit="startNewHand(event)">
           <div class="wager-label-input">
             <label for="wager-input">Wager:</label>
             <input type="number" id="wager-input" name="wager-input" />
@@ -95,6 +95,6 @@
       </div>
     </main>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
