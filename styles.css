@@ -1,0 +1,662 @@
+/* ------------------- */
+/* Custom properties   */
+/* ------------------- */
+.test {
+  color: hsl(120, 74%, 52%);
+  color: hsl(0, 100%, 55%);
+  color: hsl(230, 100%, 59%);
+}
+:root {
+  --clr-green-dark: 143 73% 16%;
+  --clr-green-darkest: 143 73% 10%;
+  --clr-green-light: 144 64% 22%;
+  --clr-white: 0 0% 100%;
+  --clr-black: 0 0% 0%;
+
+  --clr-green-bright: 120 74% 52%;
+  --clr-red: 0 100 55%;
+  --clr-blue: 230 100% 59%;
+
+  /* font-sizes */
+  --fs-900: 9.375rem;
+  --fs-800: 6.25rem;
+  --fs-700: 3.5rem;
+  --fs-600: 2rem;
+  --fs-500: 1.75rem;
+  --fs-400: 1.125rem;
+  --fs-300: 1rem;
+  --fs-200: 0.875rem;
+
+  /* font-weights */
+  --fw-900: 900;
+  --fw-700: 700;
+  --fw-600: 600;
+  --fw-500: 500;
+  --fw-400: 400;
+
+  /* font-families */
+
+  --ff-sans-normal: "Inter", sans-serif;
+  --ff-sans-cond: "Inter Tight", sans-serif;
+
+  /* utilities */
+  --outline-red: 3px solid red;
+}
+
+/* ------------------- */
+/* Reset               */
+/* ------------------- */
+
+/* https://piccalil.li/blog/a-modern-css-reset/ */
+
+/* Box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Reset margins */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+figure,
+picture {
+  margin: 0;
+}
+
+/* set up the body */
+body {
+  line-height: 1.5;
+  min-height: 100vh;
+  font-family: var(--ff-sans-normal);
+  font-size: var(--fs-400);
+  color: var(--clr-white);
+  background-color: hsl(var(--clr-green-dark));
+  background-image: url("table-bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* make images easier to work with */
+img,
+picutre {
+  max-width: 100%;
+  display: block;
+}
+
+/* make form elements easier to work with */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* remove animations for people who've turned them off */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------- */
+/* Utility classes     */
+/* ------------------- */
+
+.flex {
+  display: flex;
+  gap: var(--gap, 1rem);
+}
+
+.grid {
+  display: grid;
+  gap: var(--gap, 1rem);
+}
+
+.wrapper {
+  height: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 2em;
+  width: 100%;
+}
+
+.center {
+  /* align-items: center; */
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap; /* added line */
+  border: 0;
+}
+
+/* colors */
+
+.bg-dark {
+  background-color: hsl(var(--clr-green-dark));
+}
+.bg-light {
+  background-color: hsl(var(--clr-green-light));
+}
+
+.bg-rainbow:hover {
+  background: red;
+  /* background: conic-gradient(
+      hsl(var(--clr-green-bright)),
+      hsl(var(--clr-red)),
+      hsl(var(--clr-blue)),
+      hsl(var(--clr-green-bright))
+    ); */
+}
+
+.text-white {
+  color: hsl(var(--clr-white));
+}
+.text-black {
+  color: hsl(var(--clr-black));
+}
+
+/* typography */
+
+.ff-sans-cond {
+  font-family: var(--ff-sans-cond);
+}
+.ff-sans-normal {
+  font-family: var(--ff-sans-normal);
+}
+
+.letter-spacing-1 {
+  letter-spacing: 4.75px;
+}
+.letter-spacing-2 {
+  letter-spacing: 2.7px;
+}
+.letter-spacing-3 {
+  letter-spacing: 2.35px;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.fs-900 {
+  font-size: var(--fs-900);
+}
+.fs-800 {
+  font-size: var(--fs-800);
+}
+.fs-700 {
+  font-size: var(--fs-700);
+}
+.fs-600 {
+  font-size: var(--fs-600);
+}
+.fs-500 {
+  font-size: var(--fs-500);
+}
+.fs-400 {
+  font-size: var(--fs-400);
+}
+.fs-300 {
+  font-size: var(--fs-300);
+}
+.fs-200 {
+  font-size: var(--fs-200);
+}
+
+.fw-900 {
+  font-weight: var(--fw-900);
+}
+.fw-700 {
+  font-weight: var(--fw-700);
+}
+.fw-600 {
+  font-weight: var(--fw-600);
+}
+.fw-500 {
+  font-weight: var(--fw-500);
+}
+.fw-400 {
+  font-weight: var(--fw-400);
+}
+
+.fs-900,
+.fs-800,
+.fs-700,
+.fs-600 {
+  line-height: 1.1;
+}
+
+/* Components */
+
+.btn {
+  position: relative;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--clr-green-light)),
+    hsl(var(--clr-green-dark))
+  );
+  display: inline-block;
+  width: 100%;
+  padding: 0.5em 1.5em;
+  color: hsl(var(--clr-white));
+  text-decoration: none;
+  cursor: pointer;
+  font-size: var(--fs-200);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  overflow: hidden; /* To hide the rotated background overflow */
+  box-shadow: hsl(var(--clr-green-darkest) / 0.4) 2px 5px 10px 2px,
+    hsl(var(--clr-green-dark) / 0.1) -2px 12px 8px 1px;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn:disabled:hover {
+  outline: none;
+}
+
+.btn:focus {
+  background: conic-gradient(
+    hsl(var(--clr-green-bright)),
+    hsl(var(--clr-red)),
+    hsl(var(--clr-blue)),
+    hsl(var(--clr-green-bright))
+  );
+}
+
+/* Add the background gradient as a pseudo-element */
+/* .btn::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: -35%;
+    right: 0;
+    bottom: 0;
+    width: 150%;
+    height: 150%;
+    background: linear-gradient(
+        217deg,
+        rgba(255, 0, 0, 0.8),
+        rgba(255, 0, 0, 0) 70.71%
+      ),
+      linear-gradient(127deg, rgba(0, 255, 0, 0.8), rgba(0, 255, 0, 0) 70.71%),
+      linear-gradient(336deg, rgba(0, 0, 255, 0.8), rgba(0, 0, 255, 0) 70.71%);
+    transition: transform 0.5s ease-in-out;
+    transform-origin: center;
+    z-index: -1; 
+  }
+  
+  /* Rotate only the background gradient on hover */
+.btn:hover::before {
+  transform: rotate(15deg);
+}
+
+main {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  justify-content: center;
+  justify-items: center;
+}
+
+button:hover {
+  outline: 3px solid green;
+}
+
+#initial-wager {
+  justify-self: center;
+  align-self: center;
+
+  justify-content: space-around;
+}
+
+#initial-wager > .bank {
+  text-align: center;
+  background-color: #000;
+}
+
+.bank {
+  margin-block: 3em;
+}
+
+#bankroll {
+  font-size: 3em;
+  color: whitesmoke;
+  margin-block: auto;
+}
+
+#bankroll-newdeal {
+  transform: translateY(-200vh); /* Start with no translation */
+  transition: transform 0.5s ease; /* Smooth transition */
+}
+
+.wager-form {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 1em;
+
+  width: 100%;
+}
+
+.wager-label-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 1em;
+  align-self: self-end;
+}
+
+.wager-btn {
+  justify-self: center;
+  align-self: self-start;
+}
+
+.wager-btn > .btn {
+  background: red;
+}
+
+.wager-btn > .btn:hover {
+  background: green;
+}
+
+@media (max-width: 600px) {
+  .wager-form {
+  }
+
+  .wager-label-input {
+  }
+}
+
+/* Game Board Layout */
+
+.game-board__wrapper {
+  padding-inline: 2em;
+  align-items: center;
+  max-width: 1200px;
+  display: grid;
+  outline: 3px solid greenyellow;
+
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr min-content min-content 1fr;
+  grid-template-areas:
+    "dealer-board"
+    "actions"
+    "wager"
+    "user-board";
+
+  border-top: red 3px solid;
+  border-bottom: greenyellow 3px solid;
+}
+
+#game-board {
+}
+
+.player-board {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "hand score";
+  min-height: 150px;
+}
+
+.dealer-board {
+  /* align-self: self-end; */
+  outline: 3px solid red;
+  grid-area: dealer-board;
+}
+
+.user-board {
+  /* align-self: self-start; */
+  padding: 0;
+  /* outline: 3px solid red; */
+  position: relative;
+  grid-area: user-board;
+}
+
+.double-split {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  outline: 3px solid red;
+}
+
+#wager_display {
+  grid-area: wager;
+  justify-self: center;
+  outline: 3px solid red;
+  margin-top: 2em;
+}
+
+.in-hand-actions {
+  align-items: center;
+  grid-area: actions;
+  width: 100%;
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+  grid-template-areas: "hit doubleSplit stay";
+  /* Not really using/needsing the above properties for areas */
+  gap: 2em;
+}
+
+.hand-container {
+  grid-area: hand;
+  display: flex;
+  justify-content: center;
+  /* justify-content: center just a hack for now. won't work with many cards. This is being
+    used with "justify-self: end" in .hand to find the end/center */
+}
+
+.hand {
+  position: relative;
+
+  color: blue;
+}
+
+.card-container {
+  display: grid;
+}
+
+.card {
+  position: absolute;
+  top: 0;
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  width: 100px;
+  height: 150px;
+  padding: 5px;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+.card-face {
+  background-color: white;
+}
+
+.card-back {
+  position: absolute;
+  top: 0;
+  width: 100px;
+  height: 150px;
+  background-image: url("card-back-no-border.svg");
+
+  background-color: blue;
+  border: solid rgba(0, 0, 0, 0.63) 1px;
+  border-radius: 10px;
+}
+
+.card-on-deck {
+  transform: translateY(-200vh);
+  transition: transform 2s ease-in-out;
+}
+
+.card-in-hand {
+  transform: translateY(0);
+}
+
+.score {
+  grid-area: score;
+  align-self: center;
+  justify-self: end;
+}
+
+.user-score {
+}
+
+#user-board {
+}
+
+#dealer-board {
+}
+
+#hit-btn {
+  grid-area: hit-btn;
+}
+
+#wager {
+  grid-area: wager;
+}
+
+#stay-btn {
+  grid-area: stay-btn;
+}
+
+#split-hand {
+}
+.split-hand {
+  /* position: absolute;
+    top: 0;
+    right: 0; */
+  height: 100px;
+  width: 100px;
+  border: solid 2px orange;
+}
+
+.split-card {
+  background-color: white;
+  color: black;
+
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  width: 30px;
+  height: 45px;
+  padding: 5px;
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+#split-button {
+  position: absolute;
+}
+
+.button-container {
+  display: flex;
+}
+
+.spades {
+  color: black;
+}
+
+.diamonds {
+  color: red;
+}
+
+.hearts {
+  color: red;
+}
+
+.clubs {
+  color: black;
+}
+
+.suit {
+  /* align-self: center; */
+  justify-self: center;
+  font-size: 3em;
+
+  margin: auto;
+}
+
+.rank {
+  letter-spacing: -1px;
+}
+
+.rankLeftSide {
+}
+
+.rankRightSide {
+  margin-left: auto;
+  grid-area: "rankbtmright";
+}
+
+.bankroll {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+#outcome {
+  justify-items: center;
+  align-items: center;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-image: radial-gradient(
+    circle,
+    #ffffff00 0%,
+    #0000009c 25%,
+    #000000db 70%
+  );
+}
+
+#outcome-message {
+  z-index: 100;
+  background-color: #000;
+  color: white;
+  padding: 1em 3em;
+  border-radius: 4px;
+}
+.hand-conclusion {
+}
+
+.outcome-ribbon {
+}
+
+.blackjack-medallion {
+}
+
+/* UTILITY CLASSES */
+
+.hidden {
+  display: none; /* Hidden by default */
+}
+.visible {
+}

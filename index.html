@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+    <title>Document</title>
+  </head>
+  <body class="text-white">
+    <div class="hidden" id="outcome">
+      <span id="outcome-message"><h2>outcome</h2></span>
+    </div>
+    <main class="center">
+      <div id="initial-wager" class="wrapper">
+        <form class="wager-form" onsubmit="dealNewHand(event)">
+          <div class="wager-label-input">
+            <label for="wager-input">Wager:</label>
+            <input type="number" id="wager-input" name="wager-input" />
+          </div>
+
+          <div class="wager-btn">
+            <button class="btn fs-600 fw-700 uppercase" type="submit">
+              Deal
+            </button>
+          </div>
+        </form>
+        <button onclick="translateOnScreen(bankrollNewDeal)">Test</button>
+        <div id="bankroll-newdeal" class="bank">
+          <h3>Bankroll: $<span id="bankroll"></span></h3>
+        </div>
+      </div>
+      <div class="hidden game-board__wrapper" id="game-board">
+        <div class="player-board dealer-board" id="dealer-board">
+          <div class="hand-container">
+            <div class="hand" id="dealer-hand"></div>
+          </div>
+
+          <div class="score dealer-score">
+            <h4>Score</h4>
+            <span id="dealer_score"></span>
+          </div>
+        </div>
+
+        <div class="in-hand-actions">
+          <div>
+            <button class="btn" id="hit-btn" onClick="hitUser('userHandOne')">
+              <!--This looks wrong, hitUser should have ambiguous params  -->
+              Hit
+            </button>
+          </div>
+
+          <div class="double-split">
+            <button
+              disabled
+              class="visible btn"
+              id="double-btn"
+              onClick="double()"
+            >
+              Double
+            </button>
+            <button disabled class="btn" id="split-btn" onClick="split()">
+              split
+            </button>
+          </div>
+
+          <div>
+            <button class="btn" id="stay-btn" onClick="stay('userHandOne')">
+              Stay
+            </button>
+          </div>
+        </div>
+
+        <div id="wager_display">
+          <p>Wager: $<span id="wager_amount"></span></p>
+        </div>
+
+        <div class="player-board user-board" id="user-board">
+          <div class="hand-container">
+            <div class="hand" id="user-hand"></div>
+          </div>
+
+          <div class="score dealer-score">
+            <h4>Score</h4>
+            <span id="user_score"></span>
+            <div class="visible split-hand" id="split-hand"></div>
+          </div>
+        </div>
+        <!-- <div class="player-board user-board" id="user-board">
+          <div class="hand-container">
+            <div class="hand" id="user-hand"></div>
+          </div>
+          <div class="score user-score">
+            <h4>Score</h4>
+            <span id="user_score"></span>
+          </div>
+        </div> -->
+
+        <h3 class="bankroll">Bankroll: $<span id="bankroll_tab"></span></h3>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
