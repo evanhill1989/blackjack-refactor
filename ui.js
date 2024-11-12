@@ -3,22 +3,26 @@
 export const DOMElements = {
   initialWagerView: document.getElementById("initial-wager"),
   gameBoardView: document.getElementById("game-board"),
-  wagerForm: document.getElementById("wagerForm"),
-  wagerInput: document.getElementById("wagerInput"),
-  playerHandContainer: document.getElementById("playerHand"),
-  dealerHandContainer: document.getElementById("dealerHand"),
+
+  wagerInput: document.getElementById("wager-input"),
+  playerHandContainer: document.getElementById("player-hand"),
+  dealerHandContainer: document.getElementById("dealer-hand"),
   bankrollDisplay: document.getElementById("bankroll"),
   messageDisplay: document.getElementById("message"),
   // Add more elements as needed
+  // Lazy Load
+  get wagerForm() {
+    return document.getElementById("wager-form");
+  },
 };
 
 export function toggleView() {
-  if (gameBoardView.classList.contains("hidden")) {
-    gameBoardView.classList.remove("hidden");
-    initialWagerView.classList.add("hidden");
+  if (DOMElements.gameBoardView.classList.contains("hidden")) {
+    DOMElements.gameBoardView.classList.remove("hidden");
+    DOMElements.initialWagerView.classList.add("hidden");
   } else {
-    gameBoardView.classList.add("hidden");
-    initialWagerView.classList.remove("hidden");
+    DOMElements.gameBoardView.classList.add("hidden");
+    DOMElements.initialWagerView.classList.remove("hidden");
   }
 }
 
@@ -34,7 +38,7 @@ export function updateBankrollDisplay(bankroll) {
 
 // ui.js
 export function getWagerInput() {
-  const wagerInputElement = document.getElementById("wagerInput");
-  const wagerValue = parseInt(wagerInputElement.value, 10);
+  const wagerInputElement = document.getElementById("wager-input");
+  const wagerValue = parseInt(wagerInputElement.value, 10) || 100;
   return isNaN(wagerValue) ? 0 : wagerValue; // Basic check to return 0 if input is invalid
 }

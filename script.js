@@ -13,7 +13,12 @@ import {
 } from "./ui.js";
 import { GameState, setGameState, resetGameState } from "./state.js";
 
+const wagerForm = document.querySelector(".wager-form");
+
+wagerForm.addEventListener("submit", startNewHand);
+
 function startNewHand(event) {
+  event.preventDefault();
   resetGameState();
   const wager = getWagerInput();
   setGameState("currentBet", wager);
