@@ -1,15 +1,16 @@
 import {
-  generateCard,
-  addCardToHand,
+  addCardToHandArr,
+  calculateScore,
   validateWager,
   updateGameStateAfterCardDeal,
 } from "./gameLogic.js";
 import {
   DOMElements,
   getWagerInput,
-  renderCardInUI,
   updateBankrollDisplay,
   toggleView,
+  dealCardInUI,
+  updateScoreDisplay,
 } from "./ui.js";
 import { GameState, setGameState, resetGameState } from "./state.js";
 
@@ -24,74 +25,47 @@ function startNewHand(event) {
   setGameState("currentBet", wager);
   toggleView();
 
+  dealInitialCards(GameState);
+  calculateScore(GameState);
+
+  updateScoreDisplay(GameState);
+
   if (wager <= 0) {
     alert("Please enter a valid wager amount!");
     return;
   }
-
-  console.log(wager);
 }
 
-//   dealInitialCards() {
-//     /*...*/
-//   }
+function dealInitialCards(GameState) {
+  // playerHand first
+  addCardToHandArr(GameState, GameState.playerHand);
+  dealCardInUI("playerHand", GameState.playerHand[0]);
 
-//   playerDouble() {
-//     /*...*/
-//   }
+  addCardToHandArr(GameState, GameState.playerHand, GameState.playerHand[1]);
+  dealCardInUI("playerHand", GameState.playerHand[1]);
 
-//   playerSplit() {
-//     /*...*/
-//   }
+  addCardToHandArr(GameState, GameState.dealerHand);
+  dealCardInUI("dealerHand", GameState.dealerHand[0]);
 
-//   playerHit() {
-//     /*...*/
-//   }
+  addCardToHandArr(GameState, GameState.dealerHand);
+  dealCardInUI("dealerHand", GameState.dealerHand[1]);
+}
 
-//   playerStand() {
-//     /*...*/
-//   }
+// dealInitialCards()
+// playerDouble()
 
-//   determineWinner() {
-//     /*...*/
-//   }
+// playerSplit()
 
-//   resetGame() {
-//     /*...*/
-//   }
+// playerHit()
+
+// playerStand()
+
+// determineWinner()
+
+// resetGame()
 
 // More specific functions
 
-// function dealCard(hand) {
-//   // Generate a card, add to `hand`, update UI accordingly
-// }
-
-// function calculateScore(hand) {
-//   // Calculate and return the score of a given hand
-// }
-
-// function checkBust(hand) {
-//   // Returns true if hand is bust
-// }
-
-// function updateBankrollDisplay() {
-//   // Update the bankroll display in the UI
-// }
-
-// function resetRound() {
-//   // Reset hands and UI for the next round
-// }
-
-// function dealNewHand(event) {
-//   event.preventDefault();
-
-//   toggleView();
-
-//   //  get and set wager amount
-//   getWager(event);
-// }
-
-// function getWager(event) {
-//   const form = event.target; // Get the form element
-//   const wagerInputValue = form.querySelector("#wager-input").value; // Get the input value
-// }
+function resetRound() {
+  // Reset hands and UI for the next round
+}
