@@ -1,6 +1,6 @@
 import {
   addCardToHandArr,
-  calculateScore,
+  calculateHandScore,
   validateWager,
   updateGameStateAfterCardDeal,
 } from "./gameLogic.js";
@@ -26,8 +26,9 @@ function startNewHand(event) {
   toggleView();
 
   dealInitialCards(GameState);
-  calculateScore(GameState);
-
+  GameState.dealerScore = calculateHandScore(GameState.dealerHand);
+  GameState.playerScore = calculateHandScore(GameState.playerHand);
+  console.log(GameState.dealerScore, GameState.playerScore, "Hand scores");
   updateScoreDisplay(GameState);
 
   if (wager <= 0) {

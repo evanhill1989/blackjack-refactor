@@ -17,10 +17,51 @@ function removeCurrentCardFromDeck(card, deck) {
   }
 }
 
-export function calculateScore(hand) {
-  /*Decode card values*/
-  /*Add card values*/
+export function calculateHandScore(hand) {
+  // Almost seems like this should be a method on GameState ?
+  let numAces = hand.filter((card) => card.value === 11).length;
+  let nonAces = hand.filter((card) => card.value !== 11);
+
+  let nonAcesTotal = nonAces.reduce((total, card) => total + card.value, 0);
+
+  console.log(nonAcesTotal);
+
+  return totalWithAces(numAces, nonAcesTotal);
 }
+
+function totalWithAces(numAces, nonAcesTotal) {
+  switch (numAces) {
+    case 0:
+      return nonAcesTotal;
+    case 1:
+      if (nonAcesTotal <= 10) {
+        return (hand.score = nonAcesTotal + 11);
+      } else {
+        return (hand.score = nonAcesTotal + 1);
+      }
+    case 2:
+      if (nonAcesTotal <= 9) {
+        return (hand.score = nonAcesTotal + 12);
+      } else {
+        return (hand.score = nonAcesTotal + 2);
+      }
+    case 3:
+      if (nonAcesTotal <= 8) {
+        return (hand.score = nonAcesTotal + 13);
+      } else {
+        return (hand.score = nonAcesTotal + 3);
+      }
+    case 4:
+      if (nonAcesTotal <= 7) {
+        return (hand.score = nonAcesTotal + 14);
+      } else {
+        return (hand.score = nonAcesTotal + 4);
+      }
+    default:
+      return console.log("Error : Too many aces");
+  }
+}
+
 export function updateGameStateAfterCardDeal(hand) {
   /*...*/
 }
