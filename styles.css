@@ -22,6 +22,7 @@
   --fs-400: 1.125rem;
   --fs-300: 1rem;
   --fs-200: 0.875rem;
+  --fs-100: 0.75rem;
 
   /* font-weights */
   --fw-900: 900;
@@ -116,9 +117,64 @@ select {
   flex-direction: column;
   min-height: 100vh;
   justify-content: space-between;
+  align-items: center;
 }
 
 /* Layout utilities */
 .hidden {
   display: none; /* Hidden by default */
+}
+
+/* Card UI */
+
+.card {
+  display: grid;
+  /* place-content: center; */
+  place-items: center;
+  grid-template-columns: 1em 1fr 1em;
+  grid-template-rows: 1.5em 1fr 1.5em;
+  grid-template-areas:
+    "top-left . ."
+    ". rank ."
+    ". . btm-right";
+  background-color: white;
+  color: black;
+  width: 4em;
+  height: 6em;
+  border-radius: 0.5rem;
+  border: 1px solid black;
+}
+
+.card-suit p {
+  font-size: var(--fs-100);
+  line-height: 1;
+}
+
+.card-rank {
+  grid-area: rank;
+  font-size: var(--fs-600);
+}
+
+.card-suit-left {
+  grid-area: top-left;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-suit-right {
+  grid-area: btm-right;
+  display: flex;
+  flex-direction: column;
+  transform: rotateX(180deg) rotateY(180deg);
+}
+
+.card-suit-right-rank {
+}
+
+.card-red-suit {
+  color: red;
+}
+
+.card-black-suit {
+  color: black;
 }

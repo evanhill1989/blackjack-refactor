@@ -1,4 +1,7 @@
 11-13-24 Got the basics of dealInitialCards
 Next -- calculateScore() in gameLogic.js
 
-11-14-24 starting work on calculateScore() 
+11-14-24 starting work on calculateScore() Got it done.
+Next keep working on individual card UI.
+
+11-15-24 more time today. Get the card UI how I want in reg innerHTML

@@ -52,14 +52,38 @@ export function getWagerInput() {
 
 export function generateCardHTML(card) {
   console.log(card);
-  const cardHTML = `
-       <div class="card">
-         <div class="card-suit">${card.suit}</div>
-         <div class="card-value">${card.value}</div>
+  if (card.suit === "♠" || card.suit === "♣") {
+    const cardHTML = `
+       <div class="card card-black-suit">
+         <div class="card-suit card-suit-left">
+         <p>${card.suit}</p>
+         <p>${card.rank}</p>
+         </div>
+         <div class="card-rank">${card.rank}</div>
+         <div class="card-suit card-suit-right">
+         <p>${card.suit}</p>
+         <p>${card.rank}</p>
+         </div>
        </div>
      `;
-
-  return cardHTML;
+    return cardHTML;
+  } else {
+    const cardHTML = `
+       <div class="card card-red-suit">
+         <div class="card-suit card-suit-left">
+         <p>${card.suit}</p>
+         <p>${card.rank}</p>
+         </div>
+         <div class="card-rank">${card.rank}</div>
+         <div class="card-suit card-suit-right">
+         <p>${card.suit}</p>
+         <p>${card.rank}</p>
+         
+         </div>
+       </div>
+     `;
+    return cardHTML;
+  }
 }
 
 export function updateScoreDisplay(GameState) {
