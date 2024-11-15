@@ -28,7 +28,7 @@ function startNewHand(event) {
   dealInitialCards(GameState);
   GameState.dealerScore = calculateHandScore(GameState.dealerHand);
   GameState.playerScore = calculateHandScore(GameState.playerHandOne);
-  console.log(GameState.dealerScore, GameState.playerScore, "Hand scores");
+
   updateScoreDisplay(GameState);
 
   if (wager <= 0) {
@@ -39,30 +39,58 @@ function startNewHand(event) {
 
 function dealInitialCards(GameState) {
   // playerHand first
+  let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
+  dealSingleCard(
+    GameState,
+    GameState.playerHandOne,
+    "playerHandOne",
+    staticCardForTesting
+  );
+  staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
+  dealSingleCard(
+    GameState,
+    GameState.playerHandOne,
+    "playerHandOne",
+    staticCardForTesting
+  );
+  staticCardForTesting = { suit: "♣", rank: "A", value: 11 };
 
-  dealSingleCard(GameState, GameState.playerHandOne, "playerHandOne");
-  dealSingleCard(GameState, GameState.playerHandOne, "playerHandOne");
+  dealSingleCard(
+    GameState,
+    GameState.dealerHand,
+    "dealerHand",
+    staticCardForTesting
+  );
 
-  dealSingleCard(GameState, GameState.dealerHand, "dealerHand");
-  dealSingleCard(GameState, GameState.dealerHand, "dealerHand");
+  staticCardForTesting = { suit: "♥", rank: "10", value: 10 };
+  dealSingleCard(
+    GameState,
+    GameState.dealerHand,
+    "dealerHand",
+    staticCardForTesting
+  );
 }
 
-function dealSingleCard(GameState, handObj, handName) {
-  console.log(handObj, "hand in dealSingleCard");
+function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
   addCardToHandArr(GameState, handObj);
 
   if (handName === "playerHandOne") {
     const cardPosition = GameState.playerHandOne.length - 1; // REFACTOR THIS OUTSIDE LOOP FOR MORE UNIVERSALITY
-    console.log(cardPosition, "cardPosition in dealSingleCard");
-    const card = GameState.playerHandOne[cardPosition];
-    dealCardInUI(handName, card, cardPosition);
+
+    const card = staticCardForTesting || GameState.playerHandOne[cardPosition];
+
+    setTimeout(() => {
+      dealCardInUI(handName, card, cardPosition);
+    }, 1000);
   } else if (handName === "playerHandTwo") {
     const cardPosition = GameState.playerHandTwo.length - 1;
-    const card = GameState.playerHandTwo[cardPosition];
-    dealCardInUI(handName, card, cardPosition);
+    const card = staticCardForTesting || GameState.playerHandTwo[cardPosition];
+    setTimeout(() => {
+      dealCardInUI(handName, card, cardPosition);
+    }, 2000);
   } else if (handName === "dealerHand") {
     const cardPosition = GameState.dealerHand.length - 1;
-    const card = GameState.dealerHand[cardPosition];
+    const card = staticCardForTesting || GameState.dealerHand[cardPosition];
     dealCardInUI(handName, card, cardPosition);
   } else {
     console.log("Invalid hand name");

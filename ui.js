@@ -26,20 +26,6 @@ export function toggleView() {
   }
 }
 
-export function dealCardInUI(handName, card, cardPosition) {
-  if (handName === "playerHandOne") {
-    console.log(cardPosition, "cardPosition in dealCardInUI");
-    const cardHTML = generateCardHTML(card, cardPosition);
-    // Add transition here next
-    DOMElements.playerHand.innerHTML += cardHTML;
-  } else if (handName === "playerHandTwo") {
-    const cardHTML = generateCardHTML(card, cardPosition);
-    DOMElements.playerHand.innerHTML += cardHTML;
-  } else if (handName === "dealerHand") {
-    const cardHTML = generateCardHTML(card, cardPosition);
-    DOMElements.dealerHand.innerHTML += cardHTML;
-  }
-}
 export function updateBankrollDisplay(bankroll) {
   /*...*/
 }
@@ -54,10 +40,29 @@ export function getWagerInput() {
   return isNaN(wagerValue) ? 0 : wagerValue; // Basic check to return 0 if input is invalid
 }
 
+export function dealCardInUI(handName, card, cardPosition) {
+  console.log("cardPosition in dealCardInUI", cardPosition);
+  if (handName === "playerHandOne") {
+    const cardHTML = generateCardHTML(card, cardPosition);
+    // Add transition here next
+    DOMElements.playerHand.innerHTML += cardHTML;
+  } else if (handName === "playerHandTwo") {
+    const cardHTML = generateCardHTML(card, cardPosition);
+    DOMElements.playerHand.innerHTML += cardHTML;
+  } else if (handName === "dealerHand") {
+    const cardHTML = generateCardHTML(card, cardPosition);
+    DOMElements.dealerHand.innerHTML += cardHTML;
+  }
+}
+
 export function generateCardHTML(card, cardPosition) {
-  const cardPositionAdjustment = cardPosition * 10;
+  const cardPositionAdjustment = cardPosition * 10; // often this isn't calculated in time to render
 
   if (card.suit === "♠" || card.suit === "♣") {
+    console.log(
+      cardPosition,
+      "cardPosition inside the if inside generateCardHTML"
+    );
     const cardHTML = `
        <div class="card card-black-suit " style="transform: translateX(${cardPositionAdjustment}px)">
          <div class="card-suit card-suit-left">
@@ -73,8 +78,13 @@ export function generateCardHTML(card, cardPosition) {
      `;
     return cardHTML;
   } else {
+    console.log(
+      cardPosition,
+      "cardPosition inside the if inside generateCardHTML"
+    );
+
     const cardHTML = `
-       <div class="card card-red-suit">
+       <div class="card card-red-suit" style="transform: translateX(${cardPositionAdjustment}px)">
          <div class="card-suit card-suit-left">
          <p>${card.suit}</p>
          <p>${card.rank}</p>

@@ -68,7 +68,12 @@ export const GameState = {
 };
 
 export function resetGameState() {
-  /* Reset the GameState properties for a new round */
+  GameState.currentBet = 0;
+  GameState.playerHandOne = [];
+  GameState.playerHandTwo = [];
+  GameState.dealerHand = [];
+  GameState.dealerScore = 0;
+  GameState.playerScore = 0;
 }
 export function setGameState(key, value) {
   GameState[key] = value;

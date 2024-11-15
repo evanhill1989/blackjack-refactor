@@ -24,12 +24,10 @@ export function calculateHandScore(hand) {
 
   let nonAcesTotal = nonAces.reduce((total, card) => total + card.value, 0);
 
-  console.log(nonAcesTotal);
-
-  return totalWithAces(numAces, nonAcesTotal);
+  return totalWithAces(hand, numAces, nonAcesTotal);
 }
 
-function totalWithAces(numAces, nonAcesTotal) {
+function totalWithAces(hand, numAces, nonAcesTotal) {
   switch (numAces) {
     case 0:
       return nonAcesTotal;
