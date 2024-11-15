@@ -26,13 +26,17 @@ export function toggleView() {
   }
 }
 
-export function dealCardInUI(hand, card) {
-  if (hand === "playerHand") {
-    const cardHTML = generateCardHTML(card);
+export function dealCardInUI(handName, card, cardPosition) {
+  if (handName === "playerHandOne") {
+    console.log(cardPosition, "cardPosition in dealCardInUI");
+    const cardHTML = generateCardHTML(card, cardPosition);
     // Add transition here next
     DOMElements.playerHand.innerHTML += cardHTML;
-  } else if (hand === "dealerHand") {
-    const cardHTML = generateCardHTML(card);
+  } else if (handName === "playerHandTwo") {
+    const cardHTML = generateCardHTML(card, cardPosition);
+    DOMElements.playerHand.innerHTML += cardHTML;
+  } else if (handName === "dealerHand") {
+    const cardHTML = generateCardHTML(card, cardPosition);
     DOMElements.dealerHand.innerHTML += cardHTML;
   }
 }
@@ -50,11 +54,12 @@ export function getWagerInput() {
   return isNaN(wagerValue) ? 0 : wagerValue; // Basic check to return 0 if input is invalid
 }
 
-export function generateCardHTML(card) {
-  console.log(card);
+export function generateCardHTML(card, cardPosition) {
+  const cardPositionAdjustment = cardPosition * 10;
+
   if (card.suit === "♠" || card.suit === "♣") {
     const cardHTML = `
-       <div class="card card-black-suit">
+       <div class="card card-black-suit " style="transform: translateX(${cardPositionAdjustment}px)">
          <div class="card-suit card-suit-left">
          <p>${card.suit}</p>
          <p>${card.rank}</p>

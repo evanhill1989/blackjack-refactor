@@ -58,7 +58,8 @@ const deck = [
 export const GameState = {
   bankroll: 1000,
   currentBet: 0,
-  playerHand: [],
+  playerHandOne: [],
+  playerHandTwo: [],
   dealerHand: [],
   dealerScore: 0,
   playerScore: 0,

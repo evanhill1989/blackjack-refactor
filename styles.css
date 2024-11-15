@@ -120,9 +120,22 @@ select {
   align-items: center;
 }
 
+.wrapper__game-board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Layout utilities */
 .hidden {
   display: none; /* Hidden by default */
+}
+
+/* Hand UI */
+
+.hand {
+  position: relative;
 }
 
 /* Card UI */

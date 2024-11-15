@@ -27,7 +27,7 @@ function startNewHand(event) {
 
   dealInitialCards(GameState);
   GameState.dealerScore = calculateHandScore(GameState.dealerHand);
-  GameState.playerScore = calculateHandScore(GameState.playerHand);
+  GameState.playerScore = calculateHandScore(GameState.playerHandOne);
   console.log(GameState.dealerScore, GameState.playerScore, "Hand scores");
   updateScoreDisplay(GameState);
 
@@ -39,19 +39,35 @@ function startNewHand(event) {
 
 function dealInitialCards(GameState) {
   // playerHand first
-  addCardToHandArr(GameState, GameState.playerHand);
-  dealCardInUI("playerHand", GameState.playerHand[0]);
 
-  addCardToHandArr(GameState, GameState.playerHand, GameState.playerHand[1]);
-  dealCardInUI("playerHand", GameState.playerHand[1]);
+  dealSingleCard(GameState, GameState.playerHandOne, "playerHandOne");
+  dealSingleCard(GameState, GameState.playerHandOne, "playerHandOne");
 
-  addCardToHandArr(GameState, GameState.dealerHand);
-  dealCardInUI("dealerHand", GameState.dealerHand[0]);
-
-  addCardToHandArr(GameState, GameState.dealerHand);
-  dealCardInUI("dealerHand", GameState.dealerHand[1]);
+  dealSingleCard(GameState, GameState.dealerHand, "dealerHand");
+  dealSingleCard(GameState, GameState.dealerHand, "dealerHand");
 }
 
+function dealSingleCard(GameState, handObj, handName) {
+  console.log(handObj, "hand in dealSingleCard");
+  addCardToHandArr(GameState, handObj);
+
+  if (handName === "playerHandOne") {
+    const cardPosition = GameState.playerHandOne.length - 1; // REFACTOR THIS OUTSIDE LOOP FOR MORE UNIVERSALITY
+    console.log(cardPosition, "cardPosition in dealSingleCard");
+    const card = GameState.playerHandOne[cardPosition];
+    dealCardInUI(handName, card, cardPosition);
+  } else if (handName === "playerHandTwo") {
+    const cardPosition = GameState.playerHandTwo.length - 1;
+    const card = GameState.playerHandTwo[cardPosition];
+    dealCardInUI(handName, card, cardPosition);
+  } else if (handName === "dealerHand") {
+    const cardPosition = GameState.dealerHand.length - 1;
+    const card = GameState.dealerHand[cardPosition];
+    dealCardInUI(handName, card, cardPosition);
+  } else {
+    console.log("Invalid hand name");
+  }
+}
 // dealInitialCards()
 // playerDouble()
 
