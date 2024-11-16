@@ -68,16 +68,12 @@ picture {
 
 /* set up the body */
 body {
+  background-color: hsl(var(--clr-green-dark));
   line-height: 1.5;
   min-height: 100vh;
   font-family: var(--ff-sans-normal);
   font-size: var(--fs-400);
   color: var(--clr-white);
-  background-color: hsl(var(--clr-green-dark));
-  background-image: url("table-bg.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
 }
 
 /* make images easier to work with */
@@ -113,18 +109,31 @@ select {
 
 /* Layout */
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  justify-content: space-between;
-  align-items: center;
+  height: 100vh;
+  max-width: minmax(250px, 80vw);
+  margin: 0 auto;
 }
 
 .wrapper__game-board {
+  background-color: hsl(var(--clr-green-dark));
+  background-image: url("table-bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: relative;
   display: flex;
+  gap: 2rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.wrapper__initial-wager {
+  background-color: hsl(var(--clr-green-dark));
+  background-image: url("table-bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 /* Layout utilities */
@@ -135,12 +144,19 @@ select {
 /* Hand UI */
 
 .hand {
+  display: flex;
   position: relative;
+}
+.hand::before {
+  content: "";
+  width: 4em;
+  height: 6em;
 }
 
 /* Card UI */
 
 .card {
+  position: absolute;
   display: grid;
   /* place-content: center; */
   place-items: center;

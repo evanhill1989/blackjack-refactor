@@ -1,5 +1,6 @@
 import {
   addCardToHandArr,
+  updateScore,
   calculateHandScore,
   validateWager,
   updateGameStateAfterCardDeal,
@@ -16,7 +17,18 @@ import { GameState, setGameState, resetGameState } from "./state.js";
 
 const wagerForm = document.querySelector(".wager-form");
 
+// BUTTONS
+const hitBtn = document.getElementById("hit-btn");
+const splitBtn = document.getElementById("split-btn");
+const doubleBtn = document.getElementById("double-btn");
+const standBtn = document.getElementById("stand-btn");
+
 wagerForm.addEventListener("submit", startNewHand);
+
+hitBtn.addEventListener("click", playerHit);
+splitBtn.addEventListener("click", playerSplit);
+doubleBtn.addEventListener("click", playerDouble);
+standBtn.addEventListener("click", playerStand);
 
 function startNewHand(event) {
   event.preventDefault();
@@ -26,10 +38,6 @@ function startNewHand(event) {
   toggleView();
 
   dealInitialCards(GameState);
-  GameState.dealerScore = calculateHandScore(GameState.dealerHand);
-  GameState.playerScore = calculateHandScore(GameState.playerHandOne);
-
-  updateScoreDisplay(GameState);
 
   if (wager <= 0) {
     alert("Please enter a valid wager amount!");
@@ -46,6 +54,8 @@ function dealInitialCards(GameState) {
     "playerHandOne",
     staticCardForTesting
   );
+  updateScore(GameState); // !!!!! THESE WILL CHANGE WHEN I FINE TUNE UI TIMING.
+  updateScoreDisplay(GameState);
   staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
   dealSingleCard(
     GameState,
@@ -53,6 +63,10 @@ function dealInitialCards(GameState) {
     "playerHandOne",
     staticCardForTesting
   );
+  updateScore(GameState);
+  updateScoreDisplay(GameState);
+
+  // dealerHand
   staticCardForTesting = { suit: "♣", rank: "A", value: 11 };
 
   dealSingleCard(
@@ -61,7 +75,8 @@ function dealInitialCards(GameState) {
     "dealerHand",
     staticCardForTesting
   );
-
+  updateScore(GameState);
+  updateScoreDisplay(GameState);
   staticCardForTesting = { suit: "♥", rank: "10", value: 10 };
   dealSingleCard(
     GameState,
@@ -69,10 +84,12 @@ function dealInitialCards(GameState) {
     "dealerHand",
     staticCardForTesting
   );
+  updateScore(GameState);
+  updateScoreDisplay(GameState);
 }
 
 function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
-  addCardToHandArr(GameState, handObj);
+  addCardToHandArr(GameState, handObj, staticCardForTesting);
 
   if (handName === "playerHandOne") {
     const cardPosition = GameState.playerHandOne.length - 1; // REFACTOR THIS OUTSIDE LOOP FOR MORE UNIVERSALITY
@@ -96,6 +113,33 @@ function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
     console.log("Invalid hand name");
   }
 }
+
+function playerHit() {
+  let focusHand = GameState.focusHand;
+  let handObj =
+    focusHand === "playerHandOne"
+      ? GameState.playerHandOne
+      : GameState.playerHandTwo;
+
+  dealSingleCard(GameState, handObj, focusHand);
+  updateScore(GameState); // !!!!! THESE updateScore functions WILL CHANGE WHEN I FINE TUNE UI CARD DEAL TIMING
+  updateScoreDisplay(GameState);
+}
+
+function playerSplit() {
+  updateScore(GameState);
+  updateScoreDisplay(GameState);
+}
+
+function playerDouble() {
+  updateScore(GameState);
+  updateScoreDisplay(GameState);
+}
+
+function playerStand() {
+  // TODO
+}
+
 // dealInitialCards()
 // playerDouble()
 

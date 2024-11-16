@@ -1,6 +1,6 @@
-export function addCardToHandArr(GameState, hand) {
+export function addCardToHandArr(GameState, hand, staticCardForTesting) {
   const { playerHand, dealerHand, deck } = GameState;
-  const card = getRandomCard(deck);
+  const card = staticCardForTesting || getRandomCard(deck);
   hand.push(card);
   removeCurrentCardFromDeck(card, deck);
 }
@@ -74,6 +74,17 @@ export function validateWager(wager, bankroll) {
   return null; // No errors
 }
 
+// HIT
+export function hit(hand) {
+  addCardToHandArr(GameState, hand);
+}
+
 function checkBust(hand) {
   // Returns true if hand is bust
+}
+
+// SCORE
+export function updateScore(GameState) {
+  GameState.dealerScore = calculateHandScore(GameState.dealerHand);
+  GameState.playerScore = calculateHandScore(GameState.playerHandOne);
 }

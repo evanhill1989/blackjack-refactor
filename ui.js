@@ -56,15 +56,11 @@ export function dealCardInUI(handName, card, cardPosition) {
 }
 
 export function generateCardHTML(card, cardPosition) {
-  const cardPositionAdjustment = cardPosition * 10; // often this isn't calculated in time to render
+  const cardPositionAdjustment = cardPosition * 1;
 
   if (card.suit === "♠" || card.suit === "♣") {
-    console.log(
-      cardPosition,
-      "cardPosition inside the if inside generateCardHTML"
-    );
     const cardHTML = `
-       <div class="card card-black-suit " style="transform: translateX(${cardPositionAdjustment}px)">
+       <div class="card card-black-suit " style="transform: translateX(${cardPositionAdjustment}em)">
          <div class="card-suit card-suit-left">
          <p>${card.suit}</p>
          <p>${card.rank}</p>
@@ -78,13 +74,8 @@ export function generateCardHTML(card, cardPosition) {
      `;
     return cardHTML;
   } else {
-    console.log(
-      cardPosition,
-      "cardPosition inside the if inside generateCardHTML"
-    );
-
     const cardHTML = `
-       <div class="card card-red-suit" style="transform: translateX(${cardPositionAdjustment}px)">
+       <div class="card card-red-suit" style="transform: translateX(${cardPositionAdjustment}em)">
          <div class="card-suit card-suit-left">
          <p>${card.suit}</p>
          <p>${card.rank}</p>
@@ -107,4 +98,8 @@ export function updateScoreDisplay(GameState) {
 
   playerScoreElement.textContent = GameState.playerScore;
   dealerScoreElement.textContent = GameState.dealerScore;
+  console.log(
+    "GameState.playerScore in updateScoreDisplay",
+    GameState.playerScore
+  );
 }
