@@ -75,16 +75,63 @@ export function validateWager(wager, bankroll) {
 }
 
 // HIT
-export function hit(hand) {
-  addCardToHandArr(GameState, hand);
-}
 
-function checkBust(hand) {
-  // Returns true if hand is bust
+export function checkBust(GameState) {
+  console.log("handScore = ", GameState.playerHandOneScore);
+  if (GameState.playerHandOneScore > 21) {
+    console.log("BUST");
+    GameState.playerHandOneScore = "bust";
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // SCORE
 export function updateScore(GameState) {
   GameState.dealerScore = calculateHandScore(GameState.dealerHand);
-  GameState.playerScore = calculateHandScore(GameState.playerHandOne);
+  GameState.playerHandOneScore = calculateHandScore(GameState.playerHandOne);
+}
+
+export function dealerAction(GameState) {
+  if (GameState.dealerScore < 17) {
+    dealSingleCard(GameState, GameState.dealerHand, "dealerHand");
+    updateScore(GameState);
+    updateScoreDisplay(GameState);
+    dealerAction(GameState);
+  }
+  if (GameState.dealerScore > 21) {
+    console.log("Dealer BUSTs!");
+    GameState.dealerScore = "bust";
+  }
+}
+
+export function determineOutcome(GameState, handScore) {
+  let outcome;
+  console.log("inside determineOutcome , hand.score = ", handScore);
+  if (handScore === "bust") {
+    console.log("You BUSTED!");
+    outcome = "lose";
+  } else if (GameState.dealerScore > handScore) {
+    outcome = "lose";
+  } else if (GameState.dealerScore < handScore) {
+    outcome = "win";
+  } else if (GameState.dealerScore === handScore) {
+    outcome = "push";
+  } else {
+    console.log("Error: Invalid outcome inside determine outcome function");
+  }
+  updateBankroll(GameState, outcome);
+}
+
+// BANKROLL
+export function updateBankroll(GameState, outcome) {
+  if (outcome === "lose") {
+    GameState.bankroll -= GameState.currentBet;
+  } else if (outcome === "win") {
+    GameState.bankroll += GameState.currentBet;
+  } else if (outcome === "push") {
+    console.log("PUSH");
+  }
+  console.log(outcome, "outcome inside updateBankroll function");
 }

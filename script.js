@@ -4,6 +4,9 @@ import {
   calculateHandScore,
   validateWager,
   updateGameStateAfterCardDeal,
+  checkBust,
+  dealerAction,
+  determineOutcome,
 } from "./gameLogic.js";
 import {
   DOMElements,
@@ -124,6 +127,26 @@ function playerHit() {
   dealSingleCard(GameState, handObj, focusHand);
   updateScore(GameState); // !!!!! THESE updateScore functions WILL CHANGE WHEN I FINE TUNE UI CARD DEAL TIMING
   updateScoreDisplay(GameState);
+  const didBust = checkBust(GameState);
+  let handScore =
+    focusHand === "playerHandOne"
+      ? GameState.playerHandOneScore
+      : GameState.playerHandOneScore;
+
+  console.log(GameState.playerHandOneScore);
+  didBust === true
+    ? determineOutcome(GameState, handScore)
+    : console.log("No BUST");
+  // if checkBust
+  // if no - return
+  // if yes
+  // is playerHandTwo?
+  // if no - return then proceed to settle playerHandOne as a loss
+  // if yes - check if action is complete on both hands
+  // if preview hand is still active anounce bust for current hand and switch focus hand
+  // if preview hand NOT active announce bust and settle current hand as a loss
+  // then if preview hand was bust reset game, trans to wager screen
+  // if preview hand was NOT bust turn action to dealer and determine outcome
 }
 
 function playerSplit() {
@@ -137,7 +160,11 @@ function playerDouble() {
 }
 
 function playerStand() {
-  // TODO
+  // will change if split is implemented, so we'd go to the other active player hand instead of dealerAction()
+
+  dealerAction();
+  determineOutcome(GameState);
+  displayOutcome(GameState);
 }
 
 // dealInitialCards()
@@ -157,4 +184,10 @@ function playerStand() {
 
 function resetRound() {
   // Reset hands and UI for the next round
+}
+
+/* HELPER FUNCTIONS THAT MAY MOVE Modules*/
+
+function handleBust() {
+  console.log("BUST!");
 }

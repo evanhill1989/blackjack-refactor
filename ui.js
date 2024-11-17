@@ -27,7 +27,7 @@ export function toggleView() {
 }
 
 export function updateBankrollDisplay(bankroll) {
-  /*...*/
+  DOMElements.bankrollDisplay.textContent = bankroll;
 }
 // export function toggleView(view) {
 //   /*...*/
@@ -41,7 +41,6 @@ export function getWagerInput() {
 }
 
 export function dealCardInUI(handName, card, cardPosition) {
-  console.log("cardPosition in dealCardInUI", cardPosition);
   if (handName === "playerHandOne") {
     const cardHTML = generateCardHTML(card, cardPosition);
     // Add transition here next
@@ -96,10 +95,13 @@ export function updateScoreDisplay(GameState) {
   const playerScoreElement = DOMElements.playerScore;
   const dealerScoreElement = DOMElements.dealerScore;
 
-  playerScoreElement.textContent = GameState.playerScore;
+  let focusHand = GameState.focusHand;
+
+  if (focusHand === "playerHandOne") {
+    playerScoreElement.textContent = GameState.playerHandOneScore;
+  } else if (focusHand === "playerHandTwo") {
+    playerScoreElement.textContent = GameState.playerHandTwoScore;
+  }
+
   dealerScoreElement.textContent = GameState.dealerScore;
-  console.log(
-    "GameState.playerScore in updateScoreDisplay",
-    GameState.playerScore
-  );
 }

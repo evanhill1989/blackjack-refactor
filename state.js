@@ -64,7 +64,8 @@ export const GameState = {
   splitPreviewHand: "playerHandTwo",
   dealerHand: [],
   dealerScore: 0,
-  playerScore: 0,
+  playerHandOneScore: 0,
+  playerHandTwoScore: null,
   gameState: "start",
   deck,
 };
