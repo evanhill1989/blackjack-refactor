@@ -1,7 +1,6 @@
-// ui.js
-// ui.js
-
 export const DOMElements = {
+  mainElement: document.querySelector("main"),
+
   initialWagerView: document.getElementById("initial-wager"),
   gameBoardView: document.getElementById("game-board"),
 
@@ -9,7 +8,8 @@ export const DOMElements = {
   playerHand: document.getElementById("user-hand"),
   dealerHand: document.getElementById("dealer-hand"),
   bankrollDisplay: document.getElementById("bankroll"),
-  messageDisplay: document.getElementById("message"),
+  bankrollTabDisplay: document.getElementById("bankroll_tab"),
+  outcomeMessageDisplay: document.getElementById("message"),
   // Add more elements as needed
   // Lazy Load
   playerScore: document.getElementById("user-score"),
@@ -28,12 +28,12 @@ export function toggleView() {
 
 export function updateBankrollDisplay(bankroll) {
   DOMElements.bankrollDisplay.textContent = bankroll;
+  DOMElements.bankrollTabDisplay.textContent = bankroll;
 }
 // export function toggleView(view) {
 //   /*...*/
 // }
 
-// ui.js
 export function getWagerInput() {
   const wagerInputElement = document.getElementById("wager-input");
   const wagerValue = parseInt(wagerInputElement.value, 10) || 100;
@@ -59,34 +59,34 @@ export function generateCardHTML(card, cardPosition) {
 
   if (card.suit === "♠" || card.suit === "♣") {
     const cardHTML = `
-       <div class="card card-black-suit " style="transform: translateX(${cardPositionAdjustment}em)">
-         <div class="card-suit card-suit-left">
-         <p>${card.suit}</p>
-         <p>${card.rank}</p>
+         <div class="card card-black-suit " style="transform: translateX(${cardPositionAdjustment}em)">
+           <div class="card-suit card-suit-left">
+           <p>${card.suit}</p>
+           <p>${card.rank}</p>
+           </div>
+           <div class="card-rank">${card.rank}</div>
+           <div class="card-suit card-suit-right">
+           <p>${card.suit}</p>
+           <p>${card.rank}</p>
+           </div>
          </div>
-         <div class="card-rank">${card.rank}</div>
-         <div class="card-suit card-suit-right">
-         <p>${card.suit}</p>
-         <p>${card.rank}</p>
-         </div>
-       </div>
-     `;
+       `;
     return cardHTML;
   } else {
     const cardHTML = `
-       <div class="card card-red-suit" style="transform: translateX(${cardPositionAdjustment}em)">
-         <div class="card-suit card-suit-left">
-         <p>${card.suit}</p>
-         <p>${card.rank}</p>
+         <div class="card card-red-suit" style="transform: translateX(${cardPositionAdjustment}em)">
+           <div class="card-suit card-suit-left">
+           <p>${card.suit}</p>
+           <p>${card.rank}</p>
+           </div>
+           <div class="card-rank">${card.rank}</div>
+           <div class="card-suit card-suit-right">
+           <p>${card.suit}</p>
+           <p>${card.rank}</p>
+           
+           </div>
          </div>
-         <div class="card-rank">${card.rank}</div>
-         <div class="card-suit card-suit-right">
-         <p>${card.suit}</p>
-         <p>${card.rank}</p>
-         
-         </div>
-       </div>
-     `;
+       `;
     return cardHTML;
   }
 }
@@ -104,4 +104,19 @@ export function updateScoreDisplay(GameState) {
   }
 
   dealerScoreElement.textContent = GameState.dealerScore;
+}
+
+export function outcomeAnnouncement(outcome) {
+  console.log(outcome, "outcome in outcomeAnnouncement function");
+  const tempDiv = document.createElement("div");
+  const outcomeHTML = `
+    <div class="outcome-message">
+      <p>${outcome.toUpperCase()}</p>
+    </div>
+  `;
+  tempDiv.innerHTML = outcomeHTML;
+  DOMElements.mainElement.appendChild(tempDiv);
+  setTimeout(() => {
+    DOMElements.mainElement.removeChild(tempDiv);
+  }, 2000);
 }

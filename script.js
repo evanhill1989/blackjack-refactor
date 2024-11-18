@@ -8,14 +8,17 @@ import {
   dealerAction,
   determineOutcome,
 } from "./gameLogic.js";
+
 import {
-  DOMElements,
-  getWagerInput,
-  updateBankrollDisplay,
   toggleView,
+  updateBankrollDisplay,
+  getWagerInput,
   dealCardInUI,
+  generateCardHTML,
   updateScoreDisplay,
+  outcomeAnnouncement,
 } from "./ui.js";
+
 import { GameState, setGameState, resetGameState } from "./state.js";
 
 const wagerForm = document.querySelector(".wager-form");
@@ -25,6 +28,8 @@ const hitBtn = document.getElementById("hit-btn");
 const splitBtn = document.getElementById("split-btn");
 const doubleBtn = document.getElementById("double-btn");
 const standBtn = document.getElementById("stand-btn");
+
+updateBankrollDisplay(GameState.bankroll);
 
 wagerForm.addEventListener("submit", startNewHand);
 
@@ -38,6 +43,7 @@ function startNewHand(event) {
   resetGameState();
   const wager = getWagerInput();
   setGameState("currentBet", wager);
+  updateBankrollDisplay(GameState.bankroll);
   toggleView();
 
   dealInitialCards(GameState);
@@ -134,9 +140,14 @@ function playerHit() {
       : GameState.playerHandOneScore;
 
   console.log(GameState.playerHandOneScore);
-  didBust === true
-    ? determineOutcome(GameState, handScore)
-    : console.log("No BUST");
+  if (didBust) {
+    let outcome = determineOutcome(GameState, handScore);
+    console.log(outcome, "<--------- outcome inside playerHit function");
+    outcomeAnnouncement(outcome);
+    updateBankrollDisplay(GameState.bankroll);
+    return;
+  }
+
   // if checkBust
   // if no - return
   // if yes
@@ -164,6 +175,7 @@ function playerStand() {
 
   dealerAction();
   determineOutcome(GameState);
+  updateBankrollDisplay(GameState.bankroll);
   displayOutcome(GameState);
 }
 

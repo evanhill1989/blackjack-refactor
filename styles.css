@@ -108,6 +108,11 @@ select {
 /* ------------------- */
 
 /* Layout */
+
+.main {
+  position: relative;
+}
+
 .wrapper {
   height: 100vh;
   max-width: minmax(250px, 80vw);
@@ -206,4 +211,29 @@ select {
 
 .card-black-suit {
   color: black;
+}
+
+/* Outcome UI */
+
+.outcome-message {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* center the element */
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: var(--fs-800);
+  font-weight: bold;
+  z-index: 10;
+  background: radial-gradient(
+    circle,
+    rgba(29, 29, 29, 0.493) 0%,
+    rgba(34, 32, 32, 0.849) 50%,
+    rgba(20, 20, 20, 0.952) 100%
+  );
 }

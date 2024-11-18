@@ -121,7 +121,10 @@ export function determineOutcome(GameState, handScore) {
   } else {
     console.log("Error: Invalid outcome inside determine outcome function");
   }
+  console.log(outcome, "outcome inside determineOutcome function");
   updateBankroll(GameState, outcome);
+  return outcome; // returns to outcomeAnnouncement(GameState, outcome)
+  // updateBankrollDisplay(GameState.bankroll);
 }
 
 // BANKROLL
@@ -133,5 +136,4 @@ export function updateBankroll(GameState, outcome) {
   } else if (outcome === "push") {
     console.log("PUSH");
   }
-  console.log(outcome, "outcome inside updateBankroll function");
 }
