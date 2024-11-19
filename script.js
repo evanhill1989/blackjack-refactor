@@ -7,6 +7,8 @@ import {
   checkBust,
   dealerAction,
   determineOutcome,
+  checkCanDouble,
+  checkCanSplit,
 } from "./gameLogic.js";
 
 import {
@@ -17,6 +19,7 @@ import {
   generateCardHTML,
   updateScoreDisplay,
   outcomeAnnouncement,
+  resetUI,
 } from "./ui.js";
 
 import { GameState, setGameState, resetGameState } from "./state.js";
@@ -38,26 +41,6 @@ splitBtn.addEventListener("click", playerSplit);
 doubleBtn.addEventListener("click", playerDouble);
 standBtn.addEventListener("click", playerStand);
 
-// ANIMATION TEST
-
-// const startButton = document.getElementById("startAnimation");
-// const parentElement = document.getElementById("parentElement");
-
-// startButton.addEventListener("click", () => {
-//   // Create the test element dynamically
-//   const testElement = document.createElement("div");
-//   testElement.classList.add("test-element");
-
-//   // Append it to the parent element
-//   parentElement.appendChild(testElement);
-
-//   // Trigger animation
-//   requestAnimationFrame(() => {
-//     testElement.classList.add("animate");
-//   });
-// });
-// ANIMATION TEST /\
-
 function startNewHand(event) {
   event.preventDefault();
   resetGameState();
@@ -76,6 +59,7 @@ function startNewHand(event) {
 
 function dealInitialCards(GameState) {
   // playerHand first
+
   let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
   dealSingleCard(
     GameState,
@@ -123,6 +107,18 @@ function dealInitialCards(GameState) {
     updateScore(GameState);
     updateScoreDisplay(GameState);
   }, 3000);
+  setTimeout(() => {
+    const canDouble = checkCanDouble(GameState);
+    const canSplit = checkCanSplit(GameState);
+
+    if (canDouble) {
+      doubleBtn.disabled = false;
+    }
+
+    if (canSplit) {
+      splitBtn.disabled = false;
+    }
+  }, 4000);
 }
 
 function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
@@ -170,6 +166,7 @@ function playerHit() {
     console.log(outcome, "<--------- outcome inside playerHit function");
     outcomeAnnouncement(outcome);
     updateBankrollDisplay(GameState.bankroll);
+    resetRound();
     return;
   }
 
@@ -186,11 +183,16 @@ function playerHit() {
 }
 
 function playerSplit() {
+  console.log("split");
+  GameState.split = true;
   updateScore(GameState);
   updateScoreDisplay(GameState);
 }
 
 function playerDouble() {
+  GameState.double = true;
+  GameState.currentBet *= 2;
+
   updateScore(GameState);
   updateScoreDisplay(GameState);
 }
@@ -220,11 +222,8 @@ function playerStand() {
 // More specific functions
 
 function resetRound() {
-  // Reset hands and UI for the next round
+  resetGameState();
+  resetUI();
 }
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/
-
-function handleBust() {
-  console.log("BUST!");
-}

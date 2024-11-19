@@ -87,6 +87,18 @@ export function checkBust(GameState) {
   }
 }
 
+export function checkCanDouble(GameState) {
+  if (GameState.playerHandOneScore >= 9 && GameState.playerHandOneScore <= 11) {
+    return true;
+  }
+}
+
+export function checkCanSplit(GameState) {
+  if (GameState.playerHandOne[0].value === GameState.playerHandOne[1].value) {
+    return true;
+  }
+}
+
 // SCORE
 export function updateScore(GameState) {
   GameState.dealerScore = calculateHandScore(GameState.dealerHand);

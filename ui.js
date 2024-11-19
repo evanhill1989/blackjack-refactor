@@ -148,3 +148,7 @@ export function outcomeAnnouncement(outcome) {
     DOMElements.mainElement.removeChild(tempDiv);
   }, 2000);
 }
+
+export function resetUI() {
+  console.log("resetUI");
+}

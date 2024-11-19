@@ -60,6 +60,8 @@ export const GameState = {
   currentBet: 0,
   playerHandOne: [],
   playerHandTwo: [],
+  split: false,
+  double: false,
   focusHand: "playerHandOne",
   splitPreviewHand: "playerHandTwo",
   dealerHand: [],
@@ -76,7 +78,8 @@ export function resetGameState() {
   GameState.playerHandTwo = [];
   GameState.dealerHand = [];
   GameState.dealerScore = 0;
-  GameState.playerScore = 0;
+  GameState.playerHandOneScore = 0;
+  GameState.playerHandTwoScore = null;
 }
 export function setGameState(key, value) {
   GameState[key] = value;
