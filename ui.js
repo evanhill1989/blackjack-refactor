@@ -5,7 +5,7 @@ export const DOMElements = {
   gameBoardView: document.getElementById("game-board"),
 
   wagerInput: document.getElementById("wager-input"),
-  playerHand: document.getElementById("user-hand"),
+  playerHand: document.getElementById("player-hand"),
   dealerHand: document.getElementById("dealer-hand"),
   bankrollDisplay: document.getElementById("bankroll"),
   bankrollTabDisplay: document.getElementById("bankroll_tab"),
@@ -40,50 +40,78 @@ export function getWagerInput() {
   return isNaN(wagerValue) ? 0 : wagerValue; // Basic check to return 0 if input is invalid
 }
 
-export function dealCardInUI(handName, card, cardPosition) {
-  if (handName === "playerHandOne") {
-    const cardHTML = generateCardHTML(card, cardPosition);
-    // Add transition here next
-    DOMElements.playerHand.innerHTML += cardHTML;
-  } else if (handName === "playerHandTwo") {
-    const cardHTML = generateCardHTML(card, cardPosition);
-    DOMElements.playerHand.innerHTML += cardHTML;
-  } else if (handName === "dealerHand") {
-    const cardHTML = generateCardHTML(card, cardPosition);
-    DOMElements.dealerHand.innerHTML += cardHTML;
-  }
-}
-
-export function generateCardHTML(card, cardPosition) {
+export async function dealCardInUI(handName, card, cardPosition) {
   const cardPositionAdjustment = cardPosition * 1;
 
+  const cardDiv = generateCardDiv(cardPositionAdjustment);
+
+  cardDiv.classList.add("card-div");
+
+  const cardHTML = generateCardHTML(card, cardPosition);
+
+  cardDiv.innerHTML = cardHTML;
+  // Determine the hand container based on `handName`
+
+  if (handName === "playerHandOne") {
+    DOMElements.playerHand.appendChild(cardDiv);
+  } else if (handName === "playerHandTwo") {
+    DOMElements.playerHand.appendChild(cardDiv); // Update if you have a separate container for second hand
+  } else if (handName === "dealerHand") {
+    DOMElements.dealerHand.appendChild(cardDiv);
+  } else {
+    console.error("Invalid hand name:", handName);
+    return;
+  }
+
+  // Create a new card element
+
+  // Append the card with a delay
+
+  // Optionally add an animation class
+
+  requestAnimationFrame(() => {
+    cardDiv.classList.add("animate");
+  });
+
+  // Remove the animation class after it's done (if needed)
+  //   setTimeout(() => cardElement.classList.remove("deal-animation"), 1000); // Adjust timing to match your CSS
+}
+
+export function generateCardDiv(cardPositionAdjustment) {
+  const cardDiv = document.createElement("div");
+  cardDiv.style.left = `${cardPositionAdjustment}em`;
+  return cardDiv;
+}
+
+export function generateCardHTML(card) {
   if (card.suit === "♠" || card.suit === "♣") {
     const cardHTML = `
-         <div class="card card-black-suit " style="transform: translateX(${cardPositionAdjustment}em)">
-           <div class="card-suit card-suit-left">
-           <p>${card.suit}</p>
-           <p>${card.rank}</p>
-           </div>
-           <div class="card-rank">${card.rank}</div>
-           <div class="card-suit card-suit-right">
-           <p>${card.suit}</p>
-           <p>${card.rank}</p>
+         <div class="card card-black">
+           <div class="card-suit  card-suit-left">
+                <p>${card.suit}</p>
+                <p>${card.rank}</p>
+            </div>
+            <div class="card-rank">${card.rank}</div>
+            <div class="card-suit  card-suit-right">
+                <p>${card.suit}</p>
+                <p>${card.rank}</p>
            </div>
          </div>
+         
        `;
     return cardHTML;
   } else {
     const cardHTML = `
-         <div class="card card-red-suit" style="transform: translateX(${cardPositionAdjustment}em)">
-           <div class="card-suit card-suit-left">
-           <p>${card.suit}</p>
-           <p>${card.rank}</p>
-           </div>
-           <div class="card-rank">${card.rank}</div>
-           <div class="card-suit card-suit-right">
-           <p>${card.suit}</p>
-           <p>${card.rank}</p>
-           
+         <div class="card card-red">
+           <div class="card-suit  card-suit-left">
+                <p>${card.suit}</p>
+                <p>${card.rank}</p>
+            </div>
+            <div class="card-rank">${card.rank}</div>
+            <div class="card-suit   card-suit-right">
+                <p>${card.suit}</p>
+                <p>${card.rank}</p>
+                
            </div>
          </div>
        `;

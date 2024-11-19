@@ -38,6 +38,26 @@ splitBtn.addEventListener("click", playerSplit);
 doubleBtn.addEventListener("click", playerDouble);
 standBtn.addEventListener("click", playerStand);
 
+// ANIMATION TEST
+
+// const startButton = document.getElementById("startAnimation");
+// const parentElement = document.getElementById("parentElement");
+
+// startButton.addEventListener("click", () => {
+//   // Create the test element dynamically
+//   const testElement = document.createElement("div");
+//   testElement.classList.add("test-element");
+
+//   // Append it to the parent element
+//   parentElement.appendChild(testElement);
+
+//   // Trigger animation
+//   requestAnimationFrame(() => {
+//     testElement.classList.add("animate");
+//   });
+// });
+// ANIMATION TEST /\
+
 function startNewHand(event) {
   event.preventDefault();
   resetGameState();
@@ -65,36 +85,44 @@ function dealInitialCards(GameState) {
   );
   updateScore(GameState); // !!!!! THESE WILL CHANGE WHEN I FINE TUNE UI TIMING.
   updateScoreDisplay(GameState);
-  staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
-  dealSingleCard(
-    GameState,
-    GameState.playerHandOne,
-    "playerHandOne",
-    staticCardForTesting
-  );
-  updateScore(GameState);
-  updateScoreDisplay(GameState);
+
+  setTimeout(() => {
+    staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
+    dealSingleCard(
+      GameState,
+      GameState.playerHandOne,
+      "playerHandOne",
+      staticCardForTesting
+    );
+    updateScore(GameState);
+    updateScoreDisplay(GameState);
+  }, 1000);
 
   // dealerHand
-  staticCardForTesting = { suit: "♣", rank: "A", value: 11 };
 
-  dealSingleCard(
-    GameState,
-    GameState.dealerHand,
-    "dealerHand",
-    staticCardForTesting
-  );
-  updateScore(GameState);
-  updateScoreDisplay(GameState);
-  staticCardForTesting = { suit: "♥", rank: "10", value: 10 };
-  dealSingleCard(
-    GameState,
-    GameState.dealerHand,
-    "dealerHand",
-    staticCardForTesting
-  );
-  updateScore(GameState);
-  updateScoreDisplay(GameState);
+  setTimeout(() => {
+    staticCardForTesting = { suit: "♣", rank: "A", value: 11 };
+    dealSingleCard(
+      GameState,
+      GameState.dealerHand,
+      "dealerHand",
+      staticCardForTesting
+    );
+    updateScore(GameState);
+    updateScoreDisplay(GameState);
+  }, 2000);
+
+  setTimeout(() => {
+    staticCardForTesting = { suit: "♥", rank: "10", value: 10 };
+    dealSingleCard(
+      GameState,
+      GameState.dealerHand,
+      "dealerHand",
+      staticCardForTesting
+    );
+    updateScore(GameState);
+    updateScoreDisplay(GameState);
+  }, 3000);
 }
 
 function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
@@ -105,15 +133,12 @@ function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
 
     const card = staticCardForTesting || GameState.playerHandOne[cardPosition];
 
-    setTimeout(() => {
-      dealCardInUI(handName, card, cardPosition);
-    }, 1000);
+    dealCardInUI(handName, card, cardPosition);
   } else if (handName === "playerHandTwo") {
     const cardPosition = GameState.playerHandTwo.length - 1;
     const card = staticCardForTesting || GameState.playerHandTwo[cardPosition];
-    setTimeout(() => {
-      dealCardInUI(handName, card, cardPosition);
-    }, 2000);
+
+    dealCardInUI(handName, card, cardPosition);
   } else if (handName === "dealerHand") {
     const cardPosition = GameState.dealerHand.length - 1;
     const card = staticCardForTesting || GameState.dealerHand[cardPosition];
@@ -173,10 +198,10 @@ function playerDouble() {
 function playerStand() {
   // will change if split is implemented, so we'd go to the other active player hand instead of dealerAction()
 
-  dealerAction();
-  determineOutcome(GameState);
+  dealerAction(GameState);
+  let outcome = determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
+  outcomeAnnouncement(outcome);
   updateBankrollDisplay(GameState.bankroll);
-  displayOutcome(GameState);
 }
 
 // dealInitialCards()
