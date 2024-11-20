@@ -20,9 +20,15 @@ import {
   updateScoreDisplay,
   outcomeAnnouncement,
   resetUI,
+  splitUI,
 } from "./ui.js";
 
-import { GameState, setGameState, resetGameState } from "./state.js";
+import {
+  GameState,
+  setGameState,
+  resetGameState,
+  splitHandArr,
+} from "./state.js";
 
 const wagerForm = document.querySelector(".wager-form");
 
@@ -160,10 +166,9 @@ function playerHit() {
       ? GameState.playerHandOneScore
       : GameState.playerHandOneScore;
 
-  console.log(GameState.playerHandOneScore);
   if (didBust) {
     let outcome = determineOutcome(GameState, handScore);
-    console.log(outcome, "<--------- outcome inside playerHit function");
+
     outcomeAnnouncement(outcome);
     updateBankrollDisplay(GameState.bankroll);
     resetRound();
@@ -185,8 +190,10 @@ function playerHit() {
 function playerSplit() {
   console.log("split");
   GameState.split = true;
+  splitHandArr(GameState);
   updateScore(GameState);
   updateScoreDisplay(GameState);
+  splitUI(GameState);
 }
 
 function playerDouble() {
@@ -223,6 +230,7 @@ function playerStand() {
 
 function resetRound() {
   resetGameState();
+  toggleView();
   resetUI();
 }
 

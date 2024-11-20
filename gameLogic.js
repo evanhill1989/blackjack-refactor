@@ -120,7 +120,7 @@ export function dealerAction(GameState) {
 
 export function determineOutcome(GameState, handScore) {
   let outcome;
-  console.log("inside determineOutcome , hand.score = ", handScore);
+
   if (GameState.dealerScore === "bust") {
     console.log("Dealer BUSTs!");
     outcome = "win";

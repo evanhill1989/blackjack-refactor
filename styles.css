@@ -264,6 +264,38 @@ Obviously a lot to that , but now that UI is separated from logic it should be m
   color: black;
 }
 
+/* Split UI */
+
+.preview-hand {
+  outline: 3px solid limegreen;
+}
+
+.preview-card {
+  width: 2em;
+  height: 3em;
+  padding: 3px;
+  line-height: 1;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0.25rem;
+  border: 1px solid black;
+}
+
+.preview-card > :last-child {
+  align-self: flex-end;
+  line-height: 1;
+  font-size: var(--fs-200);
+  margin-bottom: 5px;
+}
+
+.preview-card > :first-child {
+  align-self: flex-start;
+  line-height: 1;
+  font-size: var(--fs-200);
+}
 /* Outcome UI */
 
 .outcome-message {

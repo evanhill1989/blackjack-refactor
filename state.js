@@ -85,6 +85,10 @@ export function setGameState(key, value) {
   GameState[key] = value;
 }
 
+export function splitHandArr(GameState) {
+  GameState.playerHandTwo = GameState.playerHandOne.splice(1, 1);
+}
+
 export function updateDeck() {
   /*...*/
 }
