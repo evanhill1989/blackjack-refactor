@@ -68,7 +68,7 @@ export const GameState = {
   dealerScore: 0,
   playerHandOneScore: 0,
   playerHandTwoScore: null,
-  gameState: "start",
+  actionState: "start", // "dealerAction" ,"splitHandOneAction", "splitHandTwoAction",
   deck,
 };
 

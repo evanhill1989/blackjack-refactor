@@ -9,6 +9,7 @@ import {
   determineOutcome,
   checkCanDouble,
   checkCanSplit,
+  splitStand,
   updateBankroll,
 } from "./gameLogic.js";
 
@@ -22,6 +23,9 @@ import {
   outcomeAnnouncement,
   resetUI,
   splitUI,
+  splitStandUI,
+  setFocusHand,
+  setPreviewHand,
 } from "./ui.js";
 
 import {
@@ -89,7 +93,7 @@ function dealInitialCards(GameState) {
 
   // dealerHand
 
-  staticCardForTesting = { suit: "♣", rank: "A", value: 11 };
+  staticCardForTesting = { suit: "♣", rank: "4", value: 4 };
   dealSingleCard(
     GameState,
     GameState.dealerHand,
@@ -99,7 +103,7 @@ function dealInitialCards(GameState) {
   updateScore(GameState);
   updateScoreDisplay(GameState);
 
-  staticCardForTesting = { suit: "♥", rank: "10", value: 10 };
+  staticCardForTesting = { suit: "♥", rank: "9", value: 9 };
   dealSingleCard(
     GameState,
     GameState.dealerHand,
@@ -186,6 +190,7 @@ function playerSplit() {
   updateScore(GameState);
   updateScoreDisplay(GameState);
   splitUI(GameState);
+  GameState.actionState = "splitHandOneAction";
 }
 
 function playerDouble() {
@@ -198,11 +203,21 @@ function playerDouble() {
 
 function playerStand() {
   // will change if split is implemented, so we'd go to the other active player hand instead of dealerAction()
+  console.log("playerStand is running");
+  if (!GameState.split) {
+    dealerAction(GameState);
+    let outcome = determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
+    outcomeAnnouncement(outcome);
+    updateBankrollDisplay(GameState.bankroll);
+  } else if (GameState.split) {
+    splitStand(GameState);
+    setFocusHand(GameState);
+    setPreviewHand(GameState);
 
-  dealerAction(GameState);
-  let outcome = determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
-  outcomeAnnouncement(outcome);
-  updateBankrollDisplay(GameState.bankroll);
+    // splitStandUI(GameState); Might not be needed .
+
+    // splitStandUI(GameState);
+  }
 }
 
 // dealInitialCards()

@@ -151,6 +151,24 @@ export function splitUI(GameState) {
   DOMElements.actionsDiv.appendChild(testButton);
 }
 
+export function splitStandUI(GameState) {
+  console.log("inside splitStandUI");
+  let currentAction = GameState.actionState;
+  console.log(currentAction, "currentAction from splitStandUI");
+  currentAction === "splitHandTwoAction"
+    ? splitTogglePreviewFocus(GameState)
+    : splitStandHandTwo(GameState);
+}
+
+export function splitTogglePreviewFocus(GameState) {
+  togglePreviewFocus(GameState);
+}
+
+export function splitStandHandTwo(GameState) {
+  // check
+  console.log("inside splitStandHandTwo");
+}
+
 export function setFocusHand(GameState) {
   const currentFocus = GameState.focusHand;
   DOMElements.focusHand.innerHTML = "";

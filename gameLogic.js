@@ -93,10 +93,32 @@ export function checkCanDouble(GameState) {
   }
 }
 
+// SPLIT
+
 export function checkCanSplit(GameState) {
   if (GameState.playerHandOne[0].value === GameState.playerHandOne[1].value) {
     return true;
   }
+}
+
+export function splitStand(GameState) {
+  const action = GameState.actionState;
+
+  if (action === "splitHandOneAction") {
+    GameState.actionState = "splitHandTwoAction";
+    GameState.focusHand = "playerHandTwo";
+    GameState.previewHand = "playerHandOne";
+    return; // potential trouble if the following else if runs and interprets the actionState
+  } else if (action === "splitHandTwoAction") {
+    console.log(GameState, "GameState from splitStand");
+    dealerAction(GameState); // this just deals cards and sets dealers handArr, and score state
+    determineOutcome(GameState, GameState.playerHandTwoScore);
+    if (GameState.playerHandOneScore != "bust") {
+      GameState.actionState = "splitHandOneAction"; // Will i have issues assigning new value to GameState this deep?
+    }
+  }
+
+  return action;
 }
 
 // SCORE
@@ -108,6 +130,8 @@ export function updateScore(GameState) {
 export function dealerAction(GameState) {
   if (GameState.dealerScore < 17) {
     dealSingleCard(GameState, GameState.dealerHand, "dealerHand");
+    // This is imported into script so I don't have access to it here
+    // cause I'm referencing dealSingleCard from inside this file like when i run dealerAction in splitStand()
     updateScore(GameState);
     updateScoreDisplay(GameState);
     dealerAction(GameState);
