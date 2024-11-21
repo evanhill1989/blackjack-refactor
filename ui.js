@@ -1,16 +1,23 @@
 export const DOMElements = {
   mainElement: document.querySelector("main"),
+  actionsDiv: document.querySelector(".in-hand-actions"),
 
   initialWagerView: document.getElementById("initial-wager"),
   gameBoardView: document.getElementById("game-board"),
 
   wagerInput: document.getElementById("wager-input"),
-  playerHand: document.getElementById("player-hand"),
+  focusHand: document.getElementById("focus-hand"),
   dealerHand: document.getElementById("dealer-hand"),
+  previewHand: document.getElementById("preview-hand"),
+
   bankrollDisplay: document.getElementById("bankroll"),
   bankrollTabDisplay: document.getElementById("bankroll_tab"),
   outcomeMessageDisplay: document.getElementById("message"),
-  previewHand: document.getElementById("preview-hand"),
+
+  splitBtn: document.getElementById("split-btn"),
+  doubleBtn: document.getElementById("double-btn"),
+  hitBtn: document.getElementById("hit-btn"),
+  standBtn: document.getElementById("stand-btn"),
 
   // Add more elements as needed
   // Lazy Load
@@ -50,14 +57,14 @@ export async function dealCardInUI(handName, card, cardPosition) {
   cardDiv.classList.add("card-div");
 
   const cardHTML = generateCardHTML(card, cardPosition);
-  console.log(cardHTML, "cardHTML in dealCardInUI");
+
   cardDiv.innerHTML = cardHTML;
   // Determine the hand container based on `handName`
 
   if (handName === "playerHandOne") {
-    DOMElements.playerHand.appendChild(cardDiv);
+    DOMElements.focusHand.appendChild(cardDiv);
   } else if (handName === "playerHandTwo") {
-    DOMElements.playerHand.appendChild(cardDiv); // Update if you have a separate container for second hand
+    DOMElements.focusHand.appendChild(cardDiv); // Update if you have a separate container for second hand
   } else if (handName === "dealerHand") {
     DOMElements.dealerHand.appendChild(cardDiv);
   } else {
@@ -132,26 +139,48 @@ export function outcomeAnnouncement(outcome) {
 }
 
 export function splitUI(GameState) {
-  toggleVisibility(DOMElements.previewHand);
   setFocusHand(GameState);
   setPreviewHand(GameState);
+  DOMElements.splitBtn.disabled = true;
+  toggleVisibility(DOMElements.previewHand);
+  const testButton = document.createElement("button");
+  testButton.textContent = "Test Button";
+  testButton.addEventListener("click", () => {
+    togglePreviewFocus(GameState);
+  });
+  DOMElements.actionsDiv.appendChild(testButton);
 }
 
 export function setFocusHand(GameState) {
-  const focusHand = GameState.focusHand;
-  DOMElements.playerHand.innerHTML = "";
-  const newHandHTML = mapOverHand(focusHand, GameState);
-  console.log(newHandHTML, "newHandHTML in setFocusHand");
-  newHandHTML.map((card, index) => {
-    DOMElements.playerHand.innerHTML += card;
-  });
+  const currentFocus = GameState.focusHand;
+  DOMElements.focusHand.innerHTML = "";
+  const newHand = mapOverHand(currentFocus, GameState);
+
+  DOMElements.focusHand.innerHTML = newHand;
 }
 
 export function setPreviewHand(GameState) {
-  const previewHand = GameState.previewHand;
-  const newHand = mapOverHand(previewHand, GameState);
+  const handName = GameState.previewHand;
+  DOMElements.previewHand.innerHTML = "";
+  const newHand = mapOverHand(handName, GameState);
+  const previewHandDiv = document.createElement("div");
 
-  DOMElements.previewHand.innerHTML = newHand;
+  previewHandDiv.innerHTML = newHand;
+
+  DOMElements.previewHand.appendChild(previewHandDiv);
+}
+
+export function togglePreviewFocus(GameState) {
+  const focusHand = GameState.focusHand;
+  const previewHand = GameState.previewHand;
+  focusHand === "playerHandOne"
+    ? (GameState.focusHand = "playerHandTwo")
+    : (GameState.focusHand = "playerHandOne");
+  previewHand === "playerHandOne"
+    ? (GameState.previewHand = "playerHandTwo")
+    : (GameState.previewHand = "playerHandOne");
+  setFocusHand(GameState);
+  setPreviewHand(GameState);
 }
 
 export function mapOverHand(hand, GameState) {
@@ -170,30 +199,8 @@ export function mapOverHand(hand, GameState) {
 }
 
 export function removeSecondCard() {
-  const element = DOMElements.playerHand;
+  const element = DOMElements.focusHand;
   return element.removeChild(element.lastChild);
-}
-
-export function generatePreviewCardHTML(card) {
-  if (card.suit === "♠" || card.suit === "♣") {
-    const previewCardHTML = `
-           <div class="preview-card card-black">
-           <p>${card.suit}</p>
-                  <p>${card.rank}</p>
-                  <p>${card.suit}</p>
-           </div>
-         `;
-    return previewCardHTML;
-  } else {
-    const previewCardHTML = `
-           <div class="preview-card card-red">
-                  <p>${card.suit}</p>
-                  <p>${card.rank}</p>
-                  <p>${card.suit}</p>
-           </div>
-         `;
-    return previewCardHTML;
-  }
 }
 
 export function toggleVisibility(element) {
@@ -211,9 +218,7 @@ export function toggleClass(element, removedClass, addedClass) {
   element.classList.add(addedClass);
 }
 
-export function togglePreviewHand() {}
-
 export function resetUI() {
-  DOMElements.playerHand.innerHTML = "";
+  DOMElements.focusHand.innerHTML = "";
   DOMElements.dealerHand.innerHTML = "";
 }

@@ -268,6 +268,7 @@ Obviously a lot to that , but now that UI is separated from logic it should be m
 
 .preview-hand {
   outline: 3px solid limegreen;
+  transform: scale(0.5);
 }
 
 .preview-card {

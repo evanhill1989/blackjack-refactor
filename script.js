@@ -9,6 +9,7 @@ import {
   determineOutcome,
   checkCanDouble,
   checkCanSplit,
+  updateBankroll,
 } from "./gameLogic.js";
 
 import {
@@ -76,43 +77,38 @@ function dealInitialCards(GameState) {
   updateScore(GameState); // !!!!! THESE WILL CHANGE WHEN I FINE TUNE UI TIMING.
   updateScoreDisplay(GameState);
 
-  setTimeout(() => {
-    staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
-    dealSingleCard(
-      GameState,
-      GameState.playerHandOne,
-      "playerHandOne",
-      staticCardForTesting
-    );
-    updateScore(GameState);
-    updateScoreDisplay(GameState);
-  }, 1000);
+  staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
+  dealSingleCard(
+    GameState,
+    GameState.playerHandOne,
+    "playerHandOne",
+    staticCardForTesting
+  );
+  updateScore(GameState);
+  updateScoreDisplay(GameState);
 
   // dealerHand
 
-  setTimeout(() => {
-    staticCardForTesting = { suit: "♣", rank: "A", value: 11 };
-    dealSingleCard(
-      GameState,
-      GameState.dealerHand,
-      "dealerHand",
-      staticCardForTesting
-    );
-    updateScore(GameState);
-    updateScoreDisplay(GameState);
-  }, 2000);
+  staticCardForTesting = { suit: "♣", rank: "A", value: 11 };
+  dealSingleCard(
+    GameState,
+    GameState.dealerHand,
+    "dealerHand",
+    staticCardForTesting
+  );
+  updateScore(GameState);
+  updateScoreDisplay(GameState);
 
-  setTimeout(() => {
-    staticCardForTesting = { suit: "♥", rank: "10", value: 10 };
-    dealSingleCard(
-      GameState,
-      GameState.dealerHand,
-      "dealerHand",
-      staticCardForTesting
-    );
-    updateScore(GameState);
-    updateScoreDisplay(GameState);
-  }, 3000);
+  staticCardForTesting = { suit: "♥", rank: "10", value: 10 };
+  dealSingleCard(
+    GameState,
+    GameState.dealerHand,
+    "dealerHand",
+    staticCardForTesting
+  );
+  updateScore(GameState);
+  updateScoreDisplay(GameState);
+
   setTimeout(() => {
     const canDouble = checkCanDouble(GameState);
     const canSplit = checkCanSplit(GameState);
@@ -124,7 +120,7 @@ function dealInitialCards(GameState) {
     if (canSplit) {
       splitBtn.disabled = false;
     }
-  }, 4000);
+  }, 300);
 }
 
 function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
@@ -160,16 +156,12 @@ function playerHit() {
   dealSingleCard(GameState, handObj, focusHand);
   updateScore(GameState); // !!!!! THESE updateScore functions WILL CHANGE WHEN I FINE TUNE UI CARD DEAL TIMING
   updateScoreDisplay(GameState);
+
   const didBust = checkBust(GameState);
-  let handScore =
-    focusHand === "playerHandOne"
-      ? GameState.playerHandOneScore
-      : GameState.playerHandOneScore;
 
   if (didBust) {
-    let outcome = determineOutcome(GameState, handScore);
-
-    outcomeAnnouncement(outcome);
+    outcomeAnnouncement("lose");
+    updateBankroll(GameState, "lose");
     updateBankrollDisplay(GameState.bankroll);
     resetRound();
     return;

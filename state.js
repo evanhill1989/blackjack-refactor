@@ -63,7 +63,7 @@ export const GameState = {
   split: false,
   double: false,
   focusHand: "playerHandOne",
-  splitPreviewHand: "playerHandTwo",
+  previewHand: "playerHandTwo",
   dealerHand: [],
   dealerScore: 0,
   playerHandOneScore: 0,

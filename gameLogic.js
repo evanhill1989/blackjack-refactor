@@ -81,7 +81,7 @@ export function checkBust(GameState) {
   if (GameState.playerHandOneScore > 21) {
     console.log("BUST");
     GameState.playerHandOneScore = "bust";
-    return true;
+    return "lose";
   } else {
     return false;
   }
