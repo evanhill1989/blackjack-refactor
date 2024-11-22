@@ -1,3 +1,5 @@
+import { GameState, updateGameState } from "./state.js";
+
 export function addCardToHandArr(GameState, hand, staticCardForTesting) {
   const { playerHand, dealerHand, deck } = GameState;
   const card = staticCardForTesting || getRandomCard(deck);
@@ -167,12 +169,3 @@ export function determineOutcome(GameState, handScore) {
 }
 
 // BANKROLL
-export function updateBankroll(GameState, outcome) {
-  if (outcome === "lose") {
-    GameState.bankroll -= GameState.currentBet;
-  } else if (outcome === "win") {
-    GameState.bankroll += GameState.currentBet;
-  } else if (outcome === "push") {
-    console.log("PUSH");
-  }
-}

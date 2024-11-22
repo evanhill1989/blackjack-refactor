@@ -1,3 +1,5 @@
+import { GameState, updateGameState } from "./state.js";
+
 export const DOMElements = {
   mainElement: document.querySelector("main"),
   actionsDiv: document.querySelector(".in-hand-actions"),
@@ -35,9 +37,9 @@ export function toggleView() {
   }
 }
 
-export function updateBankrollDisplay(bankroll) {
-  DOMElements.bankrollDisplay.textContent = bankroll;
-  DOMElements.bankrollTabDisplay.textContent = bankroll;
+export function updateBankrollDisplay(state) {
+  DOMElements.bankrollDisplay.textContent = state.bankroll;
+  DOMElements.bankrollTabDisplay.textContent = state.bankroll;
 }
 // export function toggleView(view) {
 //   /*...*/
@@ -239,4 +241,14 @@ export function toggleClass(element, removedClass, addedClass) {
 export function resetUI() {
   DOMElements.focusHand.innerHTML = "";
   DOMElements.dealerHand.innerHTML = "";
+}
+
+export function handlePlayerBust(state) {
+  if (state.isPlayerHandOneBust) {
+    console.log("Player busted!");
+    outcomeAnnouncement("lose");
+    updateGameState(state.playerHandOneOutcome, "lose");
+    // updateBankroll(state, "lose");
+    // updateBankrollDisplay(state.bankroll);
+  }
 }

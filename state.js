@@ -64,13 +64,49 @@ export const GameState = {
   double: false,
   focusHand: "playerHandOne",
   previewHand: "playerHandTwo",
+  isPlayerHandOneBust: false,
+  isPlayerHandTwoBust: false,
+  isDealerHandBust: false,
+  playerHandOneOutcome: null,
+  playerHandTwoOutcome: null,
   dealerHand: [],
   dealerScore: 0,
   playerHandOneScore: 0,
   playerHandTwoScore: null,
   actionState: "start", // "dealerAction" ,"splitHandOneAction", "splitHandTwoAction",
   deck,
+  observers: [],
 };
+
+// Add an observer
+export function addObserver(observer) {
+  GameState.observers.push(observer);
+}
+
+// Notify observers of state changes
+export function notifyObservers() {
+  GameState.observers.forEach((observer) => observer(GameState));
+}
+
+// Update state and notify observers
+export function updateGameState(property, value) {
+  if (GameState[property] === value) {
+    return;
+  }
+  GameState[property] = value;
+  notifyObservers();
+}
+export function updateBankroll(state) {
+  const handOneOutcome = state.playerHandOneOutcome;
+  const handTwoOutcome = state.playerHandTwoOutcome;
+  if (handOneOutcome === "lose" || handTwoOutcome === "lose") {
+    GameState.bankroll -= GameState.currentBet;
+  } else if (handOneOutcome === "win" || handTwoOutcome === "win") {
+    GameState.bankroll += GameState.currentBet;
+  } else if (handOneOutcome === "push" || handTwoOutcome === "push") {
+    console.log("PUSH");
+  }
+}
 
 export function resetGameState() {
   GameState.currentBet = 0;
@@ -80,9 +116,6 @@ export function resetGameState() {
   GameState.dealerScore = 0;
   GameState.playerHandOneScore = 0;
   GameState.playerHandTwoScore = null;
-}
-export function setGameState(key, value) {
-  GameState[key] = value;
 }
 
 export function splitHandArr(GameState) {

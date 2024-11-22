@@ -10,7 +10,6 @@ import {
   checkCanDouble,
   checkCanSplit,
   splitStand,
-  updateBankroll,
 } from "./gameLogic.js";
 
 import {
@@ -26,14 +25,24 @@ import {
   splitStandUI,
   setFocusHand,
   setPreviewHand,
+  handlePlayerBust,
 } from "./ui.js";
 
 import {
   GameState,
-  setGameState,
+  updateGameState,
   resetGameState,
   splitHandArr,
+  addObserver,
+  updateBankroll,
 } from "./state.js";
+
+// UI observers
+addObserver(handlePlayerBust);
+addObserver(updateBankrollDisplay);
+
+// gameState observers
+addObserver(updateBankroll);
 
 const wagerForm = document.querySelector(".wager-form");
 
@@ -56,7 +65,7 @@ function startNewHand(event) {
   event.preventDefault();
   resetGameState();
   const wager = getWagerInput();
-  setGameState("currentBet", wager);
+  updateGameState("currentBet", wager);
   updateBankrollDisplay(GameState.bankroll);
   toggleView();
 
@@ -161,15 +170,9 @@ function playerHit() {
   updateScore(GameState); // !!!!! THESE updateScore functions WILL CHANGE WHEN I FINE TUNE UI CARD DEAL TIMING
   updateScoreDisplay(GameState);
 
+  // Check for bust and update state
   const didBust = checkBust(GameState);
-
-  if (didBust) {
-    outcomeAnnouncement("lose");
-    updateBankroll(GameState, "lose");
-    updateBankrollDisplay(GameState.bankroll);
-    resetRound();
-    return;
-  }
+  updateGameState("isPlayerHandOneBust", didBust); // Triggers `handlePlayerBust`
 
   // if checkBust
   // if no - return
