@@ -67,14 +67,15 @@ export const GameState = {
   isPlayerHandOneBust: false,
   isPlayerHandTwoBust: false,
   isDealerHandBust: false,
-  playerHandOneOutcome: null,
-  playerHandTwoOutcome: null,
+  playerHandOneOutcome: "", // win, lose, push,bust, resolved
+  playerHandTwoOutcome: "", // win, lose, push,bust, resolved
   dealerHand: [],
   dealerScore: 0,
   playerHandOneScore: 0,
   playerHandTwoScore: null,
-  actionState: "start", // "dealerAction" ,"splitHandOneAction", "splitHandTwoAction",
-  deck,
+  actionState: "wager",
+  testState: "",
+  deck: deck,
   observers: [],
 };
 
@@ -108,14 +109,16 @@ export function updateBankroll(state) {
   }
 }
 
-export function resetGameState() {
-  GameState.currentBet = 0;
-  GameState.playerHandOne = [];
-  GameState.playerHandTwo = [];
-  GameState.dealerHand = [];
-  GameState.dealerScore = 0;
-  GameState.playerHandOneScore = 0;
-  GameState.playerHandTwoScore = null;
+export function resetGameState(state) {
+  if (GameState.actionState === "end") {
+    GameState.currentBet = 0;
+    GameState.playerHandOne = [];
+    GameState.playerHandTwo = [];
+    GameState.dealerHand = [];
+    GameState.dealerScore = 0;
+    GameState.playerHandOneScore = 0;
+    GameState.playerHandTwoScore = null;
+  }
 }
 
 export function splitHandArr(GameState) {

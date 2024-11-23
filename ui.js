@@ -27,13 +27,13 @@ export const DOMElements = {
   dealerScore: document.getElementById("dealer-score"),
 };
 
-export function toggleView() {
-  if (DOMElements.gameBoardView.classList.contains("hidden")) {
-    DOMElements.gameBoardView.classList.remove("hidden");
-    DOMElements.initialWagerView.classList.add("hidden");
-  } else {
+export function toggleView(GameState) {
+  if (DOMElements.initialWagerView.classList.contains("hidden")) {
     DOMElements.gameBoardView.classList.add("hidden");
     DOMElements.initialWagerView.classList.remove("hidden");
+  } else {
+    DOMElements.gameBoardView.classList.remove("hidden");
+    DOMElements.initialWagerView.classList.add("hidden");
   }
 }
 
@@ -126,18 +126,31 @@ export function updateScoreDisplay(GameState) {
   dealerScoreElement.textContent = GameState.dealerScore;
 }
 
-export function outcomeAnnouncement(outcome) {
-  const tempDiv = document.createElement("div");
-  const outcomeHTML = `
+export function outcomeAnnouncement(GameState) {
+  console.log(
+    GameState.playerHandOneOutcome,
+    "hand 1 outcome from outcomeAnnouncement"
+  );
+  const focusHand = GameState.focusHand;
+  let outcome =
+    focusHand === "playerHandOne"
+      ? GameState.playerHandOneOutcome
+      : GameState.playerHandTwoOutcome;
+
+  console.log(outcome, "outcome from outcomeAnnouncement");
+  if (outcome === "bust") {
+    const tempDiv = document.createElement("div");
+    const outcomeHTML = `
     <div class="outcome-message">
       <p>${outcome.toUpperCase()}</p>
     </div>
   `;
-  tempDiv.innerHTML = outcomeHTML;
-  DOMElements.mainElement.appendChild(tempDiv);
-  setTimeout(() => {
-    DOMElements.mainElement.removeChild(tempDiv);
-  }, 2000);
+    tempDiv.innerHTML = outcomeHTML;
+    DOMElements.mainElement.appendChild(tempDiv);
+    setTimeout(() => {
+      DOMElements.mainElement.removeChild(tempDiv);
+    }, 2000);
+  }
 }
 
 export function splitUI(GameState) {
@@ -223,6 +236,8 @@ export function removeSecondCard() {
   return element.removeChild(element.lastChild);
 }
 
+export function showdown() {}
+
 export function toggleVisibility(element) {
   if (element.classList.contains("hidden")) {
     element.classList.remove("hidden");
@@ -238,16 +253,17 @@ export function toggleClass(element, removedClass, addedClass) {
   element.classList.add(addedClass);
 }
 
-export function resetUI() {
-  DOMElements.focusHand.innerHTML = "";
-  DOMElements.dealerHand.innerHTML = "";
+export function resetUI(state) {
+  if (state.actionState === "end") {
+    DOMElements.focusHand.innerHTML = "";
+    DOMElements.dealerHand.innerHTML = "";
+  }
 }
 
 export function handlePlayerBust(state) {
-  if (state.isPlayerHandOneBust) {
-    console.log("Player busted!");
-    outcomeAnnouncement("lose");
-    updateGameState(state.playerHandOneOutcome, "lose");
+  if (state.playerHandOneOutcome === "bust") {
+    console.log("inside handlePlayerBust after busting");
+    // updateGameState("actionState", "showdown");
     // updateBankroll(state, "lose");
     // updateBankrollDisplay(state.bankroll);
   }

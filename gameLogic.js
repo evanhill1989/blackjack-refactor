@@ -1,4 +1,5 @@
 import { GameState, updateGameState } from "./state.js";
+import { outcomeAnnouncement } from "./ui.js";
 
 export function addCardToHandArr(GameState, hand, staticCardForTesting) {
   const { playerHand, dealerHand, deck } = GameState;
@@ -76,19 +77,6 @@ export function validateWager(wager, bankroll) {
   return null; // No errors
 }
 
-// HIT
-
-export function checkBust(GameState) {
-  console.log("handScore = ", GameState.playerHandOneScore);
-  if (GameState.playerHandOneScore > 21) {
-    console.log("BUST");
-    GameState.playerHandOneScore = "bust";
-    return "lose";
-  } else {
-    return false;
-  }
-}
-
 export function checkCanDouble(GameState) {
   if (GameState.playerHandOneScore >= 9 && GameState.playerHandOneScore <= 11) {
     return true;
@@ -129,6 +117,26 @@ export function updateScore(GameState) {
   GameState.playerHandOneScore = calculateHandScore(GameState.playerHandOne);
 }
 
+// HIT
+
+export function checkBust(GameState) {
+  console.log("handScore = ", GameState.playerHandOneScore);
+  if (GameState.playerHandOneScore > 21) {
+    updateGameState("playerHandOneOutcome", "bust");
+  } else {
+    return false;
+  }
+}
+
+export function handleBust(GameState) {
+  if (GameState.playerHandOneOutcome === "bust") {
+    if (GameState.split === false) {
+      updateGameState("actionState", "wager");
+    }
+  }
+  console.log("inside handleBust, actionState = ", GameState.actionState);
+}
+
 export function dealerAction(GameState) {
   if (GameState.dealerScore < 17) {
     dealSingleCard(GameState, GameState.dealerHand, "dealerHand");
@@ -137,33 +145,35 @@ export function dealerAction(GameState) {
     updateScore(GameState);
     updateScoreDisplay(GameState);
     dealerAction(GameState);
-  }
-  if (GameState.dealerScore > 21) {
+  } else if (GameState.dealerScore >= 17 && GameState.dealerScore <= 21) {
+    console.log("Dealer Stands in dealerAction!");
+    updateGameState("actionState", "showdown");
+  } else if (GameState.dealerScore > 21) {
     console.log("Dealer BUSTs!");
     GameState.dealerScore = "bust";
+  } else {
+    console.log("Error: Invalid outcome inside dealerAction function");
   }
 }
 
 export function determineOutcome(GameState, handScore) {
-  let outcome;
-
   if (GameState.dealerScore === "bust") {
     console.log("Dealer BUSTs!");
-    outcome = "win";
+    updateGameState(GameState.playerHandOneOutcome, "win");
   } else if (handScore === "bust") {
-    console.log("You BUSTED!");
-    outcome = "lose";
+    console.log("You BUSTED! - inside determineOutcome");
+    updateGameState(GameState.playerHandOneOutcome, "bust");
   } else if (GameState.dealerScore > handScore) {
-    outcome = "lose";
+    updateGameState(GameState.playerHandOneOutcome, "lose");
   } else if (GameState.dealerScore < handScore) {
-    outcome = "win";
+    updateGameState(GameState.playerHandOneOutcome, "win");
   } else if (GameState.dealerScore === handScore) {
-    outcome = "push";
+    updateGameState(GameState.playerHandOneOutcome, "push");
   } else {
     console.log("Error: Invalid outcome inside determine outcome function");
   }
-  console.log(outcome, "outcome inside determineOutcome function");
-  updateBankroll(GameState, outcome);
+
+  let outcome = GameState.playerHandOneOutcome;
   return outcome; // returns to outcomeAnnouncement(GameState, outcome)
   // updateBankrollDisplay(GameState.bankroll);
 }

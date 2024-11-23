@@ -10,6 +10,7 @@ import {
   checkCanDouble,
   checkCanSplit,
   splitStand,
+  handleBust,
 } from "./gameLogic.js";
 
 import {
@@ -40,9 +41,14 @@ import {
 // UI observers
 addObserver(handlePlayerBust);
 addObserver(updateBankrollDisplay);
+addObserver(outcomeAnnouncement);
 
 // gameState observers
 addObserver(updateBankroll);
+addObserver(resetGameState);
+
+// gameLogic observers
+addObserver(handleBust);
 
 const wagerForm = document.querySelector(".wager-form");
 
@@ -63,12 +69,12 @@ standBtn.addEventListener("click", playerStand);
 
 function startNewHand(event) {
   event.preventDefault();
-  resetGameState();
+
   const wager = getWagerInput();
   updateGameState("currentBet", wager);
-  updateBankrollDisplay(GameState.bankroll);
+  updateGameState("bankroll", GameState.bankroll - wager);
+  updateGameState("actionState", "running");
   toggleView();
-
   dealInitialCards(GameState);
 
   if (wager <= 0) {
@@ -79,7 +85,7 @@ function startNewHand(event) {
 
 function dealInitialCards(GameState) {
   // playerHand first
-
+  updateGameState("testState", "TEST");
   let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
   dealSingleCard(
     GameState,
@@ -171,8 +177,12 @@ function playerHit() {
   updateScoreDisplay(GameState);
 
   // Check for bust and update state
-  const didBust = checkBust(GameState);
-  updateGameState("isPlayerHandOneBust", didBust); // Triggers `handlePlayerBust`
+  checkBust(GameState);
+  if (GameState.playerHandOneOutcome === "bust") {
+    toggleView();
+  }
+
+  // Triggers `handlePlayerBust`
 
   // if checkBust
   // if no - return
@@ -209,8 +219,8 @@ function playerStand() {
   console.log("playerStand is running");
   if (!GameState.split) {
     dealerAction(GameState);
-    let outcome = determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
-    outcomeAnnouncement(outcome);
+    determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
+
     updateBankrollDisplay(GameState.bankroll);
   } else if (GameState.split) {
     splitStand(GameState);
