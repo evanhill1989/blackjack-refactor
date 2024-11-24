@@ -28,10 +28,12 @@ export const DOMElements = {
 };
 
 export function toggleView(GameState) {
-  if (DOMElements.initialWagerView.classList.contains("hidden")) {
+  if (GameState.view === "wager") {
+    console.log("UI should toggle towager");
     DOMElements.gameBoardView.classList.add("hidden");
     DOMElements.initialWagerView.classList.remove("hidden");
   } else {
+    console.log("UI should toggle to board");
     DOMElements.gameBoardView.classList.remove("hidden");
     DOMElements.initialWagerView.classList.add("hidden");
   }
@@ -127,17 +129,12 @@ export function updateScoreDisplay(GameState) {
 }
 
 export function outcomeAnnouncement(GameState) {
-  console.log(
-    GameState.playerHandOneOutcome,
-    "hand 1 outcome from outcomeAnnouncement"
-  );
   const focusHand = GameState.focusHand;
   let outcome =
     focusHand === "playerHandOne"
       ? GameState.playerHandOneOutcome
       : GameState.playerHandTwoOutcome;
 
-  console.log(outcome, "outcome from outcomeAnnouncement");
   if (outcome === "bust") {
     const tempDiv = document.createElement("div");
     const outcomeHTML = `
@@ -262,7 +259,6 @@ export function resetUI(state) {
 
 export function handlePlayerBust(state) {
   if (state.playerHandOneOutcome === "bust") {
-    console.log("inside handlePlayerBust after busting");
     // updateGameState("actionState", "showdown");
     // updateBankroll(state, "lose");
     // updateBankrollDisplay(state.bankroll);

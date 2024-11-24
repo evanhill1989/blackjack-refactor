@@ -42,13 +42,14 @@ import {
 addObserver(handlePlayerBust);
 addObserver(updateBankrollDisplay);
 addObserver(outcomeAnnouncement);
+addObserver(toggleView);
 
 // gameState observers
 addObserver(updateBankroll);
-addObserver(resetGameState);
+// addObserver(resetGameState);
 
 // gameLogic observers
-addObserver(handleBust);
+// addObserver(handleBust);
 
 const wagerForm = document.querySelector(".wager-form");
 
@@ -68,13 +69,15 @@ doubleBtn.addEventListener("click", playerDouble);
 standBtn.addEventListener("click", playerStand);
 
 function startNewHand(event) {
+  console.log("startNewHand at top");
   event.preventDefault();
 
   const wager = getWagerInput();
   updateGameState("currentBet", wager);
   updateGameState("bankroll", GameState.bankroll - wager);
   updateGameState("actionState", "running");
-  toggleView();
+  updateGameState("view", "game-board");
+
   dealInitialCards(GameState);
 
   if (wager <= 0) {
@@ -85,7 +88,7 @@ function startNewHand(event) {
 
 function dealInitialCards(GameState) {
   // playerHand first
-  updateGameState("testState", "TEST");
+
   let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
   dealSingleCard(
     GameState,
@@ -178,9 +181,6 @@ function playerHit() {
 
   // Check for bust and update state
   checkBust(GameState);
-  if (GameState.playerHandOneOutcome === "bust") {
-    toggleView();
-  }
 
   // Triggers `handlePlayerBust`
 
@@ -247,11 +247,5 @@ function playerStand() {
 // resetGame()
 
 // More specific functions
-
-function resetRound() {
-  resetGameState();
-  toggleView();
-  resetUI();
-}
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/

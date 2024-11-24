@@ -1,4 +1,4 @@
-import { GameState, updateGameState } from "./state.js";
+import { GameState, resetGameState, updateGameState } from "./state.js";
 import { outcomeAnnouncement } from "./ui.js";
 
 export function addCardToHandArr(GameState, hand, staticCardForTesting) {
@@ -120,8 +120,9 @@ export function updateScore(GameState) {
 // HIT
 
 export function checkBust(GameState) {
-  console.log("handScore = ", GameState.playerHandOneScore);
   if (GameState.playerHandOneScore > 21) {
+    console.log("Check Bust running now!");
+    handleBust(GameState);
     updateGameState("playerHandOneOutcome", "bust");
   } else {
     return false;
@@ -129,12 +130,21 @@ export function checkBust(GameState) {
 }
 
 export function handleBust(GameState) {
-  if (GameState.playerHandOneOutcome === "bust") {
-    if (GameState.split === false) {
-      updateGameState("actionState", "wager");
-    }
-  }
-  console.log("inside handleBust, actionState = ", GameState.actionState);
+  console.log("handleBust running now!");
+  console.log(GameState.split);
+  resetGameState(GameState);
+  updateGameState("view", "wager");
+
+  // Handle bust just keeps running too many times
+  // if (
+  //   GameState.playerHandOneOutcome === "bust" &&
+  //   GameState.handOneBustHandled === false
+  // ) {
+  //   console.log("Did we get inside handleBust?");
+  //   updateGameState("actionState", "end");
+  //   updateGameState("handOneBustHandled", true);
+  //   updateGameState("view", "wager");
+  // }
 }
 
 export function dealerAction(GameState) {
@@ -161,8 +171,7 @@ export function determineOutcome(GameState, handScore) {
     console.log("Dealer BUSTs!");
     updateGameState(GameState.playerHandOneOutcome, "win");
   } else if (handScore === "bust") {
-    console.log("You BUSTED! - inside determineOutcome");
-    updateGameState(GameState.playerHandOneOutcome, "bust");
+    console.log("Player BUSTs! in determineOutcome");
   } else if (GameState.dealerScore > handScore) {
     updateGameState(GameState.playerHandOneOutcome, "lose");
   } else if (GameState.dealerScore < handScore) {

@@ -69,10 +69,12 @@ export const GameState = {
   isDealerHandBust: false,
   playerHandOneOutcome: "", // win, lose, push,bust, resolved
   playerHandTwoOutcome: "", // win, lose, push,bust, resolved
+  handOneBustHandled: false,
   dealerHand: [],
   dealerScore: 0,
   playerHandOneScore: 0,
   playerHandTwoScore: null,
+  view: "wager",
   actionState: "wager",
   testState: "",
   deck: deck,
@@ -90,13 +92,34 @@ export function notifyObservers() {
 }
 
 // Update state and notify observers
+// export function updateGameState(property, value) {
+//   if (GameState[property] === value) {
+//     return;
+//   }
+//   GameState[property] = value;
+//   notifyObservers();
+// }
+
+let updateQueue = [];
+let isUpdating = false;
+
 export function updateGameState(property, value) {
-  if (GameState[property] === value) {
-    return;
+  updateQueue.push({ property, value });
+  if (!isUpdating) {
+    isUpdating = true;
+
+    while (updateQueue.length > 0) {
+      const update = updateQueue.shift();
+      if (GameState[update.property] !== update.value) {
+        GameState[update.property] = update.value;
+        notifyObservers();
+      }
+    }
+
+    isUpdating = false;
   }
-  GameState[property] = value;
-  notifyObservers();
 }
+
 export function updateBankroll(state) {
   const handOneOutcome = state.playerHandOneOutcome;
   const handTwoOutcome = state.playerHandTwoOutcome;
@@ -109,16 +132,30 @@ export function updateBankroll(state) {
   }
 }
 
-export function resetGameState(state) {
-  if (GameState.actionState === "end") {
-    GameState.currentBet = 0;
-    GameState.playerHandOne = [];
-    GameState.playerHandTwo = [];
-    GameState.dealerHand = [];
-    GameState.dealerScore = 0;
-    GameState.playerHandOneScore = 0;
-    GameState.playerHandTwoScore = null;
-  }
+export function resetGameState(GameState) {
+  console.log("Inside if of resetGameState");
+  GameState.playerHandOne = [];
+  GameState.currentBet = 0;
+  GameState.playerHandOne = [];
+  GameState.playerHandTwo = [];
+  GameState.split = false;
+  GameState.double = false;
+  GameState.focusHand = "playerHandOne";
+  GameState.previewHand = "playerHandTwo";
+  GameState.isPlayerHandOneBust = false;
+  GameState.isPlayerHandTwoBust = false;
+  GameState.isDealerHandBust = false;
+  GameState.playerHandOneOutcome = ""; // win; lose; push;bust; resolved
+  GameState.playerHandTwoOutcome = ""; // win; lose; push;bust; resolved
+  GameState.dealerHand = [];
+  GameState.dealerScore = 0;
+  GameState.playerHandOneScore = 0;
+  GameState.playerHandTwoScore = null;
+  GameState.actionState = "wager";
+
+  GameState.testState = "";
+  GameState.deck = deck;
+  GameState.observers = [];
 }
 
 export function splitHandArr(GameState) {
