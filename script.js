@@ -15,6 +15,7 @@ import {
 
 import {
   toggleView,
+  toggleSplitBtn,
   updateBankrollDisplay,
   getWagerInput,
   dealCardInUI,
@@ -43,13 +44,13 @@ addObserver(handlePlayerBust);
 addObserver(updateBankrollDisplay);
 addObserver(outcomeAnnouncement);
 addObserver(toggleView);
+addObserver(toggleSplitBtn);
 
 // gameState observers
 addObserver(updateBankroll);
-// addObserver(resetGameState);
 
 // gameLogic observers
-// addObserver(handleBust);
+addObserver(checkCanSplit);
 
 const wagerForm = document.querySelector(".wager-form");
 
@@ -68,20 +69,17 @@ splitBtn.addEventListener("click", playerSplit);
 doubleBtn.addEventListener("click", playerDouble);
 standBtn.addEventListener("click", playerStand);
 
-console.log(GameState, "GameState from script.js");
-
 function startNewHand(event) {
-  console.log("startNewHand at top");
   event.preventDefault();
 
   const wager = getWagerInput();
+  dealInitialCards(GameState);
+
   updateGameState("currentBet", wager);
   updateGameState("bankroll", GameState.bankroll - wager);
   updateGameState("actionState", "running");
   updateGameState("view", "game-board");
 
-  dealInitialCards(GameState);
-  console.log(GameState, "GameState from startNewHand");
   if (wager <= 0) {
     alert("Please enter a valid wager amount!");
     return;
@@ -133,18 +131,16 @@ function dealInitialCards(GameState) {
   updateScore(GameState);
   updateScoreDisplay(GameState);
 
-  setTimeout(() => {
-    const canDouble = checkCanDouble(GameState);
-    const canSplit = checkCanSplit(GameState);
+  const canDouble = checkCanDouble(GameState);
+  const canSplit = checkCanSplit(GameState);
 
-    if (canDouble) {
-      doubleBtn.disabled = false;
-    }
+  if (canDouble) {
+    doubleBtn.disabled = false;
+  }
 
-    if (canSplit) {
-      splitBtn.disabled = false;
-    }
-  }, 300);
+  if (canSplit) {
+    splitBtn.disabled = false;
+  }
 }
 
 function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
@@ -166,7 +162,7 @@ function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
     const card = staticCardForTesting || GameState.dealerHand[cardPosition];
     dealCardInUI(handName, card, cardPosition);
   } else {
-    console.log("Invalid hand name");
+    console.error("Invalid hand name");
   }
 }
 
@@ -183,21 +179,16 @@ function playerHit() {
 
   // Check for bust and update state
   checkBust(GameState);
-
-  console.log(
-    " IIIIIIIMMMMMMMMMMIIIIIII GameState from end of playerHit -->>>>",
-    GameState
-  );
 }
 
 function playerSplit() {
-  console.log("split");
-  GameState.split = true;
+  updateGameState("split", true);
   splitHandArr(GameState);
   updateScore(GameState);
   updateScoreDisplay(GameState);
   splitUI(GameState);
   GameState.actionState = "splitHandOneAction";
+  updateGameState("canSplit", false);
 }
 
 function playerDouble() {
@@ -210,7 +201,7 @@ function playerDouble() {
 
 function playerStand() {
   // will change if split is implemented, so we'd go to the other active player hand instead of dealerAction()
-  console.log("playerStand is running");
+
   if (!GameState.split) {
     dealerAction(GameState);
     determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic

@@ -60,6 +60,8 @@ export const GameState = {
   currentBet: 0,
   playerHandOne: [],
   playerHandTwo: [],
+  canSplit: false,
+  canDouble: false,
   split: false,
   double: false,
   focusHand: "playerHandOne",
@@ -69,7 +71,7 @@ export const GameState = {
   isDealerHandBust: false,
   playerHandOneOutcome: "", // win, lose, push,bust, resolved
   playerHandTwoOutcome: "", // win, lose, push,bust, resolved
-  handOneBustHandled: false,
+
   dealerHand: [],
   dealerScore: 0,
   playerHandOneScore: 0,
@@ -128,16 +130,16 @@ export function updateBankroll(state) {
   } else if (handOneOutcome === "win" || handTwoOutcome === "win") {
     GameState.bankroll += GameState.currentBet;
   } else if (handOneOutcome === "push" || handTwoOutcome === "push") {
-    console.log("PUSH");
   }
 }
 
 export function resetGameState(GameState) {
-  console.log("Inside if of resetGameState");
   GameState.playerHandOne = [];
   GameState.currentBet = 0;
   GameState.playerHandOne = [];
   GameState.playerHandTwo = [];
+  GameState.canSplit = false;
+  GameState.canDouble = false;
   GameState.split = false;
   GameState.double = false;
   GameState.focusHand = "playerHandOne";

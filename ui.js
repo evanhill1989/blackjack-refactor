@@ -12,6 +12,7 @@ export const DOMElements = {
   dealerHand: document.getElementById("dealer-hand"),
   previewHand: document.getElementById("preview-hand"),
 
+  wagerDisplay: document.getElementById("wager_amount"),
   bankrollDisplay: document.getElementById("bankroll"),
   bankrollTabDisplay: document.getElementById("bankroll_tab"),
   outcomeMessageDisplay: document.getElementById("message"),
@@ -28,29 +29,10 @@ export const DOMElements = {
 };
 
 export function toggleView(GameState) {
-  console.log(
-    "  ***99999$$**** GameState from toggleView  -->>>>>",
-    GameState.view
-  );
   if (GameState.view === "wager") {
-    console.log(
-      "^^^^^_______^^^^ GameState nested in if from toggleView  -->>>>>",
-      GameState.view
-    );
-    console.log(
-      "UI should toggle towager  <<<<<<-------------------------------------------------------------"
-    );
     DOMElements.gameBoardView.classList.add("hidden");
     DOMElements.initialWagerView.classList.remove("hidden");
   } else if (GameState.view === "game-board") {
-    console.log(
-      "GameState.veiew inside nested if from togggleView ----->>",
-      GameState.view
-    );
-    console.log(
-      "UI should toggle to board  <<<<<<-------------------------------------------------------------"
-    );
-
     DOMElements.gameBoardView.classList.remove("hidden");
     DOMElements.initialWagerView.classList.add("hidden");
   }
@@ -172,6 +154,17 @@ export function clearHandHTML() {
   DOMElements.focusHand.innerHTML = "";
 }
 
+// SPLIT THINGS
+
+// *observer
+export function toggleSplitBtn(GameState) {
+  if (GameState.canSplit) {
+    DOMElements.splitBtn.disabled = false;
+  } else {
+    DOMElements.splitBtn.disabled = true;
+  }
+}
+
 export function splitUI(GameState) {
   setFocusHand(GameState);
   setPreviewHand(GameState);
@@ -186,9 +179,8 @@ export function splitUI(GameState) {
 }
 
 export function splitStandUI(GameState) {
-  console.log("inside splitStandUI");
   let currentAction = GameState.actionState;
-  console.log(currentAction, "currentAction from splitStandUI");
+
   currentAction === "splitHandTwoAction"
     ? splitTogglePreviewFocus(GameState)
     : splitStandHandTwo(GameState);
@@ -198,10 +190,7 @@ export function splitTogglePreviewFocus(GameState) {
   togglePreviewFocus(GameState);
 }
 
-export function splitStandHandTwo(GameState) {
-  // check
-  console.log("inside splitStandHandTwo");
-}
+export function splitStandHandTwo(GameState) {}
 
 export function setFocusHand(GameState) {
   const currentFocus = GameState.focusHand;

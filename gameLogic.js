@@ -59,7 +59,7 @@ function totalWithAces(hand, numAces, nonAcesTotal) {
         return (hand.score = nonAcesTotal + 4);
       }
     default:
-      return console.log("Error : Too many aces");
+      return console.error("Error : Too many aces");
   }
 }
 
@@ -84,10 +84,13 @@ export function checkCanDouble(GameState) {
 }
 
 // SPLIT
-
+// *observer
 export function checkCanSplit(GameState) {
-  if (GameState.playerHandOne[0].value === GameState.playerHandOne[1].value) {
-    return true;
+  if (
+    GameState.split === false &&
+    GameState.playerHandOne[0].value === GameState.playerHandOne[1].value
+  ) {
+    updateGameState("canSplit", true);
   }
 }
 
@@ -100,7 +103,6 @@ export function splitStand(GameState) {
     GameState.previewHand = "playerHandOne";
     return; // potential trouble if the following else if runs and interprets the actionState
   } else if (action === "splitHandTwoAction") {
-    console.log(GameState, "GameState from splitStand");
     dealerAction(GameState); // this just deals cards and sets dealers handArr, and score state
     determineOutcome(GameState, GameState.playerHandTwoScore);
     if (GameState.playerHandOneScore != "bust") {
@@ -121,9 +123,7 @@ export function updateScore(GameState) {
 
 export function checkBust(GameState) {
   if (GameState.playerHandOneScore > 21) {
-    console.log("");
     updateGameState("playerHandOneOutcome", "bust");
-    console.log(GameState, "GameState from Check Bust inside nested if >21 !");
     handleBust(GameState);
   } else {
     return false;
@@ -131,23 +131,14 @@ export function checkBust(GameState) {
 }
 
 export function handleBust(GameState) {
-  console.log("handleBust running now!");
-
-  updateGameState("view", "wager");
-  resetGameState(GameState);
-
-  // Handle bust just keeps running too many times
-  // if (
-  //   GameState.playerHandOneOutcome === "bust" &&
-  //   GameState.handOneBustHandled === false
-  // ) {
-  //   console.log("Did we get inside handleBust?");
-  //   updateGameState("actionState", "end");
-  //   updateGameState("handOneBustHandled", true);
-  //   updateGameState("view", "wager");
-  // }
+  let focusHand = GameState.focusHand;
+  if (!GameState.split) {
+    updateGameState("view", "wager");
+    resetGameState(GameState);
+  } else if (GameState.split) {
+    console.log("split in handlEbUST");
+  }
 }
-
 export function dealerAction(GameState) {
   if (GameState.dealerScore < 17) {
     dealSingleCard(GameState, GameState.dealerHand, "dealerHand");
@@ -163,7 +154,7 @@ export function dealerAction(GameState) {
     console.log("Dealer BUSTs!");
     GameState.dealerScore = "bust";
   } else {
-    console.log("Error: Invalid outcome inside dealerAction function");
+    console.error("Error: Invalid outcome inside dealerAction function");
   }
 }
 
@@ -180,7 +171,7 @@ export function determineOutcome(GameState, handScore) {
   } else if (GameState.dealerScore === handScore) {
     updateGameState(GameState.playerHandOneOutcome, "push");
   } else {
-    console.log("Error: Invalid outcome inside determine outcome function");
+    console.error("Error: Invalid outcome inside determine outcome function");
   }
 
   let outcome = GameState.playerHandOneOutcome;
