@@ -28,12 +28,29 @@ export const DOMElements = {
 };
 
 export function toggleView(GameState) {
+  console.log(
+    "  ***99999$$**** GameState from toggleView  -->>>>>",
+    GameState.view
+  );
   if (GameState.view === "wager") {
-    console.log("UI should toggle towager");
+    console.log(
+      "^^^^^_______^^^^ GameState nested in if from toggleView  -->>>>>",
+      GameState.view
+    );
+    console.log(
+      "UI should toggle towager  <<<<<<-------------------------------------------------------------"
+    );
     DOMElements.gameBoardView.classList.add("hidden");
     DOMElements.initialWagerView.classList.remove("hidden");
-  } else {
-    console.log("UI should toggle to board");
+  } else if (GameState.view === "game-board") {
+    console.log(
+      "GameState.veiew inside nested if from togggleView ----->>",
+      GameState.view
+    );
+    console.log(
+      "UI should toggle to board  <<<<<<-------------------------------------------------------------"
+    );
+
     DOMElements.gameBoardView.classList.remove("hidden");
     DOMElements.initialWagerView.classList.add("hidden");
   }
@@ -147,7 +164,12 @@ export function outcomeAnnouncement(GameState) {
     setTimeout(() => {
       DOMElements.mainElement.removeChild(tempDiv);
     }, 2000);
+    clearHandHTML(); // Patch this in for now , but it needs to exist beyond this scope.
   }
+}
+
+export function clearHandHTML() {
+  DOMElements.focusHand.innerHTML = "";
 }
 
 export function splitUI(GameState) {

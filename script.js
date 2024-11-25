@@ -68,6 +68,8 @@ splitBtn.addEventListener("click", playerSplit);
 doubleBtn.addEventListener("click", playerDouble);
 standBtn.addEventListener("click", playerStand);
 
+console.log(GameState, "GameState from script.js");
+
 function startNewHand(event) {
   console.log("startNewHand at top");
   event.preventDefault();
@@ -79,7 +81,7 @@ function startNewHand(event) {
   updateGameState("view", "game-board");
 
   dealInitialCards(GameState);
-
+  console.log(GameState, "GameState from startNewHand");
   if (wager <= 0) {
     alert("Please enter a valid wager amount!");
     return;
@@ -182,18 +184,10 @@ function playerHit() {
   // Check for bust and update state
   checkBust(GameState);
 
-  // Triggers `handlePlayerBust`
-
-  // if checkBust
-  // if no - return
-  // if yes
-  // is playerHandTwo?
-  // if no - return then proceed to settle playerHandOne as a loss
-  // if yes - check if action is complete on both hands
-  // if preview hand is still active anounce bust for current hand and switch focus hand
-  // if preview hand NOT active announce bust and settle current hand as a loss
-  // then if preview hand was bust reset game, trans to wager screen
-  // if preview hand was NOT bust turn action to dealer and determine outcome
+  console.log(
+    " IIIIIIIMMMMMMMMMMIIIIIII GameState from end of playerHit -->>>>",
+    GameState
+  );
 }
 
 function playerSplit() {

@@ -74,7 +74,7 @@ export const GameState = {
   dealerScore: 0,
   playerHandOneScore: 0,
   playerHandTwoScore: null,
-  view: "wager",
+  view: "",
   actionState: "wager",
   testState: "",
   deck: deck,
@@ -155,7 +155,7 @@ export function resetGameState(GameState) {
 
   GameState.testState = "";
   GameState.deck = deck;
-  GameState.observers = [];
+  // GameState.observers = [];
 }
 
 export function splitHandArr(GameState) {

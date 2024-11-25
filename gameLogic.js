@@ -121,9 +121,10 @@ export function updateScore(GameState) {
 
 export function checkBust(GameState) {
   if (GameState.playerHandOneScore > 21) {
-    console.log("Check Bust running now!");
-    handleBust(GameState);
+    console.log("");
     updateGameState("playerHandOneOutcome", "bust");
+    console.log(GameState, "GameState from Check Bust inside nested if >21 !");
+    handleBust(GameState);
   } else {
     return false;
   }
@@ -131,9 +132,9 @@ export function checkBust(GameState) {
 
 export function handleBust(GameState) {
   console.log("handleBust running now!");
-  console.log(GameState.split);
-  resetGameState(GameState);
+
   updateGameState("view", "wager");
+  resetGameState(GameState);
 
   // Handle bust just keeps running too many times
   // if (
