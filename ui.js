@@ -1,4 +1,4 @@
-import { GameState, updateGameState } from "./state.js";
+import { GameState, notifyObservers, updateGameState } from "./state.js";
 
 export const DOMElements = {
   mainElement: document.querySelector("main"),
@@ -129,17 +129,17 @@ export function updateScoreDisplay(GameState) {
   const previewScoreElement = DOMElements.previewScore;
   const dealerScoreElement = DOMElements.dealerScore;
 
-  let focusHand = GameState.focusHand;
-
-  if (focusHand === "playerHandOne") {
-    focusScoreElement.textContent = GameState.playerHandOneScore;
-    previewScoreElement.textContent = GameState.playerHandTwoScore;
-  } else if (focusHand === "playerHandTwo") {
-    focusScoreElement.textContent = GameState.playerHandTwoScore;
-    previewScoreElement.textContent = GameState.playerHandOneScore;
-  }
-
+  focusScoreElement.textContent = GameState.focusScore;
+  previewScoreElement.textContent = GameState.previewScore || "";
   dealerScoreElement.textContent = GameState.dealerScore;
+  console.log(
+    GameState.focusScore,
+    "$$$$$$$$$$$$ <------ focusScore in updateScoreDisplay"
+  );
+  console.log(
+    GameState.playerHandOneScore,
+    "$$$$$$$$$$$$$ <------ playerHandOneScore in updateScoreDisplay"
+  );
 }
 
 export function outcomeAnnouncement(GameState) {
@@ -228,6 +228,7 @@ export function togglePreviewFocus(GameState) {
   previewHand === "playerHandOne"
     ? (GameState.previewHand = "playerHandTwo")
     : (GameState.previewHand = "playerHandOne");
+  notifyObservers(); // Because we are actually changing state "manually" above.
   setFocusHand(GameState);
   setPreviewHand(GameState);
   updateScoreDisplay(GameState);

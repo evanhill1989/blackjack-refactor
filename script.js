@@ -36,6 +36,7 @@ import {
   splitHandArr,
   addObserver,
   updateBankroll,
+  notifyObservers,
 } from "./state.js";
 
 // UI observers
@@ -44,7 +45,7 @@ addObserver(updateBankrollDisplay);
 addObserver(outcomeAnnouncement);
 addObserver(toggleView);
 addObserver(toggleSplitBtn);
-// addObserver(togglePreviewFocus);
+// addObserver(updateScoreDisplay); keeping this out of observers. Feels like some race conditions with updateScore might happen, and I want fine tuning of timing of display updates anyway.
 
 // gameState observers
 addObserver(updateBankroll);
@@ -131,30 +132,25 @@ function dealInitialCards(GameState) {
 function dealSingleCard(GameState, handName, staticCardForTesting) {
   const card = addCardToHandArr(GameState, handName, staticCardForTesting);
   dealCardInUI(handName, card);
+  // notifyObservers();
 }
 
 function playerHit() {
   let handName = GameState.focusHand;
 
   dealSingleCard(GameState, handName);
-  updateGameState("testState", "testing playerHit observer ping");
-  // updateScore(GameState); // !!!!! THESE updateScore functions WILL CHANGE WHEN I FINE TUNE UI CARD DEAL TIMING
   // updateScoreDisplay(GameState);
+
+  notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
+  updateScoreDisplay(GameState);
   checkBust(GameState);
-  console.log(
-    GameState.playerHandOneScore,
-    "<------------playerHandOneScore in playerHit"
-  );
-  console.log(
-    GameState.focusHandScore,
-    "<------------focusHandScore in playerHit"
-  );
 }
 
 function playerSplit() {
   updateGameState("split", true);
   splitHandArr(GameState);
-  updateScore(GameState);
+
+  notifyObservers();
   updateScoreDisplay(GameState);
   splitUI(GameState);
 

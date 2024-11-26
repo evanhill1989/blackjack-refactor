@@ -155,7 +155,11 @@ export function resetGameState(GameState) {
 }
 
 export function splitHandArr(GameState) {
-  GameState.playerHandTwo = GameState.playerHandOne.splice(1, 1);
+  const handOne = GameState.playerHandOne;
+  const handTwo = handOne.splice(1, 1);
+
+  updateGameState("playerHandOne", handOne);
+  updateGameState("playerHandTwo", handTwo);
 }
 
 export function updateDeck() {
