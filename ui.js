@@ -24,8 +24,10 @@ export const DOMElements = {
 
   // Add more elements as needed
   // Lazy Load
-  playerScore: document.getElementById("user-score"),
+
   dealerScore: document.getElementById("dealer-score"),
+  focusScore: document.getElementById("focus-score"),
+  previewScore: document.getElementById("preview-score"),
 };
 
 export function toggleView(GameState) {
@@ -42,9 +44,6 @@ export function updateBankrollDisplay(state) {
   DOMElements.bankrollDisplay.textContent = state.bankroll;
   DOMElements.bankrollTabDisplay.textContent = state.bankroll;
 }
-// export function toggleView(view) {
-//   /*...*/
-// }
 
 export function getWagerInput() {
   const wagerInputElement = document.getElementById("wager-input");
@@ -113,15 +112,18 @@ export function generateCardHTML(card) {
   }
 }
 export function updateScoreDisplay(GameState) {
-  const playerScoreElement = DOMElements.playerScore;
+  const focusScoreElement = DOMElements.focusScore;
+  const previewScoreElement = DOMElements.previewScore;
   const dealerScoreElement = DOMElements.dealerScore;
 
   let focusHand = GameState.focusHand;
 
   if (focusHand === "playerHandOne") {
-    playerScoreElement.textContent = GameState.playerHandOneScore;
+    focusScoreElement.textContent = GameState.playerHandOneScore;
+    previewScoreElement.textContent = GameState.playerHandTwoScore;
   } else if (focusHand === "playerHandTwo") {
-    playerScoreElement.textContent = GameState.playerHandTwoScore;
+    focusScoreElement.textContent = GameState.playerHandTwoScore;
+    previewScoreElement.textContent = GameState.playerHandOneScore;
   }
 
   dealerScoreElement.textContent = GameState.dealerScore;
@@ -169,7 +171,7 @@ export function splitUI(GameState) {
   setFocusHand(GameState);
   setPreviewHand(GameState);
   DOMElements.splitBtn.disabled = true;
-  toggleVisibility(DOMElements.previewHand);
+  // toggleVisibility(DOMElements.previewHand);
   const testButton = document.createElement("button");
   testButton.textContent = "Test Button";
   testButton.addEventListener("click", () => {
@@ -178,17 +180,7 @@ export function splitUI(GameState) {
   DOMElements.actionsDiv.appendChild(testButton);
 }
 
-export function splitStandUI(GameState) {
-  let currentAction = GameState.actionState;
-
-  currentAction === "splitHandTwoAction"
-    ? splitTogglePreviewFocus(GameState)
-    : splitStandHandTwo(GameState);
-}
-
-export function splitTogglePreviewFocus(GameState) {
-  togglePreviewFocus(GameState);
-}
+export function splitStandUI(GameState) {}
 
 export function splitStandHandTwo(GameState) {}
 
@@ -209,11 +201,14 @@ export function setPreviewHand(GameState) {
   previewHandDiv.innerHTML = newHand;
 
   DOMElements.previewHand.appendChild(previewHandDiv);
+
+  DOMElements.previewScore.textContent = GameState.playerHandTwoScore;
 }
 
 export function togglePreviewFocus(GameState) {
   const focusHand = GameState.focusHand;
   const previewHand = GameState.previewHand;
+  console.log(focusHand, "in togglePreviewFocus");
   focusHand === "playerHandOne"
     ? (GameState.focusHand = "playerHandTwo")
     : (GameState.focusHand = "playerHandOne");
@@ -222,6 +217,7 @@ export function togglePreviewFocus(GameState) {
     : (GameState.previewHand = "playerHandOne");
   setFocusHand(GameState);
   setPreviewHand(GameState);
+  updateScoreDisplay(GameState);
 }
 
 export function mapOverHand(hand, GameState) {
@@ -237,11 +233,6 @@ export function mapOverHand(hand, GameState) {
     newHandHTMLArr.push(cardHTML);
   });
   return newHandHTMLArr;
-}
-
-export function removeSecondCard() {
-  const element = DOMElements.focusHand;
-  return element.removeChild(element.lastChild);
 }
 
 export function showdown() {}
@@ -265,13 +256,5 @@ export function resetUI(state) {
   if (state.actionState === "end") {
     DOMElements.focusHand.innerHTML = "";
     DOMElements.dealerHand.innerHTML = "";
-  }
-}
-
-export function handlePlayerBust(state) {
-  if (state.playerHandOneOutcome === "bust") {
-    // updateGameState("actionState", "showdown");
-    // updateBankroll(state, "lose");
-    // updateBankrollDisplay(state.bankroll);
   }
 }

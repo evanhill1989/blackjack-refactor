@@ -3,7 +3,6 @@ import {
   updateScore,
   calculateHandScore,
   validateWager,
-  updateGameStateAfterCardDeal,
   checkBust,
   dealerAction,
   determineOutcome,
@@ -27,7 +26,7 @@ import {
   splitStandUI,
   setFocusHand,
   setPreviewHand,
-  handlePlayerBust,
+  togglePreviewFocus,
 } from "./ui.js";
 
 import {
@@ -40,17 +39,19 @@ import {
 } from "./state.js";
 
 // UI observers
-addObserver(handlePlayerBust);
+
 addObserver(updateBankrollDisplay);
 addObserver(outcomeAnnouncement);
 addObserver(toggleView);
 addObserver(toggleSplitBtn);
+// addObserver(togglePreviewFocus);
 
 // gameState observers
 addObserver(updateBankroll);
 
 // gameLogic observers
 addObserver(checkCanSplit);
+addObserver(updateScore);
 
 const wagerForm = document.querySelector(".wager-form");
 
@@ -73,6 +74,11 @@ function startNewHand(event) {
   event.preventDefault();
 
   const wager = getWagerInput();
+  if (wager <= 0) {
+    alert("Please enter a valid wager amount!");
+    return;
+  }
+
   dealInitialCards(GameState);
 
   updateGameState("currentBet", wager);
@@ -80,10 +86,9 @@ function startNewHand(event) {
   updateGameState("actionState", "running");
   updateGameState("view", "game-board");
 
-  if (wager <= 0) {
-    alert("Please enter a valid wager amount!");
-    return;
-  }
+  updateGameState("focusHandScore", GameState.playerHandOneScore);
+
+  console.log(GameState.focusHandScore, "focusHandScore in startNewHand");
 }
 
 function dealInitialCards(GameState) {
@@ -187,7 +192,7 @@ function playerSplit() {
   updateScore(GameState);
   updateScoreDisplay(GameState);
   splitUI(GameState);
-  GameState.actionState = "splitHandOneAction";
+
   updateGameState("canSplit", false);
 }
 

@@ -64,8 +64,11 @@ export const GameState = {
   canDouble: false,
   split: false,
   double: false,
+  deadSplitHand: false,
   focusHand: "playerHandOne",
   previewHand: "playerHandTwo",
+  focusHandScore: 0,
+  previewHandScore: 0,
   isPlayerHandOneBust: false,
   isPlayerHandTwoBust: false,
   isDealerHandBust: false,
@@ -92,15 +95,6 @@ export function addObserver(observer) {
 export function notifyObservers() {
   GameState.observers.forEach((observer) => observer(GameState));
 }
-
-// Update state and notify observers
-// export function updateGameState(property, value) {
-//   if (GameState[property] === value) {
-//     return;
-//   }
-//   GameState[property] = value;
-//   notifyObservers();
-// }
 
 let updateQueue = [];
 let isUpdating = false;

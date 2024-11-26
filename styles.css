@@ -151,11 +151,13 @@ select {
 .hand {
   display: flex;
   position: relative;
-}
-.hand::before {
-  content: "";
   width: 4em;
   height: 6em;
+}
+.hand::before {
+  /* content: "";
+  width: 4em;
+  height: 6em; */
 }
 
 /* Card UI */

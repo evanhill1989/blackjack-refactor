@@ -1,5 +1,5 @@
 import { GameState, resetGameState, updateGameState } from "./state.js";
-import { outcomeAnnouncement } from "./ui.js";
+import { outcomeAnnouncement, togglePreviewFocus } from "./ui.js";
 
 export function addCardToHandArr(GameState, hand, staticCardForTesting) {
   const { playerHand, dealerHand, deck } = GameState;
@@ -63,10 +63,6 @@ function totalWithAces(hand, numAces, nonAcesTotal) {
   }
 }
 
-export function updateGameStateAfterCardDeal(hand) {
-  /*...*/
-}
-
 export function validateWager(wager, bankroll) {
   if (wager <= 0) {
     return "Wager must be greater than zero.";
@@ -115,8 +111,21 @@ export function splitStand(GameState) {
 
 // SCORE
 export function updateScore(GameState) {
+  console.log("updateScore running like crazy probs");
   GameState.dealerScore = calculateHandScore(GameState.dealerHand);
   GameState.playerHandOneScore = calculateHandScore(GameState.playerHandOne);
+  GameState.playerHandTwoScore = calculateHandScore(GameState.playerHandTwo);
+  let focusHand = GameState.focusHand;
+  let previewHand = GameState.previewHand;
+
+  if (focusHand === "playerHandOne") {
+    GameState.focusScore = calculateHandScore(GameState.playerHandOne);
+    GameState.previewScore =
+      calculateHandScore(GameState.playerHandTwo) || null;
+  } else {
+    GameState.focusScore = calculateHandScore(GameState.playerHandTwo);
+    GameState.previewScore = calculateHandScore(GameState.playerHandOne);
+  }
 }
 
 // HIT
@@ -131,12 +140,15 @@ export function checkBust(GameState) {
 }
 
 export function handleBust(GameState) {
-  let focusHand = GameState.focusHand;
   if (!GameState.split) {
     updateGameState("view", "wager");
     resetGameState(GameState);
-  } else if (GameState.split) {
+  } else if (GameState.split && !GameState.deadSplitHand) {
     console.log("split in handlEbUST");
+    togglePreviewFocus(GameState);
+    updateGameState("deadSplitHand", true);
+
+    // add "bust" element to new preview hand or remove preview hand altogether?
   }
 }
 export function dealerAction(GameState) {
