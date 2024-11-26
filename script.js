@@ -95,44 +95,24 @@ function dealInitialCards(GameState) {
   // playerHand first
 
   let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
-  dealSingleCard(
-    GameState,
-    GameState.playerHandOne,
-    "playerHandOne",
-    staticCardForTesting
-  );
+  dealSingleCard(GameState, "playerHandOne", staticCardForTesting);
   updateScore(GameState); // !!!!! THESE WILL CHANGE WHEN I FINE TUNE UI TIMING.
   updateScoreDisplay(GameState);
 
   staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
-  dealSingleCard(
-    GameState,
-    GameState.playerHandOne,
-    "playerHandOne",
-    staticCardForTesting
-  );
+  dealSingleCard(GameState, "playerHandOne", staticCardForTesting);
   updateScore(GameState);
   updateScoreDisplay(GameState);
 
   // dealerHand
 
   staticCardForTesting = { suit: "♣", rank: "4", value: 4 };
-  dealSingleCard(
-    GameState,
-    GameState.dealerHand,
-    "dealerHand",
-    staticCardForTesting
-  );
+  dealSingleCard(GameState, "dealerHand", staticCardForTesting);
   updateScore(GameState);
   updateScoreDisplay(GameState);
 
   staticCardForTesting = { suit: "♥", rank: "9", value: 9 };
-  dealSingleCard(
-    GameState,
-    GameState.dealerHand,
-    "dealerHand",
-    staticCardForTesting
-  );
+  dealSingleCard(GameState, "dealerHand", staticCardForTesting);
   updateScore(GameState);
   updateScoreDisplay(GameState);
 
@@ -148,42 +128,27 @@ function dealInitialCards(GameState) {
   }
 }
 
-function dealSingleCard(GameState, handObj, handName, staticCardForTesting) {
-  addCardToHandArr(GameState, handObj, staticCardForTesting);
-
-  if (handName === "playerHandOne") {
-    const cardPosition = GameState.playerHandOne.length - 1; // REFACTOR THIS OUTSIDE LOOP FOR MORE UNIVERSALITY
-
-    const card = staticCardForTesting || GameState.playerHandOne[cardPosition];
-
-    dealCardInUI(handName, card, cardPosition);
-  } else if (handName === "playerHandTwo") {
-    const cardPosition = GameState.playerHandTwo.length - 1;
-    const card = staticCardForTesting || GameState.playerHandTwo[cardPosition];
-
-    dealCardInUI(handName, card, cardPosition);
-  } else if (handName === "dealerHand") {
-    const cardPosition = GameState.dealerHand.length - 1;
-    const card = staticCardForTesting || GameState.dealerHand[cardPosition];
-    dealCardInUI(handName, card, cardPosition);
-  } else {
-    console.error("Invalid hand name");
-  }
+function dealSingleCard(GameState, handName, staticCardForTesting) {
+  const card = addCardToHandArr(GameState, handName, staticCardForTesting);
+  dealCardInUI(handName, card);
 }
 
 function playerHit() {
-  let focusHand = GameState.focusHand;
-  let handObj =
-    focusHand === "playerHandOne"
-      ? GameState.playerHandOne
-      : GameState.playerHandTwo;
+  let handName = GameState.focusHand;
 
-  dealSingleCard(GameState, handObj, focusHand);
-  updateScore(GameState); // !!!!! THESE updateScore functions WILL CHANGE WHEN I FINE TUNE UI CARD DEAL TIMING
-  updateScoreDisplay(GameState);
-
-  // Check for bust and update state
+  dealSingleCard(GameState, handName);
+  updateGameState("testState", "testing playerHit observer ping");
+  // updateScore(GameState); // !!!!! THESE updateScore functions WILL CHANGE WHEN I FINE TUNE UI CARD DEAL TIMING
+  // updateScoreDisplay(GameState);
   checkBust(GameState);
+  console.log(
+    GameState.playerHandOneScore,
+    "<------------playerHandOneScore in playerHit"
+  );
+  console.log(
+    GameState.focusHandScore,
+    "<------------focusHandScore in playerHit"
+  );
 }
 
 function playerSplit() {

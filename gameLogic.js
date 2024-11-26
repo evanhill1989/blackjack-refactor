@@ -2,10 +2,26 @@ import { GameState, resetGameState, updateGameState } from "./state.js";
 import { outcomeAnnouncement, togglePreviewFocus } from "./ui.js";
 
 export function addCardToHandArr(GameState, hand, staticCardForTesting) {
-  const { playerHand, dealerHand, deck } = GameState;
-  const card = staticCardForTesting || getRandomCard(deck);
-  hand.push(card);
-  removeCurrentCardFromDeck(card, deck);
+  const card = staticCardForTesting || getRandomCard(GameState.deck);
+
+  if (hand === "playerHandOne") {
+    const handOne = GameState.playerHandOne;
+    handOne.push(card);
+    updateGameState("playerHandOne", handOne);
+  } else if (hand === "playerHandTwo") {
+    const handTwo = GameState.playerHandTwo;
+    handTwo.push(card);
+    updateGameState("playerHandTwo", handTwo);
+  } else if (hand === "dealerHand") {
+    const dealerHand = GameState.dealerHand;
+    dealerHand.push(card);
+    updateGameState("dealerHand", dealerHand);
+  } else {
+    console.error("Invalid hand name passed from dealSIngleCard()");
+  }
+
+  removeCurrentCardFromDeck(card, GameState.deck);
+  return card;
 }
 
 function getRandomCard(deck) {
@@ -112,6 +128,7 @@ export function splitStand(GameState) {
 // SCORE
 export function updateScore(GameState) {
   console.log("updateScore running like crazy probs");
+
   GameState.dealerScore = calculateHandScore(GameState.dealerHand);
   GameState.playerHandOneScore = calculateHandScore(GameState.playerHandOne);
   GameState.playerHandTwoScore = calculateHandScore(GameState.playerHandTwo);
@@ -119,12 +136,11 @@ export function updateScore(GameState) {
   let previewHand = GameState.previewHand;
 
   if (focusHand === "playerHandOne") {
-    GameState.focusScore = calculateHandScore(GameState.playerHandOne);
-    GameState.previewScore =
-      calculateHandScore(GameState.playerHandTwo) || null;
+    GameState.focusScore = GameState.playerHandOneScore;
+    GameState.previewScore = GameState.playerHandTwoScore || null;
   } else {
-    GameState.focusScore = calculateHandScore(GameState.playerHandTwo);
-    GameState.previewScore = calculateHandScore(GameState.playerHandOne);
+    GameState.focusScore = GameState.playerHandTwoScore;
+    GameState.previewScore = GameState.playerHandOneScore;
   }
 }
 

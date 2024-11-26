@@ -60,6 +60,7 @@ export const GameState = {
   currentBet: 0,
   playerHandOne: [],
   playerHandTwo: [],
+  dealerHand: [],
   canSplit: false,
   canDouble: false,
   split: false,
@@ -75,7 +76,6 @@ export const GameState = {
   playerHandOneOutcome: "", // win, lose, push,bust, resolved
   playerHandTwoOutcome: "", // win, lose, push,bust, resolved
 
-  dealerHand: [],
   dealerScore: 0,
   playerHandOneScore: 0,
   playerHandTwoScore: null,

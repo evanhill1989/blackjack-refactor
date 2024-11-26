@@ -51,7 +51,20 @@ export function getWagerInput() {
   return isNaN(wagerValue) ? 0 : wagerValue; // Basic check to return 0 if input is invalid
 }
 
-export async function dealCardInUI(handName, card, cardPosition) {
+export async function dealCardInUI(handName, card) {
+  // This is where strange style things will start probably
+  let hand;
+  if (handName === "playerHandOne") {
+    hand = GameState.playerHandOne;
+  } else if (handName === "playerHandTwo") {
+    hand = GameState.playerHandTwo;
+  } else if (handName === "dealerHand") {
+    hand = GameState.dealerHand;
+  } else {
+    console.error("Invalid hand name");
+  }
+
+  const cardPosition = hand.length - 1;
   const cardPositionAdjustment = cardPosition * 1;
 
   const cardDiv = generateCardDiv(cardPositionAdjustment);
