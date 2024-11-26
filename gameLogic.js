@@ -84,8 +84,6 @@ export function splitStand(GameState) {
 
 // SCORE
 export function updateScore(GameState) {
-  console.log("updateScore running like crazy probs");
-
   GameState.dealerScore = calculateHandScore(GameState.dealerHand);
   GameState.playerHandOneScore = calculateHandScore(GameState.playerHandOne);
   GameState.playerHandTwoScore = calculateHandScore(GameState.playerHandTwo);
@@ -99,12 +97,6 @@ export function updateScore(GameState) {
     GameState.focusScore = GameState.playerHandTwoScore;
     GameState.previewScore = GameState.playerHandOneScore;
   }
-
-  console.log(GameState.focusScore, "<------ focusScore in updateScore");
-  console.log(
-    GameState.playerHandOneScore,
-    "<------ playerHandOneScore in updateScore"
-  );
 }
 
 export function calculateHandScore(hand) {
@@ -153,8 +145,11 @@ function totalWithAces(hand, numAces, nonAcesTotal) {
 // HIT
 
 export function checkBust(GameState) {
-  if (GameState.playerHandOneScore > 21) {
-    updateGameState("playerHandOneOutcome", "bust");
+  if (GameState.focusScore > 21) {
+    GameState.focusHand === "playerHandOne"
+      ? updateGameState("playerHandOneOutcome", "bust")
+      : updateGameState("playerHandTwoOutcome", "bust");
+
     handleBust(GameState);
   } else {
     return false;
@@ -162,6 +157,7 @@ export function checkBust(GameState) {
 }
 
 export function handleBust(GameState) {
+  console.log("deadSplitHand at top of handleBust", GameState.deadSplitHand);
   if (!GameState.split) {
     updateGameState("view", "wager");
     resetGameState(GameState);
@@ -171,7 +167,11 @@ export function handleBust(GameState) {
     updateGameState("deadSplitHand", true);
 
     // add "bust" element to new preview hand or remove preview hand altogether?
+  } else if (GameState.split && GameState.deadSplitHand) {
+    updateGameState("view", "wager");
+    resetGameState(GameState);
   }
+  console.log("deadSplitHand at bottom of handleBust", GameState.deadSplitHand);
 }
 export function dealerAction(GameState) {
   if (GameState.dealerScore < 17) {
@@ -212,5 +212,3 @@ export function determineOutcome(GameState, handScore) {
   return outcome; // returns to outcomeAnnouncement(GameState, outcome)
   // updateBankrollDisplay(GameState.bankroll);
 }
-
-// BANKROLL

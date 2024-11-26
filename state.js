@@ -116,14 +116,15 @@ export function updateGameState(property, value) {
   }
 }
 
-export function updateBankroll(state) {
-  const handOneOutcome = state.playerHandOneOutcome;
-  const handTwoOutcome = state.playerHandTwoOutcome;
+export function updateBankroll(GameState) {
+  const handOneOutcome = GameState.playerHandOneOutcome;
+  const handTwoOutcome = GameState.playerHandTwoOutcome;
   if (handOneOutcome === "lose" || handTwoOutcome === "lose") {
-    GameState.bankroll -= GameState.currentBet;
+    console.log("Player LOSEs! Bankroll is correct; in updateBankroll");
   } else if (handOneOutcome === "win" || handTwoOutcome === "win") {
-    GameState.bankroll += GameState.currentBet;
+    GameState.bankroll += GameState.currentBet * 2;
   } else if (handOneOutcome === "push" || handTwoOutcome === "push") {
+    GameState.bankroll += GameState.currentBet * 1;
   }
 }
 

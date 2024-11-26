@@ -132,14 +132,14 @@ export function updateScoreDisplay(GameState) {
   focusScoreElement.textContent = GameState.focusScore;
   previewScoreElement.textContent = GameState.previewScore || "";
   dealerScoreElement.textContent = GameState.dealerScore;
-  console.log(
-    GameState.focusScore,
-    "$$$$$$$$$$$$ <------ focusScore in updateScoreDisplay"
-  );
-  console.log(
-    GameState.playerHandOneScore,
-    "$$$$$$$$$$$$$ <------ playerHandOneScore in updateScoreDisplay"
-  );
+  // console.log(
+  //   GameState.focusScore,
+  //   "$$$$$$$$$$$$ <------ focusScore in updateScoreDisplay"
+  // );
+  // console.log(
+  //   GameState.playerHandOneScore,
+  //   "$$$$$$$$$$$$$ <------ playerHandOneScore in updateScoreDisplay"
+  // );
 }
 
 export function outcomeAnnouncement(GameState) {

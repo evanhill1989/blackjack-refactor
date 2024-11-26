@@ -148,9 +148,9 @@ function playerHit() {
 
 function playerSplit() {
   updateGameState("split", true);
+  updateGameState("bankroll", GameState.bankroll - GameState.currentBet);
   splitHandArr(GameState);
 
-  notifyObservers();
   updateScoreDisplay(GameState);
   splitUI(GameState);
 
