@@ -61,6 +61,7 @@ export const GameState = {
   playerHandOne: [],
   playerHandTwo: [],
   dealerHand: [],
+  dealerHoleCardExposed: false,
   canSplit: false,
   canDouble: false,
   split: false,

@@ -1,4 +1,5 @@
 import {
+  dealSingleCard,
   addCardToHandArr,
   updateScore,
   calculateHandScore,
@@ -129,12 +130,6 @@ function dealInitialCards(GameState) {
   }
 }
 
-function dealSingleCard(GameState, handName, staticCardForTesting) {
-  const card = addCardToHandArr(GameState, handName, staticCardForTesting);
-  dealCardInUI(handName, card);
-  // notifyObservers();
-}
-
 function playerHit() {
   let handName = GameState.focusHand;
 
@@ -170,7 +165,7 @@ function playerStand() {
 
   if (!GameState.split) {
     dealerAction(GameState);
-    determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
+    // determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
 
     updateBankrollDisplay(GameState.bankroll);
   } else if (GameState.split) {

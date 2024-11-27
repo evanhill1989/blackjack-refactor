@@ -149,7 +149,7 @@ export function outcomeAnnouncement(GameState) {
       ? GameState.playerHandOneOutcome
       : GameState.playerHandTwoOutcome;
 
-  if (outcome === "bust") {
+  if (outcome !== "") {
     const tempDiv = document.createElement("div");
     const outcomeHTML = `
     <div class="outcome-message">
@@ -218,19 +218,28 @@ export function setPreviewHand(GameState) {
   DOMElements.previewScore.textContent = GameState.playerHandTwoScore;
 }
 
-export function togglePreviewFocus(GameState) {
-  const focusHand = GameState.focusHand;
-  const previewHand = GameState.previewHand;
-  console.log(focusHand, "in togglePreviewFocus");
-  focusHand === "playerHandOne"
-    ? (GameState.focusHand = "playerHandTwo")
-    : (GameState.focusHand = "playerHandOne");
-  previewHand === "playerHandOne"
-    ? (GameState.previewHand = "playerHandTwo")
-    : (GameState.previewHand = "playerHandOne");
-  notifyObservers(); // Because we are actually changing state "manually" above.
-  setFocusHand(GameState);
-  setPreviewHand(GameState);
+export function togglePreviewFocus(GameState, toggleToFocus, toggleToPreview) {
+  if (toggleToFocus) {
+    GameState.focusHand = toggleToFocus;
+    GameState.previewHand = toggleToPreview || null;
+    notifyObservers();
+    setFocusHand(GameState);
+    setPreviewHand(GameState);
+  } else {
+    const focusHand = GameState.focusHand;
+    const previewHand = GameState.previewHand;
+    console.log(focusHand, "in togglePreviewFocus");
+    focusHand === "playerHandOne"
+      ? (GameState.focusHand = "playerHandTwo")
+      : (GameState.focusHand = "playerHandOne");
+    previewHand === "playerHandOne"
+      ? (GameState.previewHand = "playerHandTwo")
+      : (GameState.previewHand = "playerHandOne");
+    notifyObservers(); // Because we are actually changing state "manually" above.
+    setFocusHand(GameState);
+    setPreviewHand(GameState);
+  }
+
   updateScoreDisplay(GameState);
 }
 
@@ -250,6 +259,11 @@ export function mapOverHand(hand, GameState) {
 }
 
 export function showdown() {}
+
+export function flipDealerHoleCardUp() {
+  // DOMElements.dealerHoleCard.classList.remove("hidden");
+  // DOMElements.dealerHoleCard.classList.add("visible");
+}
 
 export function toggleVisibility(element) {
   if (element.classList.contains("hidden")) {
