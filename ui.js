@@ -40,9 +40,10 @@ export function toggleView(GameState) {
   }
 }
 
-export function updateBankrollDisplay(state) {
-  DOMElements.bankrollDisplay.textContent = state.bankroll;
-  DOMElements.bankrollTabDisplay.textContent = state.bankroll;
+export function updateBankrollDisplay(GameState) {
+  console.log(GameState.bankroll, "bankroll in updateBankrollDisplay");
+  DOMElements.bankrollDisplay.textContent = GameState.bankroll;
+  DOMElements.bankrollTabDisplay.textContent = GameState.bankroll;
 }
 
 export function getWagerInput() {
@@ -67,11 +68,11 @@ export async function dealCardInUI(handName, card) {
   const cardPosition = hand.length - 1;
   const cardPositionAdjustment = cardPosition * 1;
 
+  const cardHTML = generateCardHTML(card, cardPosition);
+
   const cardDiv = generateCardDiv(cardPositionAdjustment);
 
   cardDiv.classList.add("card-div");
-
-  const cardHTML = generateCardHTML(card, cardPosition);
 
   cardDiv.innerHTML = cardHTML;
   // Determine the hand container based on `handName`
@@ -167,6 +168,8 @@ export function outcomeAnnouncement(GameState) {
 
 export function clearHandHTML() {
   DOMElements.focusHand.innerHTML = "";
+  DOMElements.dealerHand.innerHTML = "";
+  DOMElements.previewHand.innerHTML = "";
 }
 
 // SPLIT THINGS

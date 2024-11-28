@@ -184,25 +184,35 @@ export function handleBust(GameState) {
   }
   console.log("deadSplitHand at bottom of handleBust", GameState.deadSplitHand);
 }
+
 export function dealerAction(GameState) {
   updateGameState("dealerHoleCardExposed", true);
+  let nextAction = "";
   if (GameState.dealerScore < 17) {
-    dealSingleCard(GameState, "dealerHand");
+    dealSingleCard(GameState, "dealerHand", {
+      suit: "♠",
+      rank: "8",
+      value: 8,
+    });
     // This is imported into script so I don't have access to it here
     // cause I'm referencing dealSingleCard from inside this file like when i run dealerAction in splitStand()
     updateScore(GameState);
     updateScoreDisplay(GameState);
-    dealerAction(GameState);
+    return dealerAction(GameState);
   } else if (GameState.dealerScore >= 17 && GameState.dealerScore <= 21) {
     console.log("Dealer Stands in dealerAction!");
-    updateGameState("actionState", "showdown");
-    showdown(GameState);
+    // updateGameState("actionState", "showdown");
+    nextAction = "showdown";
   } else if (GameState.dealerScore > 21) {
     console.log("Dealer BUSTs!");
     updateGameState("isDealerHandBust", true);
+    nextAction = "showdown";
   } else {
     console.error("Error: Invalid outcome inside dealerAction function");
+    nextAction = "error";
   }
+  console.log("nextAction in dealerAction", nextAction);
+  return nextAction;
 }
 
 export function showdown(GameState) {

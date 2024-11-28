@@ -130,6 +130,7 @@ export function updateBankroll(GameState) {
 }
 
 export function resetGameState(GameState) {
+  console.log("in resetGameState", GameState);
   GameState.playerHandOne = [];
   GameState.currentBet = 0;
   GameState.playerHandOne = [];
@@ -154,6 +155,7 @@ export function resetGameState(GameState) {
   GameState.testState = "";
   GameState.deck = deck;
   // GameState.observers = [];
+  console.log(GameState.bankroll, "bankroll in state.js end resetGameState");
 }
 
 export function splitHandArr(GameState) {

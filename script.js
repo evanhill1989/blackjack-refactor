@@ -7,6 +7,7 @@ import {
   checkBust,
   dealerAction,
   determineOutcome,
+  showdown,
   checkCanDouble,
   checkCanSplit,
   splitStand,
@@ -63,7 +64,8 @@ const splitBtn = document.getElementById("split-btn");
 const doubleBtn = document.getElementById("double-btn");
 const standBtn = document.getElementById("stand-btn");
 
-updateBankrollDisplay(GameState.bankroll);
+console.log(GameState.bankroll, "bankroll in script.js");
+updateBankrollDisplay(GameState);
 
 wagerForm.addEventListener("submit", startNewHand);
 
@@ -164,10 +166,17 @@ function playerStand() {
   // will change if split is implemented, so we'd go to the other active player hand instead of dealerAction()
 
   if (!GameState.split) {
-    dealerAction(GameState);
+    const nextAction = dealerAction(GameState);
+    console.log(nextAction, "nextAction in playerStand");
     // determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
-
-    updateBankrollDisplay(GameState.bankroll);
+    if (nextAction === "showdown") {
+      console.log("showdown in playerStand");
+      showdown(GameState);
+      updateGameState("view", "wager");
+      resetGameState(GameState);
+      // updateBankrollDisplay(GameState); // running after resetGame - would like to run inside of it though.
+    }
+    // updateBankrollDisplay(GameState.bankroll);
   } else if (GameState.split) {
     splitStand(GameState);
     setFocusHand(GameState);
