@@ -10,6 +10,7 @@ import {
   showdown,
   checkCanDouble,
   checkCanSplit,
+  toggleSplitHands,
   splitStand,
   handleBust,
 } from "./gameLogic.js";
@@ -28,7 +29,7 @@ import {
   splitStandUI,
   setFocusHand,
   setPreviewHand,
-  togglePreviewFocus,
+  togglePreviewFocusDisplay,
 } from "./ui.js";
 
 import {
@@ -91,8 +92,6 @@ function startNewHand(event) {
   updateGameState("view", "game-board");
 
   updateGameState("focusHandScore", GameState.playerHandOneScore);
-
-  console.log(GameState.focusHandScore, "focusHandScore in startNewHand");
 }
 
 function dealInitialCards(GameState) {
@@ -146,7 +145,10 @@ function playerHit() {
 function playerSplit() {
   updateGameState("split", true);
   updateGameState("bankroll", GameState.bankroll - GameState.currentBet);
+
   splitHandArr(GameState);
+  updateGameState("focusHand", "playerHandOne");
+  updateGameState("previewHand", "playerHandTwo");
 
   updateScoreDisplay(GameState);
   splitUI(GameState);
@@ -174,13 +176,10 @@ function playerStand() {
       showdown(GameState);
       updateGameState("view", "wager");
       resetGameState(GameState);
-      // updateBankrollDisplay(GameState); // running after resetGame - would like to run inside of it though.
     }
-    // updateBankrollDisplay(GameState.bankroll);
   } else if (GameState.split) {
-    splitStand(GameState);
-    setFocusHand(GameState);
-    setPreviewHand(GameState);
+    console.log("!!!!!!!!!!!!!! UNDER CONSTRUCTION !!!!!!");
+    toggleSplitHands(GameState);
 
     // splitStandUI(GameState); Might not be needed .
 

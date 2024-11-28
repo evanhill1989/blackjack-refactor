@@ -1,7 +1,7 @@
 import { GameState, resetGameState, updateGameState } from "./state.js";
 import {
   outcomeAnnouncement,
-  togglePreviewFocus,
+  togglePreviewFocusDisplay,
   dealCardInUI,
   updateScoreDisplay,
 } from "./ui.js";
@@ -64,6 +64,16 @@ export function checkCanDouble(GameState) {
 }
 
 // SPLIT
+
+export function toggleSplitHands(GameState) {
+  GameState.focusHand === "playerHandOne"
+    ? updateGameState("focusHand", "playerHandTwo")
+    : updateGameState("focusHand", "playerHandOne");
+  GameState.previewHand === "playerHandOne"
+    ? updateGameState("previewHand", "playerHandTwo")
+    : updateGameState("previewHand", "playerHandOne");
+  togglePreviewFocusDisplay(GameState);
+}
 // *observer
 export function checkCanSplit(GameState) {
   if (
@@ -75,21 +85,6 @@ export function checkCanSplit(GameState) {
 }
 
 export function splitStand(GameState) {
-  const action = GameState.actionState;
-
-  if (action === "splitHandOneAction") {
-    GameState.actionState = "splitHandTwoAction";
-    GameState.focusHand = "playerHandTwo";
-    GameState.previewHand = "playerHandOne";
-    return; // potential trouble if the following else if runs and interprets the actionState
-  } else if (action === "splitHandTwoAction") {
-    dealerAction(GameState); // this just deals cards and sets dealers handArr, and score state
-    determineOutcome(GameState, GameState.playerHandTwoScore);
-    if (GameState.playerHandOneScore != "bust") {
-      GameState.actionState = "splitHandOneAction"; // Will i have issues assigning new value to GameState this deep?
-    }
-  }
-
   return action;
 }
 
@@ -220,14 +215,14 @@ export function showdown(GameState) {
     GameState.playerHandOneOutcome !== "resolved" ||
     GameState.playerHandOneOutcome !== "bust"
   ) {
-    togglePreviewFocus(GameState, "playerHandOne", "playerHandTwo");
+    togglePreviewFocusDisplay(GameState, "playerHandOne", "playerHandTwo");
     determineOutcome(GameState, GameState.playerHandOneScore);
   }
   // first compare handOne
   // ------setFocusHand("playerHandOne");
   // ------ determinOutcome
   // ------  outcomeAnnouncement for handOne
-  // togglePreviewFocus
+  // togglePreviewFocusDisplay
   // then compare handTwo-
   // ------setFocusHand("playerHandOne");
   // ------ determinOutcome

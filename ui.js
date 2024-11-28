@@ -1,5 +1,7 @@
 import { GameState, notifyObservers, updateGameState } from "./state.js";
 
+import { toggleSplitHands } from "./gameLogic.js";
+
 export const DOMElements = {
   mainElement: document.querySelector("main"),
   actionsDiv: document.querySelector(".in-hand-actions"),
@@ -41,7 +43,6 @@ export function toggleView(GameState) {
 }
 
 export function updateBankrollDisplay(GameState) {
-  console.log(GameState.bankroll, "bankroll in updateBankrollDisplay");
   DOMElements.bankrollDisplay.textContent = GameState.bankroll;
   DOMElements.bankrollTabDisplay.textContent = GameState.bankroll;
 }
@@ -191,7 +192,7 @@ export function splitUI(GameState) {
   const testButton = document.createElement("button");
   testButton.textContent = "Test Button";
   testButton.addEventListener("click", () => {
-    togglePreviewFocus(GameState);
+    toggleSplitHands(GameState);
   });
   DOMElements.actionsDiv.appendChild(testButton);
 }
@@ -221,7 +222,11 @@ export function setPreviewHand(GameState) {
   DOMElements.previewScore.textContent = GameState.playerHandTwoScore;
 }
 
-export function togglePreviewFocus(GameState, toggleToFocus, toggleToPreview) {
+export function togglePreviewFocusDisplay(
+  GameState,
+  toggleToFocus,
+  toggleToPreview
+) {
   if (toggleToFocus) {
     GameState.focusHand = toggleToFocus;
     GameState.previewHand = toggleToPreview || null;
@@ -229,16 +234,6 @@ export function togglePreviewFocus(GameState, toggleToFocus, toggleToPreview) {
     setFocusHand(GameState);
     setPreviewHand(GameState);
   } else {
-    const focusHand = GameState.focusHand;
-    const previewHand = GameState.previewHand;
-    console.log(focusHand, "in togglePreviewFocus");
-    focusHand === "playerHandOne"
-      ? (GameState.focusHand = "playerHandTwo")
-      : (GameState.focusHand = "playerHandOne");
-    previewHand === "playerHandOne"
-      ? (GameState.previewHand = "playerHandTwo")
-      : (GameState.previewHand = "playerHandOne");
-    notifyObservers(); // Because we are actually changing state "manually" above.
     setFocusHand(GameState);
     setPreviewHand(GameState);
   }
