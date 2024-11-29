@@ -126,7 +126,7 @@ export function generateCardHTML(card) {
     return cardHTML;
   }
 }
-export function updateScoreDisplay(GameState) {
+export function updateScoresDisplay(GameState) {
   const focusScoreElement = DOMElements.focusScore;
   const previewScoreElement = DOMElements.previewScore;
   const dealerScoreElement = DOMElements.dealerScore;
@@ -136,11 +136,11 @@ export function updateScoreDisplay(GameState) {
   dealerScoreElement.textContent = GameState.dealerScore;
   // console.log(
   //   GameState.focusScore,
-  //   "$$$$$$$$$$$$ <------ focusScore in updateScoreDisplay"
+  //   "$$$$$$$$$$$$ <------ focusScore in updateScoresDisplay"
   // );
   // console.log(
   //   GameState.playerHandOneScore,
-  //   "$$$$$$$$$$$$$ <------ playerHandOneScore in updateScoreDisplay"
+  //   "$$$$$$$$$$$$$ <------ playerHandOneScore in updateScoresDisplay"
   // );
 }
 
@@ -238,7 +238,7 @@ export function togglePreviewFocusDisplay(
     setPreviewHand(GameState);
   }
 
-  updateScoreDisplay(GameState);
+  updateScoresDisplay(GameState);
 }
 
 export function mapOverHand(hand, GameState) {

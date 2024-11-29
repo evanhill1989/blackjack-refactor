@@ -1,7 +1,6 @@
 import {
   dealSingleCard,
   addCardToHandArr,
-  updateScore,
   calculateHandScore,
   validateWager,
   checkBust,
@@ -22,7 +21,7 @@ import {
   getWagerInput,
   dealCardInUI,
   generateCardHTML,
-  updateScoreDisplay,
+  updateScoresDisplay,
   outcomeAnnouncement,
   resetUI,
   splitUI,
@@ -35,8 +34,11 @@ import {
 import {
   GameState,
   updateGameState,
+  updateScores,
   resetGameState,
   splitHandArr,
+  getFocusHand,
+  setHandState,
   addObserver,
   updateBankroll,
   notifyObservers,
@@ -48,14 +50,14 @@ addObserver(updateBankrollDisplay);
 addObserver(outcomeAnnouncement);
 addObserver(toggleView);
 addObserver(toggleSplitBtn);
-// addObserver(updateScoreDisplay); keeping this out of observers. Feels like some race conditions with updateScore might happen, and I want fine tuning of timing of display updates anyway.
+// addObserver(updateScoresDisplay); keeping this out of observers. Feels like some race conditions with updateScores might happen, and I want fine tuning of timing of display updates anyway.
 
 // gameState observers
 addObserver(updateBankroll);
 
 // gameLogic observers
 addObserver(checkCanSplit);
-addObserver(updateScore);
+addObserver(updateScores);
 
 const wagerForm = document.querySelector(".wager-form");
 
@@ -90,8 +92,6 @@ function startNewHand(event) {
   updateGameState("bankroll", GameState.bankroll - wager);
   updateGameState("actionState", "running");
   updateGameState("view", "game-board");
-
-  updateGameState("focusHandScore", GameState.playerHandOneScore);
 }
 
 function dealInitialCards(GameState) {
@@ -99,25 +99,25 @@ function dealInitialCards(GameState) {
 
   let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
   dealSingleCard(GameState, "playerHandOne", staticCardForTesting);
-  updateScore(GameState); // !!!!! THESE WILL CHANGE WHEN I FINE TUNE UI TIMING.
-  updateScoreDisplay(GameState);
+
+  updateScoresDisplay(GameState);
 
   staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
   dealSingleCard(GameState, "playerHandOne", staticCardForTesting);
-  updateScore(GameState);
-  updateScoreDisplay(GameState);
+
+  updateScoresDisplay(GameState);
 
   // dealerHand
 
   staticCardForTesting = { suit: "♣", rank: "4", value: 4 };
   dealSingleCard(GameState, "dealerHand", staticCardForTesting);
-  updateScore(GameState);
-  updateScoreDisplay(GameState);
+
+  updateScoresDisplay(GameState);
 
   staticCardForTesting = { suit: "♥", rank: "9", value: 9 };
   dealSingleCard(GameState, "dealerHand", staticCardForTesting);
-  updateScore(GameState);
-  updateScoreDisplay(GameState);
+
+  updateScoresDisplay(GameState);
 
   const canDouble = checkCanDouble(GameState);
   const canSplit = checkCanSplit(GameState);
@@ -135,10 +135,10 @@ function playerHit() {
   let handName = GameState.focusHand;
 
   dealSingleCard(GameState, handName);
-  // updateScoreDisplay(GameState);
+  // updateScoresDisplay(GameState);
 
   notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
-  updateScoreDisplay(GameState);
+  updateScoresDisplay(GameState);
   checkBust(GameState);
 }
 
@@ -150,7 +150,7 @@ function playerSplit() {
   updateGameState("focusHand", "playerHandOne");
   updateGameState("previewHand", "playerHandTwo");
 
-  updateScoreDisplay(GameState);
+  updateScoresDisplay(GameState);
   splitUI(GameState);
 
   updateGameState("canSplit", false);
@@ -160,31 +160,39 @@ function playerDouble() {
   GameState.double = true;
   GameState.currentBet *= 2;
 
-  updateScore(GameState);
-  updateScoreDisplay(GameState);
+  updateScores(GameState);
+  updateScoresDisplay(GameState);
 }
 
 function playerStand() {
   // will change if split is implemented, so we'd go to the other active player hand instead of dealerAction()
+  let handName = GameState.focusHand;
+  let handScore = GameState.focusHandScore;
+  console.log(handName, "hand in playerStand");
+  setHandState(handName, "standing");
+  shouldSwitchFocusHand(handName) ? toggleSplitHands() : showdown();
 
-  if (!GameState.split) {
-    const nextAction = dealerAction(GameState);
-    console.log(nextAction, "nextAction in playerStand");
-    // determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
-    if (nextAction === "showdown") {
-      console.log("showdown in playerStand");
-      showdown(GameState);
-      updateGameState("view", "wager");
-      resetGameState(GameState);
-    }
-  } else if (GameState.split) {
-    console.log("!!!!!!!!!!!!!! UNDER CONSTRUCTION !!!!!!");
-    toggleSplitHands(GameState);
+  // if (!GameState.split) {
+  //   const nextAction = dealerAction(GameState);
+  //   console.log(nextAction, "nextAction in playerStand");
+  //   // determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
+  //   if (nextAction === "showdown") {
+  //     console.log("showdown in playerStand");
+  //     showdown(GameState);
+  //     updateGameState("view", "wager");
+  //     resetGameState(GameState);
+  //   }
+  // } else if (GameState.split) {
+  //   console.log("!!!!!!!!!!!!!! UNDER CONSTRUCTION !!!!!!");
+  //   showdown(GameState);
+  //   toggleSplitHands(GameState);
+  //   // handOne Showdown
+  //   // handTwo Showdown
 
-    // splitStandUI(GameState); Might not be needed .
+  //   // splitStandUI(GameState); Might not be needed .
 
-    // splitStandUI(GameState);
-  }
+  //   // splitStandUI(GameState);
+  // }
 }
 
 // dealInitialCards()

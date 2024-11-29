@@ -1,5 +1,7 @@
 // state.js
 
+import { calculateHandScore } from "./gameLogic.js";
+
 const deck = [
   { suit: "♠", rank: "A", value: 11 },
   { suit: "♠", rank: "2", value: 2 },
@@ -68,7 +70,7 @@ export const GameState = {
   double: false,
   deadSplitHand: false,
   focusHand: "playerHandOne",
-  previewHand: "playerHandTwo",
+  previewHand: null,
   focusHandScore: 0,
   previewHandScore: 0,
   isPlayerHandOneBust: false,
@@ -76,6 +78,10 @@ export const GameState = {
   isDealerHandBust: false,
   playerHandOneOutcome: "", // win, lose, push,bust, resolved
   playerHandTwoOutcome: "", // win, lose, push,bust, resolved
+
+  handOneState: "", // actionOn, standing, bust, win, lose, push, inShowdown
+  handTwoState: null, // actionOn, standing, bust, win, lose, push, inShowdown
+  handDealerState: "", // actionOn, bust, win, lose, push
 
   dealerScore: 0,
   playerHandOneScore: 0,
@@ -168,4 +174,56 @@ export function splitHandArr(GameState) {
 
 export function updateDeck() {
   /*...*/
+}
+// SCORE
+export function updateScores() {
+  updateGameState("dealerScore", calculateHandScore(GameState.dealerHand));
+  updateGameState(
+    "playerHandOneScore",
+    calculateHandScore(GameState.playerHandOne)
+  );
+  updateGameState(
+    "playerHandTwoScore",
+    calculateHandScore(GameState.playerHandTwo)
+  );
+
+  let focusHandName = GameState.focusHand;
+  let previewHandName = GameState.previewHand;
+
+  focusHandName === "playerHandOne"
+    ? updateGameState("focusHandScore", GameState.playerHandOneScore)
+    : updateGameState("focusHandScore", GameState.playerHandTwoScore);
+
+  if (previewHandName) {
+    previewHandName === "playerHandOne"
+      ? updateGameState("previewHandScore", GameState.playerHandOneScore)
+      : updateGameState("previewHandScore", GameState.playerHandTwoScore);
+  }
+}
+
+export function setFocusHandScore() {}
+
+// HANDS
+
+export function setHandState(handName, state) {
+  if (handName === "playerHandOne") {
+    updateGameState("handOneState", state);
+  } else if (handName === "playerHandTwo") {
+    updateGameState("handTwoState", state);
+  } else if (handName === "dealerHand") {
+    updateGameState("handDealerState", state);
+  } else {
+    console.error("Invalid hand name passed from setHandState()");
+  }
+}
+
+// Split State
+export function getFocusHand() {
+  let hand = GameState.focusHand;
+
+  if (hand === "playerHandOne") {
+    return GameState.playerHandOne;
+  } else if (hand === "playerHandTwo") {
+    return GameState.playerHandTwo;
+  }
 }

@@ -3,7 +3,7 @@ import {
   outcomeAnnouncement,
   togglePreviewFocusDisplay,
   dealCardInUI,
-  updateScoreDisplay,
+  updateScoresDisplay,
 } from "./ui.js";
 
 export function dealSingleCard(GameState, handName, staticCardForTesting) {
@@ -88,22 +88,21 @@ export function splitStand(GameState) {
   return action;
 }
 
-// SCORE
-export function updateScore(GameState) {
-  GameState.dealerScore = calculateHandScore(GameState.dealerHand);
-  GameState.playerHandOneScore = calculateHandScore(GameState.playerHandOne);
-  GameState.playerHandTwoScore = calculateHandScore(GameState.playerHandTwo);
-  let focusHand = GameState.focusHand;
-  let previewHand = GameState.previewHand;
-
-  if (focusHand === "playerHandOne") {
-    GameState.focusScore = GameState.playerHandOneScore;
-    GameState.previewScore = GameState.playerHandTwoScore || null;
+export function shouldSwitchFocusHand(handName) {
+  // Could jam these all in one statement with an or chain
+  if (GameState.split === false) {
+    return false;
+  } else if (
+    GameState.handTwoState === "bust" ||
+    GameState.handOneState === "bust"
+  ) {
+    return false;
   } else {
-    GameState.focusScore = GameState.playerHandTwoScore;
-    GameState.previewScore = GameState.playerHandOneScore;
+    return true;
   }
 }
+
+// SCORE
 
 export function calculateHandScore(hand) {
   // Almost seems like this should be a method on GameState ?
