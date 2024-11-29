@@ -227,7 +227,8 @@ export function determineOutcome() {
     console.error("Error: Invalid outcome inside determine outcome function");
   }
 
-  let outcome = handOutcome;
-  return outcome; // returns to outcomeAnnouncement(GameState, outcome)
+  updateGameState(handOutcome, "resolved");
+
+  return handOutcome; // returns to outcomeAnnouncement(GameState, outcome)
   // updateBankrollDisplay(GameState.bankroll);
 }

@@ -56,7 +56,7 @@ addObserver(toggleSplitBtn);
 addObserver(updateBankroll);
 
 // gameLogic observers
-addObserver(checkCanSplit);
+// addObserver(checkCanSplit);
 addObserver(updateScores);
 
 const wagerForm = document.querySelector(".wager-form");
@@ -170,6 +170,7 @@ function playerStand() {
   console.log(handName, "hand in playerStand");
   setHandState(handName, "standing");
   shouldSwitchFocusHand(handName) ? toggleSplitHands() : determineOutcome();
+  resolveGame();
 }
 
 // dealInitialCards()
@@ -188,3 +189,10 @@ function playerStand() {
 // More specific functions
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/
+export function resolveGame() {
+  console.log("Did resolve run?");
+  if (GameState.handOneState === "resolved") {
+    resetGameState();
+  }
+  console.log(GameState);
+}

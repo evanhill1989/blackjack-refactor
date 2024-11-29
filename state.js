@@ -79,8 +79,8 @@ export const GameState = {
   playerHandOneOutcome: "", // win, lose, push,bust, resolved
   playerHandTwoOutcome: "", // win, lose, push,bust, resolved
 
-  handOneState: "", // actionOn, standing, bust, win, lose, push, inShowdown
-  handTwoState: null, // actionOn, standing, bust, win, lose, push, inShowdown
+  handOneState: "", // actionOn, standing, bust, win, lose, push, resolved
+  handTwoState: null, // actionOn, standing, bust, win, lose, push, resolved
   handDealerState: "", // actionOn, bust, win, lose, push
 
   dealerScore: 0,
@@ -92,6 +92,39 @@ export const GameState = {
   deck: deck,
   observers: [],
 };
+
+export function resetGameState() {
+  GameState.playerHandOne = [];
+  GameState.currentBet = 0;
+  GameState.playerHandOne = [];
+  GameState.playerHandTwo = [];
+  GameState.canSplit = false;
+  GameState.canDouble = false;
+  GameState.split = false;
+  GameState.double = false;
+  GameState.focusHand = "playerHandOne";
+  GameState.previewHand = "playerHandTwo";
+  GameState.isPlayerHandOneBust = false;
+  GameState.isPlayerHandTwoBust = false;
+  GameState.isDealerHandBust = false;
+  GameState.playerHandOneOutcome = ""; // win; lose; push;bust; resolved
+  GameState.playerHandTwoOutcome = ""; // win; lose; push;bust; resolved
+
+  GameState.handOneState = ""; // actionOn, standing, bust, win, lose, push, resolved
+  GameState.handTwoState = null; // actionOn, standing, bust, win, lose, push, resolved
+  GameState.handDealerState = ""; // actionOn, bust, win, lose, push
+
+  GameState.dealerHand = [];
+  GameState.dealerScore = 0;
+  GameState.playerHandOneScore = 0;
+  GameState.playerHandTwoScore = null;
+  GameState.actionState = "wager";
+  GameState.view = "wager";
+  GameState.testState = "";
+  GameState.deck = deck;
+
+  notifyObservers();
+}
 
 // Add an observer
 export function addObserver(observer) {
@@ -133,35 +166,6 @@ export function updateBankroll(GameState) {
   } else if (handOneOutcome === "push" || handTwoOutcome === "push") {
     GameState.bankroll += GameState.currentBet * 1;
   }
-}
-
-export function resetGameState(GameState) {
-  console.log("in resetGameState", GameState);
-  GameState.playerHandOne = [];
-  GameState.currentBet = 0;
-  GameState.playerHandOne = [];
-  GameState.playerHandTwo = [];
-  GameState.canSplit = false;
-  GameState.canDouble = false;
-  GameState.split = false;
-  GameState.double = false;
-  GameState.focusHand = "playerHandOne";
-  GameState.previewHand = "playerHandTwo";
-  GameState.isPlayerHandOneBust = false;
-  GameState.isPlayerHandTwoBust = false;
-  GameState.isDealerHandBust = false;
-  GameState.playerHandOneOutcome = ""; // win; lose; push;bust; resolved
-  GameState.playerHandTwoOutcome = ""; // win; lose; push;bust; resolved
-  GameState.dealerHand = [];
-  GameState.dealerScore = 0;
-  GameState.playerHandOneScore = 0;
-  GameState.playerHandTwoScore = null;
-  GameState.actionState = "wager";
-
-  GameState.testState = "";
-  GameState.deck = deck;
-  // GameState.observers = [];
-  console.log(GameState.bankroll, "bankroll in state.js end resetGameState");
 }
 
 export function splitHandArr(GameState) {
