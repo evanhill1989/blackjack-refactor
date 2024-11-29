@@ -126,14 +126,17 @@ export function generateCardHTML(card) {
     return cardHTML;
   }
 }
-export function updateScoresDisplay(GameState) {
+export function updateScoresDisplay() {
   const focusScoreElement = DOMElements.focusScore;
   const previewScoreElement = DOMElements.previewScore;
   const dealerScoreElement = DOMElements.dealerScore;
 
-  focusScoreElement.textContent = GameState.focusScore;
-  previewScoreElement.textContent = GameState.previewScore || "";
-  dealerScoreElement.textContent = GameState.dealerScore;
+  focusScoreElement.textContent = GameState.focusHandScore;
+  previewScoreElement.textContent = GameState.previewHandScore || "";
+  if (GameState.dealerHoleCardExposed === true) {
+    dealerScoreElement.textContent = GameState.dealerScore;
+  }
+
   // console.log(
   //   GameState.focusScore,
   //   "$$$$$$$$$$$$ <------ focusScore in updateScoresDisplay"
@@ -144,14 +147,19 @@ export function updateScoresDisplay(GameState) {
   // );
 }
 
-export function outcomeAnnouncement(GameState) {
+export function outcomeAnnouncement() {
   const focusHand = GameState.focusHand;
-  let outcome =
+  const outcome =
     focusHand === "playerHandOne"
-      ? GameState.playerHandOneOutcome
-      : GameState.playerHandTwoOutcome;
+      ? GameState.handOneState
+      : GameState.handTwoState;
 
-  if (outcome !== "") {
+  if (
+    outcome === "push" ||
+    outcome === "win" ||
+    outcome === "lose" ||
+    outcome === "bust"
+  ) {
     const tempDiv = document.createElement("div");
     const outcomeHTML = `
     <div class="outcome-message">
@@ -255,8 +263,6 @@ export function mapOverHand(hand, GameState) {
   });
   return newHandHTMLArr;
 }
-
-export function showdown() {}
 
 export function flipDealerHoleCardUp() {
   // DOMElements.dealerHoleCard.classList.remove("hidden");

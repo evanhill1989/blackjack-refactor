@@ -1,4 +1,9 @@
-import { GameState, resetGameState, updateGameState } from "./state.js";
+import {
+  GameState,
+  notifyObservers,
+  resetGameState,
+  updateGameState,
+} from "./state.js";
 import {
   outcomeAnnouncement,
   togglePreviewFocusDisplay,
@@ -179,73 +184,44 @@ export function handleBust(GameState) {
   console.log("deadSplitHand at bottom of handleBust", GameState.deadSplitHand);
 }
 
-export function dealerAction(GameState) {
+export function dealerAction() {
   updateGameState("dealerHoleCardExposed", true);
-  let nextAction = "";
+
   if (GameState.dealerScore < 17) {
     dealSingleCard(GameState, "dealerHand", {
       suit: "♠",
       rank: "8",
       value: 8,
     });
-    // This is imported into script so I don't have access to it here
-    // cause I'm referencing dealSingleCard from inside this file like when i run dealerAction in splitStand()
-    updateScore(GameState);
-    updateScoreDisplay(GameState);
-    return dealerAction(GameState);
+
+    notifyObservers(); // because I'm not closing this function before calling it again, so i have to notify observers manually before I call it again to get the updated dealerScore state
+    updateScoresDisplay();
+    dealerAction();
   } else if (GameState.dealerScore >= 17 && GameState.dealerScore <= 21) {
-    console.log("Dealer Stands in dealerAction!");
-    // updateGameState("actionState", "showdown");
-    nextAction = "showdown";
+    return;
   } else if (GameState.dealerScore > 21) {
     console.log("Dealer BUSTs!");
     updateGameState("isDealerHandBust", true);
-    nextAction = "showdown";
   } else {
     console.error("Error: Invalid outcome inside dealerAction function");
-    nextAction = "error";
   }
-  console.log("nextAction in dealerAction", nextAction);
-  return nextAction;
 }
 
-export function showdown(GameState) {
-  if (
-    GameState.playerHandOneOutcome !== "resolved" ||
-    GameState.playerHandOneOutcome !== "bust"
-  ) {
-    togglePreviewFocusDisplay(GameState, "playerHandOne", "playerHandTwo");
-    determineOutcome(GameState, GameState.playerHandOneScore);
-  }
-  // first compare handOne
-  // ------setFocusHand("playerHandOne");
-  // ------ determinOutcome
-  // ------  outcomeAnnouncement for handOne
-  // togglePreviewFocusDisplay
-  // then compare handTwo-
-  // ------setFocusHand("playerHandOne");
-  // ------ determinOutcome
-  // ------  outcomeAnnouncement for handOne
-}
-
-export function determineOutcome(GameState, handScore) {
-  // let determineOutcome handle any hand, just return outcome to where it was called.
-  console.log("determineOutcome called just once?");
-  const focusHand = GameState.focusHand;
-  let handOutcome =
-    focusHand === "playerHandOne"
-      ? "playerHandOneOutcome"
-      : "playerHandTwoOutcome";
+export function determineOutcome() {
+  const handOutcome =
+    GameState.focusHand === "playerHandOne" ? "handOneState" : "handTwoState";
+  dealerAction();
   if (GameState.dealerScore === "bust") {
     console.log("Dealer BUSTs!");
     updateGameState(handOutcome, "win");
-  } else if (handScore === "bust") {
+  } else if (GameState.focusHandScore === "bust") {
     console.log("Player BUSTs! in determineOutcome");
-  } else if (GameState.dealerScore > handScore) {
+    // shouldn't ever really run this code, as a player bust should be handled by handleBust() preempting the need to call determineOutcome()
+  } else if (GameState.dealerScore > GameState.focusHandScore) {
     updateGameState(handOutcome, "lose");
-  } else if (GameState.dealerScore < handScore) {
+  } else if (GameState.dealerScore < GameState.focusHandScore) {
     updateGameState(handOutcome, "win");
-  } else if (GameState.dealerScore === handScore) {
+  } else if (GameState.dealerScore === GameState.focusHandScore) {
     updateGameState(handOutcome, "push");
   } else {
     console.error("Error: Invalid outcome inside determine outcome function");

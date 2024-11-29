@@ -6,9 +6,9 @@ import {
   checkBust,
   dealerAction,
   determineOutcome,
-  showdown,
   checkCanDouble,
   checkCanSplit,
+  shouldSwitchFocusHand,
   toggleSplitHands,
   splitStand,
   handleBust,
@@ -100,24 +100,24 @@ function dealInitialCards(GameState) {
   let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
   dealSingleCard(GameState, "playerHandOne", staticCardForTesting);
 
-  updateScoresDisplay(GameState);
+  updateScoresDisplay();
 
   staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
   dealSingleCard(GameState, "playerHandOne", staticCardForTesting);
 
-  updateScoresDisplay(GameState);
+  updateScoresDisplay();
 
   // dealerHand
 
   staticCardForTesting = { suit: "♣", rank: "4", value: 4 };
   dealSingleCard(GameState, "dealerHand", staticCardForTesting);
 
-  updateScoresDisplay(GameState);
+  updateScoresDisplay();
 
   staticCardForTesting = { suit: "♥", rank: "9", value: 9 };
   dealSingleCard(GameState, "dealerHand", staticCardForTesting);
 
-  updateScoresDisplay(GameState);
+  updateScoresDisplay();
 
   const canDouble = checkCanDouble(GameState);
   const canSplit = checkCanSplit(GameState);
@@ -165,34 +165,11 @@ function playerDouble() {
 }
 
 function playerStand() {
-  // will change if split is implemented, so we'd go to the other active player hand instead of dealerAction()
   let handName = GameState.focusHand;
-  let handScore = GameState.focusHandScore;
+
   console.log(handName, "hand in playerStand");
   setHandState(handName, "standing");
-  shouldSwitchFocusHand(handName) ? toggleSplitHands() : showdown();
-
-  // if (!GameState.split) {
-  //   const nextAction = dealerAction(GameState);
-  //   console.log(nextAction, "nextAction in playerStand");
-  //   // determineOutcome(GameState, GameState.playerHandOneScore); // will change to handle split logic
-  //   if (nextAction === "showdown") {
-  //     console.log("showdown in playerStand");
-  //     showdown(GameState);
-  //     updateGameState("view", "wager");
-  //     resetGameState(GameState);
-  //   }
-  // } else if (GameState.split) {
-  //   console.log("!!!!!!!!!!!!!! UNDER CONSTRUCTION !!!!!!");
-  //   showdown(GameState);
-  //   toggleSplitHands(GameState);
-  //   // handOne Showdown
-  //   // handTwo Showdown
-
-  //   // splitStandUI(GameState); Might not be needed .
-
-  //   // splitStandUI(GameState);
-  // }
+  shouldSwitchFocusHand(handName) ? toggleSplitHands() : determineOutcome();
 }
 
 // dealInitialCards()

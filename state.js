@@ -72,7 +72,7 @@ export const GameState = {
   focusHand: "playerHandOne",
   previewHand: null,
   focusHandScore: 0,
-  previewHandScore: 0,
+  previewHandScore: null,
   isPlayerHandOneBust: false,
   isPlayerHandTwoBust: false,
   isDealerHandBust: false,
