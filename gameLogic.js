@@ -70,7 +70,7 @@ export function checkCanDouble(GameState) {
 
 // SPLIT
 
-export function toggleSplitHands(GameState) {
+export function toggleSplitHands() {
   GameState.focusHand === "playerHandOne"
     ? updateGameState("focusHand", "playerHandTwo")
     : updateGameState("focusHand", "playerHandOne");
@@ -93,13 +93,14 @@ export function splitStand(GameState) {
   return action;
 }
 
-export function shouldSwitchFocusHand(handName) {
+export function shouldToggleSplitHands(handName) {
   // Could jam these all in one statement with an or chain
   if (GameState.split === false) {
     return false;
   } else if (
     GameState.handTwoState === "bust" ||
-    GameState.handOneState === "bust"
+    GameState.handOneState === "bust" ||
+    GameState.handOneState === "standing"
   ) {
     return false;
   } else {

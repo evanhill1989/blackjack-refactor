@@ -8,10 +8,10 @@ import {
   determineOutcome,
   checkCanDouble,
   checkCanSplit,
-  shouldSwitchFocusHand,
   toggleSplitHands,
   splitStand,
   handleBust,
+  shouldToggleSplitHands,
 } from "./gameLogic.js";
 
 import {
@@ -169,7 +169,8 @@ function playerStand() {
 
   console.log(handName, "hand in playerStand");
   setHandState(handName, "standing");
-  shouldSwitchFocusHand(handName) ? toggleSplitHands() : determineOutcome();
+  shouldToggleSplitHands(handName) ? toggleSplitHands() : determineOutcome();
+
   resolveGame();
 }
 
@@ -190,9 +191,7 @@ function playerStand() {
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/
 export function resolveGame() {
-  console.log("Did resolve run?");
   if (GameState.handOneState === "resolved") {
     resetGameState();
   }
-  console.log(GameState);
 }
