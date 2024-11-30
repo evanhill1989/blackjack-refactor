@@ -1,3 +1,4 @@
+import { resolveGame } from "./script.js";
 import {
   GameState,
   notifyObservers,
@@ -9,6 +10,7 @@ import {
   togglePreviewFocusDisplay,
   dealCardInUI,
   updateScoresDisplay,
+  setFocusHand,
 } from "./ui.js";
 
 export function dealSingleCard(GameState, handName, staticCardForTesting) {
@@ -70,6 +72,20 @@ export function checkCanDouble(GameState) {
 
 // SPLIT
 
+export function shouldToggleSplitHands(handName) {
+  // Could jam these all in one statement with an or chain
+  if (GameState.split === false) {
+    return false;
+  } else if (
+    GameState.handTwoState === "bust" ||
+    GameState.handOneState === "bust"
+  ) {
+    return false;
+  } else if (GameState.handOneState === "standing") {
+    return true;
+  }
+}
+
 export function toggleSplitHands() {
   GameState.focusHand === "playerHandOne"
     ? updateGameState("focusHand", "playerHandTwo")
@@ -93,19 +109,21 @@ export function splitStand(GameState) {
   return action;
 }
 
-export function shouldToggleSplitHands(handName) {
-  // Could jam these all in one statement with an or chain
-  if (GameState.split === false) {
-    return false;
-  } else if (
-    GameState.handTwoState === "bust" ||
-    GameState.handOneState === "bust" ||
-    GameState.handOneState === "standing"
-  ) {
-    return false;
-  } else {
-    return true;
-  }
+export async function splitShowdown() {
+  console.log("Are we calling splitShowdown?");
+  updateGameState("focusHand", "playerHandOne");
+  updateGameState("previewHand", "playerHandTwo");
+  togglePreviewFocusDisplay(GameState);
+  determineOutcome();
+
+  setTimeout(() => {
+    updateGameState("focusHand", "playerHandTwo");
+    updateGameState("previewHand", "playerHandOne");
+    togglePreviewFocusDisplay(GameState);
+    setTimeout(() => {
+      determineOutcome();
+    }, 1000);
+  }, 2000);
 }
 
 // SCORE

@@ -10,6 +10,7 @@ import {
   checkCanSplit,
   toggleSplitHands,
   splitStand,
+  splitShowdown,
   handleBust,
   shouldToggleSplitHands,
 } from "./gameLogic.js";
@@ -164,11 +165,20 @@ function playerDouble() {
   updateScoresDisplay(GameState);
 }
 
-function playerStand() {
+async function playerStand() {
   let handName = GameState.focusHand;
 
-  console.log(handName, "hand in playerStand");
   setHandState(handName, "standing");
+
+  if (
+    GameState.handOneState === "standing" &&
+    GameState.handTwoState === "standing"
+  ) {
+    await splitShowdown();
+
+    resolveGame();
+    return;
+  }
   shouldToggleSplitHands(handName) ? toggleSplitHands() : determineOutcome();
 
   resolveGame();
@@ -191,7 +201,15 @@ function playerStand() {
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/
 export function resolveGame() {
-  if (GameState.handOneState === "resolved") {
-    resetGameState();
-  }
+  console.log(GameState.handOneState, GameState.handTwoState),
+    "handStates in resolveGame";
+  resetGameState();
+  // if (GameState.split === true) {
+  //   if (
+  //     GameState.handOneState === "resolved" &&
+  //     GameState.handTwoState === "resolved"
+  //   ) {
+  //     resetGameState();
+  //   }
+  // }
 }
