@@ -71,8 +71,8 @@ export const GameState = {
   deadSplitHand: false,
   focusHand: "playerHandOne",
   previewHand: null,
-  focusHandScore: 0,
-  previewHandScore: null,
+  focusScore: 0,
+  previewScore: null,
   isPlayerHandOneBust: false,
   isPlayerHandTwoBust: false,
   isDealerHandBust: false,
@@ -94,7 +94,6 @@ export const GameState = {
 };
 
 export function resetGameState() {
-  GameState.playerHandOne = [];
   GameState.currentBet = 0;
   GameState.playerHandOne = [];
   GameState.playerHandTwo = [];
@@ -195,17 +194,17 @@ export function updateScores() {
   let previewHandName = GameState.previewHand;
 
   focusHandName === "playerHandOne"
-    ? updateGameState("focusHandScore", GameState.playerHandOneScore)
-    : updateGameState("focusHandScore", GameState.playerHandTwoScore);
+    ? updateGameState("focusScore", GameState.playerHandOneScore)
+    : updateGameState("focusScore", GameState.playerHandTwoScore);
 
   if (previewHandName) {
     previewHandName === "playerHandOne"
-      ? updateGameState("previewHandScore", GameState.playerHandOneScore)
-      : updateGameState("previewHandScore", GameState.playerHandTwoScore);
+      ? updateGameState("previewScore", GameState.playerHandOneScore)
+      : updateGameState("previewScore", GameState.playerHandTwoScore);
   }
 }
 
-export function setFocusHandScore() {}
+export function setFocusScore() {}
 
 // HANDS
 

@@ -9,7 +9,6 @@ import {
   checkCanDouble,
   checkCanSplit,
   toggleSplitHands,
-  splitStand,
   splitShowdown,
   handleBust,
   shouldToggleSplitHands,
@@ -62,13 +61,14 @@ addObserver(updateScores);
 
 const wagerForm = document.querySelector(".wager-form");
 
+console.log(GameState.playerHandOne, "GameState.playerHandOne in script.js");
+
 // BUTTONS
 const hitBtn = document.getElementById("hit-btn");
 const splitBtn = document.getElementById("split-btn");
 const doubleBtn = document.getElementById("double-btn");
 const standBtn = document.getElementById("stand-btn");
 
-console.log(GameState.bankroll, "bankroll in script.js");
 updateBankrollDisplay(GameState);
 
 wagerForm.addEventListener("submit", startNewHand);
@@ -95,33 +95,37 @@ function startNewHand(event) {
   updateGameState("view", "game-board");
 }
 
-function dealInitialCards(GameState) {
+function dealInitialCards() {
   // playerHand first
+  console.log(
+    GameState.playerHandOne,
+    "GameState.playerHandOne in dealInitialCards()"
+  );
 
   let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
-  dealSingleCard(GameState, "playerHandOne", staticCardForTesting);
+  dealSingleCard("playerHandOne");
 
   updateScoresDisplay();
 
   staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
-  dealSingleCard(GameState, "playerHandOne", staticCardForTesting);
+  dealSingleCard("playerHandOne");
 
   updateScoresDisplay();
 
   // dealerHand
 
   staticCardForTesting = { suit: "♣", rank: "4", value: 4 };
-  dealSingleCard(GameState, "dealerHand", staticCardForTesting);
+  dealSingleCard("dealerHand", staticCardForTesting);
 
   updateScoresDisplay();
 
   staticCardForTesting = { suit: "♥", rank: "9", value: 9 };
-  dealSingleCard(GameState, "dealerHand", staticCardForTesting);
+  dealSingleCard("dealerHand", staticCardForTesting);
 
   updateScoresDisplay();
 
-  const canDouble = checkCanDouble(GameState);
-  const canSplit = checkCanSplit(GameState);
+  const canDouble = checkCanDouble();
+  const canSplit = checkCanSplit();
 
   if (canDouble) {
     doubleBtn.disabled = false;
@@ -134,8 +138,8 @@ function dealInitialCards(GameState) {
 
 function playerHit() {
   let handName = GameState.focusHand;
-
-  dealSingleCard(GameState, handName);
+  console.log(handName, "focushand name in playerHit()");
+  dealSingleCard(handName);
   // updateScoresDisplay(GameState);
 
   notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
