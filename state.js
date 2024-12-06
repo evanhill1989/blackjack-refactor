@@ -155,7 +155,7 @@ export function updateGameState(property, value) {
   }
 }
 
-export function updateBankroll(GameState) {
+export function updateBankroll() {
   const handOneOutcome = GameState.playerHandOneOutcome;
   const handTwoOutcome = GameState.playerHandTwoOutcome;
   if (handOneOutcome === "lose" || handTwoOutcome === "lose") {
@@ -167,7 +167,7 @@ export function updateBankroll(GameState) {
   }
 }
 
-export function splitHandArr(GameState) {
+export function splitHandArr() {
   const handOne = GameState.playerHandOne;
   const handTwo = handOne.splice(1, 1);
 

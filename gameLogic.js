@@ -94,7 +94,7 @@ export function toggleSplitHands() {
   GameState.previewHand === "playerHandOne"
     ? updateGameState("previewHand", "playerHandTwo")
     : updateGameState("previewHand", "playerHandOne");
-  togglePreviewFocusDisplay(GameState);
+  togglePreviewFocusDisplay();
 }
 // *observer
 export function checkCanSplit() {
@@ -110,13 +110,13 @@ export async function splitShowdown() {
   console.log("Are we calling splitShowdown?");
   updateGameState("focusHand", "playerHandOne");
   updateGameState("previewHand", "playerHandTwo");
-  togglePreviewFocusDisplay(GameState);
+  togglePreviewFocusDisplay();
   determineOutcome();
 
   setTimeout(() => {
     updateGameState("focusHand", "playerHandTwo");
     updateGameState("previewHand", "playerHandOne");
-    togglePreviewFocusDisplay(GameState);
+    togglePreviewFocusDisplay();
     setTimeout(() => {
       determineOutcome();
     }, 1000);
@@ -190,7 +190,7 @@ export function handleBust() {
     console.log(GameState.playerHandOne, "reset in handleBust");
   } else if (GameState.split && !GameState.deadSplitHand) {
     console.log("split in handlEbUST");
-    togglePreviewFocus(GameState);
+    togglePreviewFocus();
     updateGameState("deadSplitHand", true);
 
     // add "bust" element to new preview hand or remove preview hand altogether?
@@ -204,7 +204,7 @@ export function dealerAction() {
   updateGameState("dealerHoleCardExposed", true);
 
   if (GameState.dealerScore < 17) {
-    dealSingleCard(GameState, "dealerHand", {
+    dealSingleCard("dealerHand", {
       suit: "♠",
       rank: "8",
       value: 8,

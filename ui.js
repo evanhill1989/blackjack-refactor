@@ -32,7 +32,7 @@ export const DOMElements = {
   previewScore: document.getElementById("preview-score"),
 };
 
-export function toggleView(GameState) {
+export function toggleView() {
   if (GameState.view === "wager") {
     DOMElements.gameBoardView.classList.add("hidden");
     DOMElements.initialWagerView.classList.remove("hidden");
@@ -42,7 +42,7 @@ export function toggleView(GameState) {
   }
 }
 
-export function updateBankrollDisplay(GameState) {
+export function updateBankrollDisplay() {
   DOMElements.bankrollDisplay.textContent = GameState.bankroll;
   DOMElements.bankrollTabDisplay.textContent = GameState.bankroll;
 }
@@ -184,7 +184,7 @@ export function clearHandHTML() {
 // SPLIT THINGS
 
 // *observer
-export function toggleSplitBtn(GameState) {
+export function toggleSplitBtn() {
   if (GameState.canSplit) {
     DOMElements.splitBtn.disabled = false;
   } else {
@@ -192,35 +192,31 @@ export function toggleSplitBtn(GameState) {
   }
 }
 
-export function splitUI(GameState) {
-  setFocusHand(GameState);
-  setPreviewHand(GameState);
+export function splitUI() {
+  setFocusHand();
+  setPreviewHand();
   DOMElements.splitBtn.disabled = true;
   // toggleVisibility(DOMElements.previewHand);
   const testButton = document.createElement("button");
   testButton.textContent = "Test Button";
   testButton.addEventListener("click", () => {
-    toggleSplitHands(GameState);
+    toggleSplitHands();
   });
   DOMElements.actionsDiv.appendChild(testButton);
 }
 
-export function splitStandUI(GameState) {}
-
-export function splitStandHandTwo(GameState) {}
-
-export function setFocusHand(GameState) {
+export function setFocusHand() {
   const currentFocus = GameState.focusHand;
   DOMElements.focusHand.innerHTML = "";
-  const newHand = mapOverHand(currentFocus, GameState);
+  const newHand = mapOverHand(currentFocus);
 
   DOMElements.focusHand.innerHTML = newHand;
 }
 
-export function setPreviewHand(GameState) {
+export function setPreviewHand() {
   const handName = GameState.previewHand;
   DOMElements.previewHand.innerHTML = "";
-  const newHand = mapOverHand(handName, GameState);
+  const newHand = mapOverHand(handName);
   const previewHandDiv = document.createElement("div");
 
   previewHandDiv.innerHTML = newHand;
@@ -230,26 +226,22 @@ export function setPreviewHand(GameState) {
   DOMElements.previewScore.textContent = GameState.playerHandTwoScore;
 }
 
-export function togglePreviewFocusDisplay(
-  GameState,
-  toggleToFocus,
-  toggleToPreview
-) {
+export function togglePreviewFocusDisplay(toggleToFocus, toggleToPreview) {
   if (toggleToFocus) {
     GameState.focusHand = toggleToFocus;
     GameState.previewHand = toggleToPreview || null;
     notifyObservers();
-    setFocusHand(GameState);
-    setPreviewHand(GameState);
+    setFocusHand();
+    setPreviewHand();
   } else {
-    setFocusHand(GameState);
-    setPreviewHand(GameState);
+    setFocusHand();
+    setPreviewHand();
   }
 
-  updateScoresDisplay(GameState);
+  updateScoresDisplay();
 }
 
-export function mapOverHand(hand, GameState) {
+export function mapOverHand(hand) {
   const newHandObj =
     hand === "playerHandOne"
       ? GameState.playerHandOne
@@ -269,6 +261,8 @@ export function flipDealerHoleCardUp() {
   // DOMElements.dealerHoleCard.classList.add("visible");
 }
 
+// UTILITY ui funcs
+
 export function toggleVisibility(element) {
   if (element.classList.contains("hidden")) {
     element.classList.remove("hidden");
@@ -282,11 +276,4 @@ export function toggleVisibility(element) {
 export function toggleClass(element, removedClass, addedClass) {
   element.classList.remove(removedClass);
   element.classList.add(addedClass);
-}
-
-export function resetUI(state) {
-  if (state.actionState === "end") {
-    DOMElements.focusHand.innerHTML = "";
-    DOMElements.dealerHand.innerHTML = "";
-  }
 }

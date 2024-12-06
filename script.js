@@ -19,16 +19,9 @@ import {
   toggleSplitBtn,
   updateBankrollDisplay,
   getWagerInput,
-  dealCardInUI,
-  generateCardHTML,
   updateScoresDisplay,
   outcomeAnnouncement,
-  resetUI,
   splitUI,
-  splitStandUI,
-  setFocusHand,
-  setPreviewHand,
-  togglePreviewFocusDisplay,
 } from "./ui.js";
 
 import {
@@ -69,7 +62,7 @@ const splitBtn = document.getElementById("split-btn");
 const doubleBtn = document.getElementById("double-btn");
 const standBtn = document.getElementById("stand-btn");
 
-updateBankrollDisplay(GameState);
+updateBankrollDisplay();
 
 wagerForm.addEventListener("submit", startNewHand);
 
@@ -87,7 +80,7 @@ function startNewHand(event) {
     return;
   }
 
-  dealInitialCards(GameState);
+  dealInitialCards();
 
   updateGameState("currentBet", wager);
   updateGameState("bankroll", GameState.bankroll - wager);
@@ -140,23 +133,23 @@ function playerHit() {
   let handName = GameState.focusHand;
   console.log(handName, "focushand name in playerHit()");
   dealSingleCard(handName);
-  // updateScoresDisplay(GameState);
+  // updateScoresDisplay();
 
   notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
-  updateScoresDisplay(GameState);
-  checkBust(GameState);
+  updateScoresDisplay();
+  checkBust();
 }
 
 function playerSplit() {
   updateGameState("split", true);
   updateGameState("bankroll", GameState.bankroll - GameState.currentBet);
 
-  splitHandArr(GameState);
+  splitHandArr();
   updateGameState("focusHand", "playerHandOne");
   updateGameState("previewHand", "playerHandTwo");
 
-  updateScoresDisplay(GameState);
-  splitUI(GameState);
+  updateScoresDisplay();
+  splitUI();
 
   updateGameState("canSplit", false);
 }
@@ -165,8 +158,8 @@ function playerDouble() {
   GameState.double = true;
   GameState.currentBet *= 2;
 
-  updateScores(GameState);
-  updateScoresDisplay(GameState);
+  updateScores();
+  updateScoresDisplay();
 }
 
 async function playerStand() {
