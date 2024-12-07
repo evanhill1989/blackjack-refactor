@@ -25,6 +25,7 @@ import {
 } from "./ui.js";
 
 import {
+  NewGameState,
   GameState,
   updateGameState,
   updateScores,
@@ -54,8 +55,6 @@ addObserver(updateScores);
 
 const wagerForm = document.querySelector(".wager-form");
 
-console.log(GameState.playerHandOne, "GameState.playerHandOne in script.js");
-
 // BUTTONS
 const hitBtn = document.getElementById("hit-btn");
 const splitBtn = document.getElementById("split-btn");
@@ -84,7 +83,7 @@ function startNewHand(event) {
 
   updateGameState("currentBet", wager);
   updateGameState("bankroll", GameState.bankroll - wager);
-  updateGameState("actionState", "running");
+
   updateGameState("view", "game-board");
 }
 
@@ -95,13 +94,13 @@ function dealInitialCards() {
     "GameState.playerHandOne in dealInitialCards()"
   );
 
-  let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
-  dealSingleCard("playerHandOne");
+  let staticCardForTesting = { suit: "♥", rank: "A", value: 11 };
+  dealSingleCard("playerHandOne", staticCardForTesting);
 
   updateScoresDisplay();
 
-  staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
-  dealSingleCard("playerHandOne");
+  staticCardForTesting = { suit: "♠", rank: "A", value: 11 };
+  dealSingleCard("playerHandOne", staticCardForTesting);
 
   updateScoresDisplay();
 
@@ -131,13 +130,15 @@ function dealInitialCards() {
 
 function playerHit() {
   let handName = GameState.focusHand;
-  console.log(handName, "focushand name in playerHit()");
+
   dealSingleCard(handName);
   // updateScoresDisplay();
 
   notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
   updateScoresDisplay();
-  checkBust();
+  const didBust = checkBust();
+  if (didBust) resetGameState();
+  console.log(NewGameState.score.focus);
 }
 
 function playerSplit() {
@@ -155,7 +156,7 @@ function playerSplit() {
 }
 
 function playerDouble() {
-  GameState.double = true;
+  GameState.isDouble = true;
   GameState.currentBet *= 2;
 
   updateScores();
@@ -198,8 +199,8 @@ async function playerStand() {
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/
 export function resolveGame() {
-  console.log(GameState.handOneState, GameState.handTwoState),
-    "handStates in resolveGame";
+  const shouldResolveGame = shouldResolveGame();
+  ("handStates in resolveGame");
   resetGameState();
   // if (GameState.split === true) {
   //   if (
@@ -209,4 +210,15 @@ export function resolveGame() {
   //     resetGameState();
   //   }
   // }
+}
+
+export function shouldResolveGame() {
+  if (
+    GameState.handOneState === "resolved" &&
+    GameState.handTwoState === "resolved"
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 }

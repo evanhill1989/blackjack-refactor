@@ -1,4 +1,9 @@
-import { GameState, notifyObservers, updateGameState } from "./state.js";
+import {
+  NewGameState,
+  GameState,
+  notifyObservers,
+  updateGameState,
+} from "./state.js";
 
 import { toggleSplitHands } from "./gameLogic.js";
 
@@ -136,15 +141,6 @@ export function updateScoresDisplay() {
   if (GameState.dealerHoleCardExposed === true) {
     dealerScoreElement.textContent = GameState.dealerScore;
   }
-
-  // console.log(
-  //   GameState.focusScore,
-  //   "$$$$$$$$$$$$ <------ focusScore in updateScoresDisplay"
-  // );
-  // console.log(
-  //   GameState.playerHandOneScore,
-  //   "$$$$$$$$$$$$$ <------ playerHandOneScore in updateScoresDisplay"
-  // );
 }
 
 export function outcomeAnnouncement() {
@@ -160,6 +156,7 @@ export function outcomeAnnouncement() {
     outcome === "lose" ||
     outcome === "bust"
   ) {
+    console.log("outcomeAnnouncement is running at resolution?");
     const tempDiv = document.createElement("div");
     const outcomeHTML = `
     <div class="outcome-message">

@@ -21,7 +21,7 @@ export function dealSingleCard(handName, staticCardForTesting) {
 
 export function addCardToHandArr(hand, staticCardForTesting) {
   const card = staticCardForTesting || getRandomCard();
-  console.log(hand, "hand in addCardToHandArr()");
+
   if (hand === "playerHandOne") {
     const handOne = GameState.playerHandOne;
     handOne.push(card);
@@ -75,7 +75,7 @@ export function checkCanDouble() {
 
 export function shouldToggleSplitHands(handName) {
   // Could jam these all in one statement with an or chain
-  if (GameState.split === false) {
+  if (GameState.isSplit === false) {
     return false;
   } else if (
     GameState.handTwoState === "bust" ||
@@ -99,7 +99,7 @@ export function toggleSplitHands() {
 // *observer
 export function checkCanSplit() {
   if (
-    GameState.split === false &&
+    GameState.isSplit === false &&
     GameState.playerHandOne[0].value === GameState.playerHandOne[1].value
   ) {
     updateGameState("canSplit", true);
@@ -107,7 +107,6 @@ export function checkCanSplit() {
 }
 
 export async function splitShowdown() {
-  console.log("Are we calling splitShowdown?");
   updateGameState("focusHand", "playerHandOne");
   updateGameState("previewHand", "playerHandTwo");
   togglePreviewFocusDisplay();
@@ -131,73 +130,98 @@ export function calculateHandScore(hand) {
   let nonAces = hand.filter((card) => card.value !== 11);
 
   let nonAcesTotal = nonAces.reduce((total, card) => total + card.value, 0);
-
-  return totalWithAces(hand, numAces, nonAcesTotal);
+  console.log("nonAcesTotal", nonAcesTotal);
+  return totalWithAces(numAces, nonAcesTotal);
 }
 
-function totalWithAces(hand, numAces, nonAcesTotal) {
-  switch (numAces) {
-    case 0:
-      return nonAcesTotal;
-    case 1:
-      if (nonAcesTotal <= 10) {
-        return (hand.score = nonAcesTotal + 11);
-      } else {
-        return (hand.score = nonAcesTotal + 1);
-      }
-    case 2:
-      if (nonAcesTotal <= 9) {
-        return (hand.score = nonAcesTotal + 12);
-      } else {
-        return (hand.score = nonAcesTotal + 2);
-      }
-    case 3:
-      if (nonAcesTotal <= 8) {
-        return (hand.score = nonAcesTotal + 13);
-      } else {
-        return (hand.score = nonAcesTotal + 3);
-      }
-    case 4:
-      if (nonAcesTotal <= 7) {
-        return (hand.score = nonAcesTotal + 14);
-      } else {
-        return (hand.score = nonAcesTotal + 4);
-      }
-    default:
-      return console.error("Error : Too many aces");
+function totalWithAces(numAces, nonAcesTotal) {
+  let total = nonAcesTotal;
+  for (let i = 0; i < numAces; i++) {
+    if (total + 11 <= 21) {
+      total += 11; // Count Ace as 11 if it doesn't cause a bust
+    } else {
+      total += 1; // Count Ace as 1 otherwise
+    }
   }
+  return total;
 }
+
+// function totalWithAces(hand, numAces, nonAcesTotal) {
+//   switch (numAces) {
+//     case 0:
+//       return nonAcesTotal;
+//     case 1:
+//       if (nonAcesTotal <= 10) {
+//         return (hand.score = nonAcesTotal + 11);
+//       } else {
+//         return (hand.score = nonAcesTotal + 1);
+//       }
+//     case 2:
+//       if (nonAcesTotal <= 9) {
+//         return (hand.score = nonAcesTotal + 12);
+//       } else {
+//         return (hand.score = nonAcesTotal + 2);
+//       }
+//     case 3:
+//       if (nonAcesTotal <= 8) {
+//         return (hand.score = nonAcesTotal + 13);
+//       } else {
+//         return (hand.score = nonAcesTotal + 3);
+//       }
+//     case 4:
+//       if (nonAcesTotal <= 7) {
+//         return (hand.score = nonAcesTotal + 14);
+//       } else {
+//         return (hand.score = nonAcesTotal + 4);
+//       }
+//     default:
+//       return console.error("Error : Too many aces");
+//   }
+// }
 
 // HIT
 
 export function checkBust() {
-  if (GameState.focusScore > 21) {
-    GameState.focusHand === "playerHandOne"
-      ? updateGameState("playerHandOneOutcome", "bust")
-      : updateGameState("playerHandTwoOutcome", "bust");
+  GameState.focusScore > 21 ? handleBust() : false;
+}
 
-    handleBust();
-  } else {
-    return false;
-  }
+export function updateVariableState(hand, handPropertyToUpdate) {
+  // Pass it whatever hand we have in question ex. focusHand
+  // pass in the state property we want to update after computing the hand
+  // really i just need 2 key value pairs to search over my state object
+  // with . So the first key value pair helps me identify the hand I need to work with
+  // the second key value pair is the specific state property I want to update relative to that first key value pair
 }
 
 export function handleBust() {
-  console.log("deadSplitHand at top of handleBust", GameState.deadSplitHand);
-  if (!GameState.split) {
+  const focusHand = GameState.focusHand;
+  const focusOutcome =
+    focusHand === "playerHandOne"
+      ? "playerHandOneOutcome"
+      : "playerHandTwoOutcome";
+
+  // So instead of all the above we just have the const below:
+
+  // const focusOutcome = updateVariableState(focusHand, handOutcome);
+  // All the above feels like it should be a hlper function that takes 2 arguments:
+  // 1. the hand name 2. the state property we want to update
+  // sometimes we want to
+
+  updateGameState(focusOutcome, "bust");
+  if (!GameState.isSplit) {
     updateGameState("view", "wager");
+
     resetGameState();
-    console.log(GameState.playerHandOne, "reset in handleBust");
-  } else if (GameState.split && !GameState.deadSplitHand) {
-    console.log("split in handlEbUST");
+  } else if (GameState.isSplit && !GameState.deadSplitHand) {
     togglePreviewFocus();
     updateGameState("deadSplitHand", true);
 
     // add "bust" element to new preview hand or remove preview hand altogether?
-  } else if (GameState.split && GameState.deadSplitHand) {
+  } else if (GameState.isSplit && GameState.deadSplitHand) {
     updateGameState("view", "wager");
     resetGameState();
   }
+  updateGameState(focusOutcome, "resolved");
 }
 
 export function dealerAction() {
@@ -216,7 +240,6 @@ export function dealerAction() {
   } else if (GameState.dealerScore >= 17 && GameState.dealerScore <= 21) {
     return;
   } else if (GameState.dealerScore > 21) {
-    console.log("Dealer BUSTs!");
     updateGameState("isDealerHandBust", true);
   } else {
     console.error("Error: Invalid outcome inside dealerAction function");
@@ -228,10 +251,8 @@ export function determineOutcome() {
     GameState.focusHand === "playerHandOne" ? "handOneState" : "handTwoState";
   dealerAction();
   if (GameState.dealerScore === "bust") {
-    console.log("Dealer BUSTs!");
     updateGameState(handOutcome, "win");
   } else if (GameState.focusScore === "bust") {
-    console.log("Player BUSTs! in determineOutcome");
     // shouldn't ever really run this code, as a player bust should be handled by handleBust() preempting the need to call determineOutcome()
   } else if (GameState.dealerScore > GameState.focusScore) {
     updateGameState(handOutcome, "lose");

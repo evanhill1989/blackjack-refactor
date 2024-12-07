@@ -2,6 +2,8 @@
 
 import { calculateHandScore } from "./gameLogic.js";
 
+import { updateScoresDisplay } from "./ui.js";
+
 const deck = [
   { suit: "♠", rank: "A", value: 11 },
   { suit: "♠", rank: "2", value: 2 },
@@ -57,6 +59,61 @@ const deck = [
   { suit: "♦", rank: "K", value: 10 },
 ];
 
+export const NewGameState = {
+  view: "wager", // game-board
+  bankroll: 1000,
+  currentBet: 0,
+
+  score: {
+    dealer: 0,
+    handOne: 0,
+    handTwo: null,
+    get focus() {
+      return NewGameState.hands.focusHand === "playerHandOne"
+        ? this.handOne
+        : this.handTwo;
+    },
+    get preview() {
+      return NewGameState.hands.previewHand === "playerHandOne"
+        ? this.handOne
+        : this.handTwo;
+    },
+  },
+
+  hands: {
+    playerHandOne: [],
+    playerHandTwo: [],
+    dealerHand: [],
+    focusHand: "playerHandOne",
+    previewHand: null,
+  },
+
+  canSplit: false,
+  canDouble: false,
+  isSplit: false,
+  isDouble: false,
+
+  dealerHoleCardExposed: false,
+  observers: [],
+
+  // Add setter methods
+  setFocusHand(handName) {
+    if (handName === "playerHandOne" || handName === "playerHandTwo") {
+      this.hands.focusHand = handName;
+    } else {
+      console.error("Invalid hand name!");
+    }
+  },
+
+  setPreviewHand(handName) {
+    if (handName === "playerHandOne" || handName === "playerHandTwo") {
+      this.hands.previewHand = handName;
+    } else {
+      console.error("Invalid hand name!");
+    }
+  },
+};
+
 export const GameState = {
   bankroll: 1000,
   currentBet: 0,
@@ -66,16 +123,15 @@ export const GameState = {
   dealerHoleCardExposed: false,
   canSplit: false,
   canDouble: false,
-  split: false,
-  double: false,
+  isSplit: false,
+  isDouble: false,
   deadSplitHand: false,
   focusHand: "playerHandOne",
   previewHand: null,
+
   focusScore: 0,
   previewScore: null,
-  isPlayerHandOneBust: false,
-  isPlayerHandTwoBust: false,
-  isDealerHandBust: false,
+
   playerHandOneOutcome: "", // win, lose, push,bust, resolved
   playerHandTwoOutcome: "", // win, lose, push,bust, resolved
 
@@ -86,8 +142,7 @@ export const GameState = {
   dealerScore: 0,
   playerHandOneScore: 0,
   playerHandTwoScore: null,
-  view: "",
-  actionState: "wager",
+
   testState: "",
   deck: deck,
   observers: [],
@@ -99,13 +154,11 @@ export function resetGameState() {
   GameState.playerHandTwo = [];
   GameState.canSplit = false;
   GameState.canDouble = false;
-  GameState.split = false;
-  GameState.double = false;
+  GameState.isSplit = false;
+  GameState.isDouble = false;
   GameState.focusHand = "playerHandOne";
   GameState.previewHand = "playerHandTwo";
-  GameState.isPlayerHandOneBust = false;
-  GameState.isPlayerHandTwoBust = false;
-  GameState.isDealerHandBust = false;
+
   GameState.playerHandOneOutcome = ""; // win; lose; push;bust; resolved
   GameState.playerHandTwoOutcome = ""; // win; lose; push;bust; resolved
 
@@ -159,7 +212,6 @@ export function updateBankroll() {
   const handOneOutcome = GameState.playerHandOneOutcome;
   const handTwoOutcome = GameState.playerHandTwoOutcome;
   if (handOneOutcome === "lose" || handTwoOutcome === "lose") {
-    console.log("Player LOSEs! Bankroll is correct; in updateBankroll");
   } else if (handOneOutcome === "win" || handTwoOutcome === "win") {
     GameState.bankroll += GameState.currentBet * 2;
   } else if (handOneOutcome === "push" || handTwoOutcome === "push") {
@@ -185,6 +237,7 @@ export function updateScores() {
     "playerHandOneScore",
     calculateHandScore(GameState.playerHandOne)
   );
+  console.log("GameState.playerHandOneScore", GameState.playerHandOneScore);
   updateGameState(
     "playerHandTwoScore",
     calculateHandScore(GameState.playerHandTwo)
@@ -202,6 +255,8 @@ export function updateScores() {
       ? updateGameState("previewScore", GameState.playerHandOneScore)
       : updateGameState("previewScore", GameState.playerHandTwoScore);
   }
+
+  updateScoresDisplay();
 }
 
 export function setFocusScore() {}
