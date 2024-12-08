@@ -25,7 +25,6 @@ import {
 } from "./ui.js";
 
 import {
-  NewGameState,
   GameState,
   updateGameState,
   updateScores,
@@ -61,7 +60,18 @@ const splitBtn = document.getElementById("split-btn");
 const doubleBtn = document.getElementById("double-btn");
 const standBtn = document.getElementById("stand-btn");
 
+// test buttons
+const testBtnWager = document.getElementById("test-btn-wager");
+const testBtnGameBoard = document.getElementById("test-btn-game-board");
+
 updateBankrollDisplay();
+
+testBtnWager.addEventListener("click", () => {});
+
+testBtnGameBoard.addEventListener("click", () => {
+  notifyObservers();
+  console.log(GameState.hands.userFirst);
+});
 
 wagerForm.addEventListener("submit", startNewHand);
 
@@ -90,29 +100,29 @@ function startNewHand(event) {
 function dealInitialCards() {
   // playerHand first
   console.log(
-    GameState.playerHandOne,
+    GameState.hands.userFirst.cards,
     "GameState.playerHandOne in dealInitialCards()"
   );
 
   let staticCardForTesting = { suit: "♥", rank: "A", value: 11 };
-  dealSingleCard("playerHandOne", staticCardForTesting);
+  dealSingleCard("userFirst", staticCardForTesting);
 
   updateScoresDisplay();
 
   staticCardForTesting = { suit: "♠", rank: "A", value: 11 };
-  dealSingleCard("playerHandOne", staticCardForTesting);
+  dealSingleCard("userFirst", staticCardForTesting);
 
   updateScoresDisplay();
 
   // dealerHand
 
   staticCardForTesting = { suit: "♣", rank: "4", value: 4 };
-  dealSingleCard("dealerHand", staticCardForTesting);
+  dealSingleCard("dealer", staticCardForTesting);
 
   updateScoresDisplay();
 
   staticCardForTesting = { suit: "♥", rank: "9", value: 9 };
-  dealSingleCard("dealerHand", staticCardForTesting);
+  dealSingleCard("dealer", staticCardForTesting);
 
   updateScoresDisplay();
 
@@ -169,8 +179,8 @@ async function playerStand() {
   setHandState(handName, "standing");
 
   if (
-    GameState.handOneState === "standing" &&
-    GameState.handTwoState === "standing"
+    GameState.hands.userFirst.outcome === "standing" &&
+    GameState.hands.userSecond.outcome === "standing"
   ) {
     await splitShowdown();
 
@@ -214,8 +224,8 @@ export function resolveGame() {
 
 export function shouldResolveGame() {
   if (
-    GameState.handOneState === "resolved" &&
-    GameState.handTwoState === "resolved"
+    GameState.hands.userFirst.outcome === "resolved" &&
+    GameState.hands.userSecond.outcome === "resolved"
   ) {
     return true;
   } else {

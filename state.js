@@ -59,33 +59,37 @@ const deck = [
   { suit: "♦", rank: "K", value: 10 },
 ];
 
-export const NewGameState = {
+export const GameState = {
   view: "wager", // game-board
   bankroll: 1000,
   currentBet: 0,
-
-  score: {
-    dealer: 0,
-    handOne: 0,
-    handTwo: null,
-    get focus() {
-      return NewGameState.hands.focusHand === "playerHandOne"
-        ? this.handOne
-        : this.handTwo;
-    },
-    get preview() {
-      return NewGameState.hands.previewHand === "playerHandOne"
-        ? this.handOne
-        : this.handTwo;
-    },
-  },
+  deck: deck,
 
   hands: {
-    playerHandOne: [],
-    playerHandTwo: [],
-    dealerHand: [],
-    focusHand: "playerHandOne",
-    previewHand: null,
+    userFirst: {
+      cards: [],
+      score: 0,
+      outcome: null,
+    },
+    userSecond: {
+      cards: [],
+      score: null,
+      outcome: null,
+    },
+    dealer: {
+      cards: [],
+      score: 0,
+      outcome: null,
+    },
+    // Add a direct `focus` property to avoid recursion
+    focus: "userFirst",
+    preview: "userFirst", // Add preview property here as well
+    get focusHand() {
+      return this.focus === "userFirst" ? this.userFirst : this.userSecond;
+    },
+    get previewHand() {
+      return this.preview === "userFirst" ? this.userFirst : this.userSecond;
+    },
   },
 
   canSplit: false,
@@ -96,82 +100,94 @@ export const NewGameState = {
   dealerHoleCardExposed: false,
   observers: [],
 
-  // Add setter methods
+  // Update focus and preview via methods
   setFocusHand(handName) {
-    if (handName === "playerHandOne" || handName === "playerHandTwo") {
-      this.hands.focusHand = handName;
+    if (handName === "userFirst" || handName === "userSecond") {
+      this.hands.focus = handName;
     } else {
       console.error("Invalid hand name!");
     }
   },
 
   setPreviewHand(handName) {
-    if (handName === "playerHandOne" || handName === "playerHandTwo") {
-      this.hands.previewHand = handName;
+    if (handName === "userFirst" || handName === "userSecond") {
+      this.hands.preview = handName;
     } else {
       console.error("Invalid hand name!");
     }
   },
 };
 
-export const GameState = {
-  bankroll: 1000,
-  currentBet: 0,
-  playerHandOne: [],
-  playerHandTwo: [],
-  dealerHand: [],
-  dealerHoleCardExposed: false,
-  canSplit: false,
-  canDouble: false,
-  isSplit: false,
-  isDouble: false,
-  deadSplitHand: false,
-  focusHand: "playerHandOne",
-  previewHand: null,
+// export const GameState = {
+//   bankroll: 1000,
+//   currentBet: 0,
+//   playerHandOne: [],
+//   playerHandTwo: [],
+//   dealerHand: [],
+//   dealerHoleCardExposed: false,
+//   canSplit: false,
+//   canDouble: false,
+//   isSplit: false,
+//   isDouble: false,
+//   deadSplitHand: false,
+//   focusHand: "playerHandOne",
+//   previewHand: null,
 
-  focusScore: 0,
-  previewScore: null,
+//   focusScore: 0,
+//   previewScore: null,
 
-  playerHandOneOutcome: "", // win, lose, push,bust, resolved
-  playerHandTwoOutcome: "", // win, lose, push,bust, resolved
+//   playerHandOneOutcome: "", // win, lose, push,bust, resolved
+//   playerHandTwoOutcome: "", // win, lose, push,bust, resolved
 
-  handOneState: "", // actionOn, standing, bust, win, lose, push, resolved
-  handTwoState: null, // actionOn, standing, bust, win, lose, push, resolved
-  handDealerState: "", // actionOn, bust, win, lose, push
+//   handOneState: "", // actionOn, standing, bust, win, lose, push, resolved
+//   handTwoState: null, // actionOn, standing, bust, win, lose, push, resolved
+//   handDealerState: "", // actionOn, bust, win, lose, push
 
-  dealerScore: 0,
-  playerHandOneScore: 0,
-  playerHandTwoScore: null,
+//   dealerScore: 0,
+//   playerHandOneScore: 0,
+//   playerHandTwoScore: null,
 
-  testState: "",
-  deck: deck,
-  observers: [],
-};
+//   testState: "",
+//   deck: deck,
+//   observers: [],
+// };
 
 export function resetGameState() {
   GameState.currentBet = 0;
-  GameState.playerHandOne = [];
-  GameState.playerHandTwo = [];
+  GameState.view = "wager";
+
+  GameState.hands = {
+    userFirst: {
+      cards: [],
+      score: 0,
+      outcome: null,
+    },
+    userSecond: {
+      cards: [],
+      score: null,
+      outcome: null,
+    },
+    dealer: {
+      cards: [],
+      score: 0,
+      outcome: null,
+    },
+  };
+
   GameState.canSplit = false;
   GameState.canDouble = false;
   GameState.isSplit = false;
   GameState.isDouble = false;
-  GameState.focusHand = "playerHandOne";
-  GameState.previewHand = "playerHandTwo";
 
-  GameState.playerHandOneOutcome = ""; // win; lose; push;bust; resolved
-  GameState.playerHandTwoOutcome = ""; // win; lose; push;bust; resolved
-
-  GameState.handOneState = ""; // actionOn, standing, bust, win, lose, push, resolved
-  GameState.handTwoState = null; // actionOn, standing, bust, win, lose, push, resolved
-  GameState.handDealerState = ""; // actionOn, bust, win, lose, push
+  GameState.setFocusHand("userFirst");
+  GameState.setPreviewHand("userSecond");
 
   GameState.dealerHand = [];
   GameState.dealerScore = 0;
   GameState.playerHandOneScore = 0;
   GameState.playerHandTwoScore = null;
   GameState.actionState = "wager";
-  GameState.view = "wager";
+
   GameState.testState = "";
   GameState.deck = deck;
 
@@ -232,29 +248,24 @@ export function updateDeck() {
 }
 // SCORE
 export function updateScores() {
-  updateGameState("dealerScore", calculateHandScore(GameState.dealerHand));
-  updateGameState(
-    "playerHandOneScore",
-    calculateHandScore(GameState.playerHandOne)
+  // updateGameState(
+  //   `hands.dealer.score`,
+  //   calculateHandScore(GameState.hands.dealer.cards)
+  // );
+  // updateGameState(
+  //   `hands.userFirst.score`,
+  //   calculateHandScore(GameState.hands.userFirst.cards)
+  // );
+  GameState.hands.userFirst.score = calculateHandScore(
+    GameState.hands.userFirst.cards
   );
-  console.log("GameState.playerHandOneScore", GameState.playerHandOneScore);
-  updateGameState(
-    "playerHandTwoScore",
-    calculateHandScore(GameState.playerHandTwo)
+  GameState.hands.dealer.score = calculateHandScore(
+    GameState.hands.dealer.cards
   );
-
-  let focusHandName = GameState.focusHand;
-  let previewHandName = GameState.previewHand;
-
-  focusHandName === "playerHandOne"
-    ? updateGameState("focusScore", GameState.playerHandOneScore)
-    : updateGameState("focusScore", GameState.playerHandTwoScore);
-
-  if (previewHandName) {
-    previewHandName === "playerHandOne"
-      ? updateGameState("previewScore", GameState.playerHandOneScore)
-      : updateGameState("previewScore", GameState.playerHandTwoScore);
-  }
+  // updateGameState(
+  //   `hands.userSecond.score`,
+  //   calculateHandScore(GameState.hands.userSecond.cards)
+  // );
 
   updateScoresDisplay();
 }

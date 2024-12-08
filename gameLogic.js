@@ -22,21 +22,32 @@ export function dealSingleCard(handName, staticCardForTesting) {
 export function addCardToHandArr(hand, staticCardForTesting) {
   const card = staticCardForTesting || getRandomCard();
 
-  if (hand === "playerHandOne") {
-    const handOne = GameState.playerHandOne;
-    handOne.push(card);
-    updateGameState("playerHandOne", handOne);
-  } else if (hand === "playerHandTwo") {
-    const handTwo = GameState.playerHandTwo;
-    handTwo.push(card);
-    updateGameState("playerHandTwo", handTwo);
-  } else if (hand === "dealerHand") {
-    const dealerHand = GameState.dealerHand;
-    dealerHand.push(card);
-    updateGameState("dealerHand", dealerHand);
+  const targetHand = GameState.hands[hand];
+
+  console.log("targetHand", targetHand);
+
+  if (targetHand) {
+    targetHand.cards.push(card);
+    updateGameState(`hands.${hand}.cards`, targetHand.cards);
   } else {
     console.error("Invalid hand name passed from dealSingleCard()");
   }
+
+  // if (hand === "playerHandOne") {
+  //   const handOne = GameState.playerHandOne;
+  //   handOne.push(card);
+  //   updateGameState("playerHandOne", handOne);
+  // } else if (hand === "playerHandTwo") {
+  //   const handTwo = GameState.playerHandTwo;
+  //   handTwo.push(card);
+  //   updateGameState("playerHandTwo", handTwo);
+  // } else if (hand === "dealerHand") {
+  //   const dealerHand = GameState.dealerHand;
+  //   dealerHand.push(card);
+  //   updateGameState("dealerHand", dealerHand);
+  // } else {
+  //   console.error("Invalid hand name passed from dealSingleCard()");
+  // }
 
   removeCurrentCardFromDeck(card, GameState.deck);
   return card;
@@ -78,11 +89,11 @@ export function shouldToggleSplitHands(handName) {
   if (GameState.isSplit === false) {
     return false;
   } else if (
-    GameState.handTwoState === "bust" ||
-    GameState.handOneState === "bust"
+    GameState.hands.userSecond.outcome === "bust" ||
+    GameState.hands.userFirst.outcome === "bust"
   ) {
     return false;
-  } else if (GameState.handOneState === "standing") {
+  } else if (GameState.hands.userFirst.outcome === "standing") {
     return true;
   }
 }
@@ -100,7 +111,8 @@ export function toggleSplitHands() {
 export function checkCanSplit() {
   if (
     GameState.isSplit === false &&
-    GameState.playerHandOne[0].value === GameState.playerHandOne[1].value
+    GameState.hands.userFirst.cards[0].value ===
+      GameState.hands.userFirst.cards[1].value
   ) {
     updateGameState("canSplit", true);
   }
@@ -126,11 +138,13 @@ export async function splitShowdown() {
 
 export function calculateHandScore(hand) {
   // Almost seems like this should be a method on GameState ?
+
+  // console.log(hand[0].value, "hand[0].value in calculateHandScore()");
   let numAces = hand.filter((card) => card.value === 11).length;
   let nonAces = hand.filter((card) => card.value !== 11);
 
   let nonAcesTotal = nonAces.reduce((total, card) => total + card.value, 0);
-  console.log("nonAcesTotal", nonAcesTotal);
+
   return totalWithAces(numAces, nonAcesTotal);
 }
 
@@ -182,32 +196,15 @@ function totalWithAces(numAces, nonAcesTotal) {
 // HIT
 
 export function checkBust() {
-  GameState.focusScore > 21 ? handleBust() : false;
-}
-
-export function updateVariableState(hand, handPropertyToUpdate) {
-  // Pass it whatever hand we have in question ex. focusHand
-  // pass in the state property we want to update after computing the hand
-  // really i just need 2 key value pairs to search over my state object
-  // with . So the first key value pair helps me identify the hand I need to work with
-  // the second key value pair is the specific state property I want to update relative to that first key value pair
+  const focusHand = GameState.hands.focus;
+  console.log(focusHand, "focusHand in checkBust()");
+  GameState.hands.focus.score > 21 ? handleBust() : false;
 }
 
 export function handleBust() {
-  const focusHand = GameState.focusHand;
-  const focusOutcome =
-    focusHand === "playerHandOne"
-      ? "playerHandOneOutcome"
-      : "playerHandTwoOutcome";
+  const focusHand = GameState.hands.focus;
 
-  // So instead of all the above we just have the const below:
-
-  // const focusOutcome = updateVariableState(focusHand, handOutcome);
-  // All the above feels like it should be a hlper function that takes 2 arguments:
-  // 1. the hand name 2. the state property we want to update
-  // sometimes we want to
-
-  updateGameState(focusOutcome, "bust");
+  updateGameState(`hands.${focusHand}.outcome`, "bust");
   if (!GameState.isSplit) {
     updateGameState("view", "wager");
 

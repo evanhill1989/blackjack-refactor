@@ -1,9 +1,4 @@
-import {
-  NewGameState,
-  GameState,
-  notifyObservers,
-  updateGameState,
-} from "./state.js";
+import { GameState, notifyObservers, updateGameState } from "./state.js";
 
 import { toggleSplitHands } from "./gameLogic.js";
 
@@ -60,13 +55,14 @@ export function getWagerInput() {
 
 export async function dealCardInUI(handName, card) {
   // This is where strange style things will start probably
+  // TODO define the hand more simply using dynamic computation on object
   let hand;
-  if (handName === "playerHandOne") {
-    hand = GameState.playerHandOne;
-  } else if (handName === "playerHandTwo") {
-    hand = GameState.playerHandTwo;
-  } else if (handName === "dealerHand") {
-    hand = GameState.dealerHand;
+  if (handName === "userFirst") {
+    hand = GameState.hands.userFirst.cards;
+  } else if (handName === "userSecond") {
+    hand = GameState.hands.userSecond.cards;
+  } else if (handName === "dealer") {
+    hand = GameState.hands.dealer.cards;
   } else {
     console.error("Invalid hand name");
   }
@@ -83,11 +79,9 @@ export async function dealCardInUI(handName, card) {
   cardDiv.innerHTML = cardHTML;
   // Determine the hand container based on `handName`
 
-  if (handName === "playerHandOne") {
+  if (handName === "userFirst" || handName === "userSecond") {
     DOMElements.focusHand.appendChild(cardDiv);
-  } else if (handName === "playerHandTwo") {
-    DOMElements.focusHand.appendChild(cardDiv); // Update if you have a separate container for second hand
-  } else if (handName === "dealerHand") {
+  } else if (handName === "dealer") {
     DOMElements.dealerHand.appendChild(cardDiv);
   } else {
     console.error("Invalid hand name:", handName);
@@ -136,19 +130,20 @@ export function updateScoresDisplay() {
   const previewScoreElement = DOMElements.previewScore;
   const dealerScoreElement = DOMElements.dealerScore;
 
-  focusScoreElement.textContent = GameState.focusScore;
-  previewScoreElement.textContent = GameState.previewScore || "";
+  focusScoreElement.textContent = GameState.hands.focusHand.score;
+  previewScoreElement.textContent = GameState.hands.previewHand.score || "";
   if (GameState.dealerHoleCardExposed === true) {
-    dealerScoreElement.textContent = GameState.dealerScore;
+    dealerScoreElement.textContent = GameState.hands.dealer.score;
   }
 }
 
 export function outcomeAnnouncement() {
-  const focusHand = GameState.focusHand;
+  // this can be refactored below
+
   const outcome =
-    focusHand === "playerHandOne"
-      ? GameState.handOneState
-      : GameState.handTwoState;
+    GameState.hands.focus === "userFirst"
+      ? GameState.hands.userFirst.outcome
+      : GameState.hands.userSecond.outcome;
 
   if (
     outcome === "push" ||
@@ -169,6 +164,10 @@ export function outcomeAnnouncement() {
       DOMElements.mainElement.removeChild(tempDiv);
     }, 2000);
     clearHandHTML(); // Patch this in for now , but it needs to exist beyond this scope.
+  } else if (outcome === undefined) {
+    console.error("Outcome is undefined!");
+  } else {
+    // console.log("Outcome in outcomeAnnouncement is:", outcome);
   }
 }
 
@@ -203,7 +202,7 @@ export function splitUI() {
 }
 
 export function setFocusHand() {
-  const currentFocus = GameState.focusHand;
+  const currentFocus = GameState.hands.focusHand;
   DOMElements.focusHand.innerHTML = "";
   const newHand = mapOverHand(currentFocus);
 
@@ -211,7 +210,7 @@ export function setFocusHand() {
 }
 
 export function setPreviewHand() {
-  const handName = GameState.previewHand;
+  const handName = GameState.hands.previewHand;
   DOMElements.previewHand.innerHTML = "";
   const newHand = mapOverHand(handName);
   const previewHandDiv = document.createElement("div");
@@ -220,10 +219,12 @@ export function setPreviewHand() {
 
   DOMElements.previewHand.appendChild(previewHandDiv);
 
-  DOMElements.previewScore.textContent = GameState.playerHandTwoScore;
+  DOMElements.previewScore.textContent =
+    GameState.hands.previewHand.score || "";
 }
 
 export function togglePreviewFocusDisplay(toggleToFocus, toggleToPreview) {
+  console.log("Does this run?");
   if (toggleToFocus) {
     GameState.focusHand = toggleToFocus;
     GameState.previewHand = toggleToPreview || null;
