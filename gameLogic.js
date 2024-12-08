@@ -10,7 +10,7 @@ import {
   togglePreviewFocusDisplay,
   dealCardInUI,
   updateScoresDisplay,
-  setFocusHand,
+  renderFocusHand,
 } from "./ui.js";
 
 export function dealSingleCard(handName, staticCardForTesting) {
@@ -24,30 +24,12 @@ export function addCardToHandArr(hand, staticCardForTesting) {
 
   const targetHand = GameState.hands[hand];
 
-  console.log("targetHand", targetHand);
-
   if (targetHand) {
     targetHand.cards.push(card);
     updateGameState(`hands.${hand}.cards`, targetHand.cards);
   } else {
     console.error("Invalid hand name passed from dealSingleCard()");
   }
-
-  // if (hand === "playerHandOne") {
-  //   const handOne = GameState.playerHandOne;
-  //   handOne.push(card);
-  //   updateGameState("playerHandOne", handOne);
-  // } else if (hand === "playerHandTwo") {
-  //   const handTwo = GameState.playerHandTwo;
-  //   handTwo.push(card);
-  //   updateGameState("playerHandTwo", handTwo);
-  // } else if (hand === "dealerHand") {
-  //   const dealerHand = GameState.dealerHand;
-  //   dealerHand.push(card);
-  //   updateGameState("dealerHand", dealerHand);
-  // } else {
-  //   console.error("Invalid hand name passed from dealSingleCard()");
-  // }
 
   removeCurrentCardFromDeck(card, GameState.deck);
   return card;
@@ -149,14 +131,14 @@ export function calculateHandScore(hand) {
 }
 
 function totalWithAces(numAces, nonAcesTotal) {
-  let total = nonAcesTotal;
-  for (let i = 0; i < numAces; i++) {
-    if (total + 11 <= 21) {
-      total += 11; // Count Ace as 11 if it doesn't cause a bust
-    } else {
-      total += 1; // Count Ace as 1 otherwise
-    }
+  let total = nonAcesTotal + numAces * 11; // Start by counting all aces as 11
+
+  // Downgrade Aces from 11 to 1 if the total exceeds 21
+  while (total > 21 && numAces > 0) {
+    total -= 10; // Convert one Ace from 11 to 1
+    numAces--;
   }
+
   return total;
 }
 
@@ -196,15 +178,17 @@ function totalWithAces(numAces, nonAcesTotal) {
 // HIT
 
 export function checkBust() {
-  const focusHand = GameState.hands.focus;
-  console.log(focusHand, "focusHand in checkBust()");
-  GameState.hands.focus.score > 21 ? handleBust() : false;
+  const focusHandScore = GameState.hands.focusHand.score;
+  const userFirstScore = GameState.hands.userFirst.score;
+  console.log(focusHandScore, "focusHandScore in checkBust()");
+  console.log(userFirstScore, "userFirstScore in checkBust()");
+  focusHandScore > 21 ? handleBust() : false;
 }
 
 export function handleBust() {
-  const focusHand = GameState.hands.focus;
-
-  updateGameState(`hands.${focusHand}.outcome`, "bust");
+  const focusHandName = GameState.hands.focus;
+  console.log("handleBust is running at resolution?");
+  updateGameState(`hands.${focusHandName}.outcome`, "bust");
   if (!GameState.isSplit) {
     updateGameState("view", "wager");
 
@@ -218,7 +202,7 @@ export function handleBust() {
     updateGameState("view", "wager");
     resetGameState();
   }
-  updateGameState(focusOutcome, "resolved");
+  updateGameState(`hands.${focusHandName}.outcome`, "resolved");
 }
 
 export function dealerAction() {

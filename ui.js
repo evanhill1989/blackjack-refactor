@@ -189,7 +189,7 @@ export function toggleSplitBtn() {
 }
 
 export function splitUI() {
-  setFocusHand();
+  renderFocusHand();
   setPreviewHand();
   DOMElements.splitBtn.disabled = true;
   // toggleVisibility(DOMElements.previewHand);
@@ -201,7 +201,7 @@ export function splitUI() {
   DOMElements.actionsDiv.appendChild(testButton);
 }
 
-export function setFocusHand() {
+export function renderFocusHand() {
   const currentFocus = GameState.hands.focusHand;
   DOMElements.focusHand.innerHTML = "";
   const newHand = mapOverHand(currentFocus);
@@ -229,10 +229,10 @@ export function togglePreviewFocusDisplay(toggleToFocus, toggleToPreview) {
     GameState.focusHand = toggleToFocus;
     GameState.previewHand = toggleToPreview || null;
     notifyObservers();
-    setFocusHand();
+    renderFocusHand();
     setPreviewHand();
   } else {
-    setFocusHand();
+    renderFocusHand();
     setPreviewHand();
   }
 

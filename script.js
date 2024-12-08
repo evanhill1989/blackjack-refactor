@@ -136,19 +136,24 @@ function dealInitialCards() {
   if (canSplit) {
     splitBtn.disabled = false;
   }
+  console.log("userFirst handscore", GameState.hands.userFirst.score);
 }
 
 function playerHit() {
-  let handName = GameState.focusHand;
-
-  dealSingleCard(handName);
+  dealSingleCard(GameState.hands.focus, { suit: "♣", rank: "K", value: 10 });
   // updateScoresDisplay();
+  console.log(
+    GameState.hands.focusHand.score,
+    "focusHand.score in playerHit()"
+  );
 
   notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
   updateScoresDisplay();
-  const didBust = checkBust();
-  if (didBust) resetGameState();
-  console.log(NewGameState.score.focus);
+  checkBust();
+  // const didBust = checkBust();
+  // if (didBust) {
+  //   setTimeout(() => resetGameState(), 0); // Defer reset to end of event loop
+  // }
 }
 
 function playerSplit() {
