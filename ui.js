@@ -164,8 +164,8 @@ export function outcomeAnnouncement() {
       DOMElements.mainElement.removeChild(tempDiv);
     }, 2000);
     clearHandHTML(); // Patch this in for now , but it needs to exist beyond this scope.
-  } else if (outcome === undefined) {
-    console.error("Outcome is undefined!");
+  } else if (outcome === null || outcome === undefined) {
+    // console.error("Outcome i null or undefined!");
   } else {
     // console.log("Outcome in outcomeAnnouncement is:", outcome);
   }

@@ -187,22 +187,29 @@ export function checkBust() {
 
 export function handleBust() {
   const focusHandName = GameState.hands.focus;
-  console.log("handleBust is running at resolution?");
+
   updateGameState(`hands.${focusHandName}.outcome`, "bust");
-  if (!GameState.isSplit) {
-    updateGameState("view", "wager");
+  updateGameState(`hands.${focusHandName}.resolved`, true);
+  updateGameState("view", "wager");
+  resetGameState();
 
-    resetGameState();
-  } else if (GameState.isSplit && !GameState.deadSplitHand) {
-    togglePreviewFocus();
-    updateGameState("deadSplitHand", true);
-
-    // add "bust" element to new preview hand or remove preview hand altogether?
-  } else if (GameState.isSplit && GameState.deadSplitHand) {
-    updateGameState("view", "wager");
-    resetGameState();
-  }
-  updateGameState(`hands.${focusHandName}.outcome`, "resolved");
+  // Update the state and pass a callback to reset after processing
+  // if (GameState.isSplit && !GameState.deadSplitHand) {
+  //   togglePreviewFocus();
+  //   updateGameState("deadSplitHand", true);
+  //   updateGameState(`hands.${focusHandName}.resolved`, true);
+  //   return;
+  // } else {
+  //   , () => {
+  //     if (!GameState.isSplit) {
+  //       updateGameState("view", "wager");
+  //       resetGameState(); // Runs only after observers are notified
+  //     } else if (GameState.isSplit && GameState.deadSplitHand) {
+  //       updateGameState("view", "wager");
+  //       resetGameState(); // Runs here as well
+  //     }
+  //   });
+  // }
 }
 
 export function dealerAction() {

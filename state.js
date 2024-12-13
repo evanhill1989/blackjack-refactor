@@ -70,11 +70,13 @@ export const GameState = {
       cards: [],
       score: 0,
       outcome: null,
+      resolved: false,
     },
     userSecond: {
       cards: [],
       score: null,
       outcome: null,
+      resolved: false,
     },
     dealer: {
       cards: [],
@@ -161,11 +163,13 @@ export function resetGameState() {
       cards: [],
       score: 0,
       outcome: null,
+      resolved: false,
     },
     userSecond: {
       cards: [],
       score: null,
       outcome: null,
+      resolved: false,
     },
     dealer: {
       cards: [],
@@ -181,12 +185,6 @@ export function resetGameState() {
 
   GameState.setFocusHand("userFirst");
   GameState.setPreviewHand("userSecond");
-
-  GameState.dealerHand = [];
-  GameState.dealerScore = 0;
-  GameState.playerHandOneScore = 0;
-  GameState.playerHandTwoScore = null;
-  GameState.actionState = "wager";
 
   GameState.testState = "";
   GameState.deck = deck;
@@ -207,20 +205,42 @@ export function notifyObservers() {
 let updateQueue = [];
 let isUpdating = false;
 
-export function updateGameState(property, value) {
+export function updateGameState(property, value, callback) {
   updateQueue.push({ property, value });
+
   if (!isUpdating) {
     isUpdating = true;
 
     while (updateQueue.length > 0) {
       const update = updateQueue.shift();
-      if (GameState[update.property] !== update.value) {
-        GameState[update.property] = update.value;
+
+      // Resolve nested properties
+      const keys = update.property.split(".");
+      let target = GameState;
+
+      // Traverse the object path
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (target[keys[i]] === undefined) {
+          console.error(`Invalid property path: ${update.property}`);
+          return;
+        }
+        target = target[keys[i]];
+      }
+
+      // Update the final key
+      const finalKey = keys[keys.length - 1];
+      if (target[finalKey] !== update.value) {
+        target[finalKey] = update.value;
         notifyObservers();
       }
     }
 
     isUpdating = false;
+
+    // Execute the callback after all updates and notifications
+    if (typeof callback === "function") {
+      callback();
+    }
   }
 }
 

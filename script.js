@@ -70,7 +70,7 @@ testBtnWager.addEventListener("click", () => {});
 
 testBtnGameBoard.addEventListener("click", () => {
   notifyObservers();
-  console.log(GameState.hands.userFirst);
+  console.log(GameState);
 });
 
 wagerForm.addEventListener("submit", startNewHand);
@@ -197,19 +197,6 @@ async function playerStand() {
   resolveGame();
 }
 
-// dealInitialCards()
-// playerDouble()
-
-// playerSplit()
-
-// playerHit()
-
-// playerStand()
-
-// determineWinner()
-
-// resetGame()
-
 // More specific functions
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/
@@ -229,8 +216,8 @@ export function resolveGame() {
 
 export function shouldResolveGame() {
   if (
-    GameState.hands.userFirst.outcome === "resolved" &&
-    GameState.hands.userSecond.outcome === "resolved"
+    GameState.hands.userFirst.resolved === true &&
+    GameState.hands.userSecond.resolved === true
   ) {
     return true;
   } else {
