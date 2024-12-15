@@ -130,7 +130,7 @@ export function updateScoresDisplay() {
   const previewScoreElement = DOMElements.previewScore;
   const dealerScoreElement = DOMElements.dealerScore;
 
-  focusScoreElement.textContent = GameState.hands.focusHand.score;
+  focusScoreElement.textContent = GameState.hands.focusHand.score || "";
   previewScoreElement.textContent = GameState.hands.previewHand.score || "";
   if (GameState.dealerHoleCardExposed === true) {
     dealerScoreElement.textContent = GameState.hands.dealer.score;

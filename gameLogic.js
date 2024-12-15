@@ -142,39 +142,6 @@ function totalWithAces(numAces, nonAcesTotal) {
   return total;
 }
 
-// function totalWithAces(hand, numAces, nonAcesTotal) {
-//   switch (numAces) {
-//     case 0:
-//       return nonAcesTotal;
-//     case 1:
-//       if (nonAcesTotal <= 10) {
-//         return (hand.score = nonAcesTotal + 11);
-//       } else {
-//         return (hand.score = nonAcesTotal + 1);
-//       }
-//     case 2:
-//       if (nonAcesTotal <= 9) {
-//         return (hand.score = nonAcesTotal + 12);
-//       } else {
-//         return (hand.score = nonAcesTotal + 2);
-//       }
-//     case 3:
-//       if (nonAcesTotal <= 8) {
-//         return (hand.score = nonAcesTotal + 13);
-//       } else {
-//         return (hand.score = nonAcesTotal + 3);
-//       }
-//     case 4:
-//       if (nonAcesTotal <= 7) {
-//         return (hand.score = nonAcesTotal + 14);
-//       } else {
-//         return (hand.score = nonAcesTotal + 4);
-//       }
-//     default:
-//       return console.error("Error : Too many aces");
-//   }
-// }
-
 // HIT
 
 export function checkBust() {
@@ -192,24 +159,6 @@ export function handleBust() {
   updateGameState(`hands.${focusHandName}.resolved`, true);
   updateGameState("view", "wager");
   resetGameState();
-
-  // Update the state and pass a callback to reset after processing
-  // if (GameState.isSplit && !GameState.deadSplitHand) {
-  //   togglePreviewFocus();
-  //   updateGameState("deadSplitHand", true);
-  //   updateGameState(`hands.${focusHandName}.resolved`, true);
-  //   return;
-  // } else {
-  //   , () => {
-  //     if (!GameState.isSplit) {
-  //       updateGameState("view", "wager");
-  //       resetGameState(); // Runs only after observers are notified
-  //     } else if (GameState.isSplit && GameState.deadSplitHand) {
-  //       updateGameState("view", "wager");
-  //       resetGameState(); // Runs here as well
-  //     }
-  //   });
-  // }
 }
 
 export function dealerAction() {

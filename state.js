@@ -85,7 +85,7 @@ export const GameState = {
     },
     // Add a direct `focus` property to avoid recursion
     focus: "userFirst",
-    preview: "userFirst", // Add preview property here as well
+    preview: "userSecond", // Add preview property here as well
     get focusHand() {
       return this.focus === "userFirst" ? this.userFirst : this.userSecond;
     },
@@ -158,24 +158,23 @@ export function resetGameState() {
   GameState.currentBet = 0;
   GameState.view = "wager";
 
-  GameState.hands = {
-    userFirst: {
-      cards: [],
-      score: 0,
-      outcome: null,
-      resolved: false,
-    },
-    userSecond: {
-      cards: [],
-      score: null,
-      outcome: null,
-      resolved: false,
-    },
-    dealer: {
-      cards: [],
-      score: 0,
-      outcome: null,
-    },
+  // Reset the hands object while preserving focus, preview, and getters
+  GameState.hands.userFirst = {
+    cards: [],
+    score: 0,
+    outcome: null,
+    resolved: false,
+  };
+  GameState.hands.userSecond = {
+    cards: [],
+    score: null,
+    outcome: null,
+    resolved: false,
+  };
+  GameState.hands.dealer = {
+    cards: [],
+    score: 0,
+    outcome: null,
   };
 
   GameState.canSplit = false;
@@ -183,6 +182,7 @@ export function resetGameState() {
   GameState.isSplit = false;
   GameState.isDouble = false;
 
+  // Optional: Reset focus and preview to their default states
   GameState.setFocusHand("userFirst");
   GameState.setPreviewHand("userSecond");
 

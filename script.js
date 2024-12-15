@@ -66,7 +66,9 @@ const testBtnGameBoard = document.getElementById("test-btn-game-board");
 
 updateBankrollDisplay();
 
-testBtnWager.addEventListener("click", () => {});
+testBtnWager.addEventListener("click", () => {
+  console.log(GameState);
+});
 
 testBtnGameBoard.addEventListener("click", () => {
   notifyObservers();
