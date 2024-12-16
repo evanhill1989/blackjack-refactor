@@ -255,14 +255,6 @@ export function updateBankroll() {
   }
 }
 
-export function splitHandArr() {
-  const handOne = GameState.playerHandOne;
-  const handTwo = handOne.splice(1, 1);
-
-  updateGameState("playerHandOne", handOne);
-  updateGameState("playerHandTwo", handTwo);
-}
-
 export function updateDeck() {
   /*...*/
 }

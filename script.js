@@ -8,6 +8,7 @@ import {
   determineOutcome,
   checkCanDouble,
   checkCanSplit,
+  splitHandArr,
   toggleSplitHands,
   splitShowdown,
   handleBust,
@@ -29,7 +30,6 @@ import {
   updateGameState,
   updateScores,
   resetGameState,
-  splitHandArr,
   getFocusHand,
   setHandState,
   addObserver,
@@ -159,12 +159,12 @@ function playerHit() {
 }
 
 function playerSplit() {
-  updateGameState("split", true);
+  updateGameState("isSplit", true);
   updateGameState("bankroll", GameState.bankroll - GameState.currentBet);
 
   splitHandArr();
-  updateGameState("focusHand", "playerHandOne");
-  updateGameState("previewHand", "playerHandTwo");
+  updateGameState("hands.focus", "userFirst");
+  updateGameState("hands.preview", "userSecond");
 
   updateScoresDisplay();
   splitUI();

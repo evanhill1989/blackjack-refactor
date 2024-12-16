@@ -190,7 +190,7 @@ export function toggleSplitBtn() {
 
 export function splitUI() {
   renderFocusHand();
-  setPreviewHand();
+  renderPreviewHand();
   DOMElements.splitBtn.disabled = true;
   // toggleVisibility(DOMElements.previewHand);
   const testButton = document.createElement("button");
@@ -202,14 +202,14 @@ export function splitUI() {
 }
 
 export function renderFocusHand() {
-  const currentFocus = GameState.hands.focusHand;
+  const currentFocusHand = GameState.hands.focusHand.cards;
   DOMElements.focusHand.innerHTML = "";
-  const newHand = mapOverHand(currentFocus);
+  const newHand = mapOverHand(currentFocusHand);
 
   DOMElements.focusHand.innerHTML = newHand;
 }
 
-export function setPreviewHand() {
+export function renderPreviewHand() {
   const handName = GameState.hands.previewHand;
   DOMElements.previewHand.innerHTML = "";
   const newHand = mapOverHand(handName);
@@ -226,17 +226,17 @@ export function setPreviewHand() {
 export function togglePreviewFocusDisplay(toggleToFocus, toggleToPreview) {
   console.log("Does this run?");
   if (toggleToFocus) {
-    GameState.focusHand = toggleToFocus;
-    GameState.previewHand = toggleToPreview || null;
-    notifyObservers();
+    GameState.hands.focus = toggleToFocus;
+    GameState.hands.preview = toggleToPreview || null;
+    notifyObservers(); // meh, a bit jank
     renderFocusHand();
-    setPreviewHand();
+    renderPreviewHand();
   } else {
     renderFocusHand();
-    setPreviewHand();
+    renderPreviewHand();
   }
 
-  updateScoresDisplay();
+  //updateScoresDisplay(); // does this run without calling this function- because updateScores is triggered?
 }
 
 export function mapOverHand(hand) {

@@ -66,6 +66,14 @@ export function checkCanDouble() {
 
 // SPLIT
 
+export function splitHandArr() {
+  const handOne = GameState.hands.userFirst.cards;
+  const handTwo = handOne.splice(1, 1);
+
+  updateGameState("playerHandOne", handOne);
+  updateGameState("playerHandTwo", handTwo);
+}
+
 export function shouldToggleSplitHands(handName) {
   // Could jam these all in one statement with an or chain
   if (GameState.isSplit === false) {
@@ -81,13 +89,13 @@ export function shouldToggleSplitHands(handName) {
 }
 
 export function toggleSplitHands() {
-  GameState.focusHand === "playerHandOne"
-    ? updateGameState("focusHand", "playerHandTwo")
-    : updateGameState("focusHand", "playerHandOne");
-  GameState.previewHand === "playerHandOne"
-    ? updateGameState("previewHand", "playerHandTwo")
-    : updateGameState("previewHand", "playerHandOne");
-  togglePreviewFocusDisplay();
+  GameState.hands.focus === "userFirst"
+    ? updateGameState("hands.focus", "userSecond")
+    : updateGameState("hands.focus", "userFirst");
+  GameState.hands.preview === "userFirst"
+    ? updateGameState("hands.preview", "userSecond")
+    : updateGameState("hands.preview", "userFirst");
+  togglePreviewFocusDisplay(); // First, is the GameState update above completed in time for this? this probably makes more sense as an observer function watching for changes to hands.focus/hands.preview
 }
 // *observer
 export function checkCanSplit() {
@@ -157,8 +165,21 @@ export function handleBust() {
 
   updateGameState(`hands.${focusHandName}.outcome`, "bust");
   updateGameState(`hands.${focusHandName}.resolved`, true);
-  updateGameState("view", "wager");
-  resetGameState();
+  if (GameState.isSplit === false) {
+    updateGameState("view", "wager");
+    resetGameState();
+  } else if (GameState.isSplit === true) {
+    // base next logic on both resolved?
+    GameState.hands.userFirst.resolved === false ||
+    GameState.hands.userSecond.resolved === false
+      ? toggleSplitHands()
+      : resolveGame();
+  } else {
+    console.error(
+      "Error: Invalid outcome inside handleBust function for GameState.isSplit -->",
+      GameState.isSplit
+    );
+  }
 }
 
 export function dealerAction() {
