@@ -194,8 +194,8 @@ export function handleBust() {
 export function dealerAction() {
   updateGameState("dealerHoleCardExposed", true);
 
-  if (GameState.dealerScore < 17) {
-    dealSingleCard("dealerHand", {
+  while (GameState.dealerScore < 17) {
+    dealSingleCard("hands.dealer.cards", {
       suit: "♠",
       rank: "8",
       value: 8,
@@ -203,36 +203,34 @@ export function dealerAction() {
 
     notifyObservers(); // because I'm not closing this function before calling it again, so i have to notify observers manually before I call it again to get the updated dealerScore state
     updateScoresDisplay();
-    dealerAction();
-  } else if (GameState.dealerScore >= 17 && GameState.dealerScore <= 21) {
+  }
+  if (GameState.dealerScore >= 17 && GameState.dealerScore <= 21) {
     return;
   } else if (GameState.dealerScore > 21) {
-    updateGameState("isDealerHandBust", true);
+    updateGameState("hands.dealer.outcome", "bust");
   } else {
     console.error("Error: Invalid outcome inside dealerAction function");
   }
 }
 
 export function determineOutcome() {
-  const handOutcome =
-    GameState.focusHand === "playerHandOne" ? "handOneState" : "handTwoState";
+  const focusHandName = GameState.hands.focus;
   dealerAction();
-  if (GameState.dealerScore === "bust") {
-    updateGameState(handOutcome, "win");
-  } else if (GameState.focusScore === "bust") {
+  if (GameState.hands.dealer.outcome === "bust") {
+    updateGameState(`hand.${focusHandName}.outcome`, "win");
+  } else if (GameState.hands.focusHand.outcome === "bust") {
     // shouldn't ever really run this code, as a player bust should be handled by handleBust() preempting the need to call determineOutcome()
-  } else if (GameState.dealerScore > GameState.focusScore) {
-    updateGameState(handOutcome, "lose");
-  } else if (GameState.dealerScore < GameState.focusScore) {
-    updateGameState(handOutcome, "win");
-  } else if (GameState.dealerScore === GameState.focusScore) {
-    updateGameState(handOutcome, "push");
+  } else if (GameState.hands.dealer.score > GameState.hands.focusHand.score) {
+    updateGameState(`hand.${focusHandName}.outcome`, "lose");
+  } else if (GameState.hands.dealer.score < GameState.hands.focusHand.score) {
+    updateGameState(`hand.${focusHandName}.outcome`, "win");
+  } else if (GameState.hands.dealer.score === GameState.hands.focusHand.score) {
+    updateGameState(`hand.${focusHandName}.outcome`, "push");
   } else {
     console.error("Error: Invalid outcome inside determine outcome function");
   }
 
-  updateGameState(handOutcome, "resolved");
+  updateGameState(`hand.${focusHandName}.outcome`, "resolved");
 
   return handOutcome; // returns to outcomeAnnouncement(GameState, outcome)
-  // updateBankrollDisplay(GameState.bankroll);
 }

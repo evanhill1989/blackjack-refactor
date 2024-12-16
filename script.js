@@ -189,9 +189,9 @@ function playerDouble() {
 }
 
 async function playerStand() {
-  let handName = GameState.focusHand;
+  let handName = GameState.hands.focus;
 
-  setHandState(handName, "standing");
+  updateGameState(`hands.${handName}.outcome`, "standing");
 
   if (
     GameState.hands.userFirst.outcome === "standing" &&
