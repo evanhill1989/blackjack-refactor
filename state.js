@@ -260,24 +260,15 @@ export function updateDeck() {
 }
 // SCORE
 export function updateScores() {
-  // updateGameState(
-  //   `hands.dealer.score`,
-  //   calculateHandScore(GameState.hands.dealer.cards)
-  // );
-  // updateGameState(
-  //   `hands.userFirst.score`,
-  //   calculateHandScore(GameState.hands.userFirst.cards)
-  // );
   GameState.hands.userFirst.score = calculateHandScore(
     GameState.hands.userFirst.cards
   );
   GameState.hands.dealer.score = calculateHandScore(
     GameState.hands.dealer.cards
   );
-  // updateGameState(
-  //   `hands.userSecond.score`,
-  //   calculateHandScore(GameState.hands.userSecond.cards)
-  // );
+  GameState.hands.userSecond.score = calculateHandScore(
+    GameState.hands.userSecond.cards
+  );
 
   updateScoresDisplay();
 }

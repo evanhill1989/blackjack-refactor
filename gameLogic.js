@@ -66,12 +66,21 @@ export function checkCanDouble() {
 
 // SPLIT
 
+// TypeError: newHandObj is undefined
+//     mapOverHand http://127.0.0.1:5500/ui.js:249
+//     renderFocusHand http://127.0.0.1:5500/ui.js:207
+//     splitUI http://127.0.0.1:5500/ui.js:192
+//     playerSplit http://127.0.0.1:5500/script.js:170
+//     EventListener.handleEvent* http://127.0.0.1:5500/script.js:81
+
 export function splitHandArr() {
   const handOne = GameState.hands.userFirst.cards;
   const handTwo = handOne.splice(1, 1);
 
-  updateGameState("playerHandOne", handOne);
-  updateGameState("playerHandTwo", handTwo);
+  updateGameState("hands.userFirst.cards", handOne);
+  updateGameState("hands.userSecond.cards", handTwo);
+  console.log(GameState.hands.userFirst, "handOne in splitHandArr()");
+  console.log(GameState.hands.userSecond, "handTwo in splitHandArr()");
 }
 
 export function shouldToggleSplitHands(handName) {

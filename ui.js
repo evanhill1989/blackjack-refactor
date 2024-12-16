@@ -203,18 +203,20 @@ export function splitUI() {
 
 export function renderFocusHand() {
   const currentFocusHand = GameState.hands.focusHand.cards;
-  DOMElements.focusHand.innerHTML = "";
   const newHand = mapOverHand(currentFocusHand);
 
+  DOMElements.focusHand.innerHTML = "";
   DOMElements.focusHand.innerHTML = newHand;
+  DOMElements.focusScore.textContent = GameState.hands.focusHand.score || "";
 }
 
 export function renderPreviewHand() {
-  const handName = GameState.hands.previewHand;
-  DOMElements.previewHand.innerHTML = "";
-  const newHand = mapOverHand(handName);
+  const previewHand = GameState.hands.previewHand.cards;
+
+  const newHand = mapOverHand(previewHand);
   const previewHandDiv = document.createElement("div");
 
+  DOMElements.previewHand.innerHTML = "";
   previewHandDiv.innerHTML = newHand;
 
   DOMElements.previewHand.appendChild(previewHandDiv);
@@ -240,13 +242,9 @@ export function togglePreviewFocusDisplay(toggleToFocus, toggleToPreview) {
 }
 
 export function mapOverHand(hand) {
-  const newHandObj =
-    hand === "playerHandOne"
-      ? GameState.playerHandOne
-      : GameState.playerHandTwo;
   const newHandHTMLArr = [];
 
-  newHandObj.map((card, index) => {
+  hand.map((card, index) => {
     const cardHTML = generateCardHTML(card).replace(/\n/g, "").trim();
 
     newHandHTMLArr.push(cardHTML);

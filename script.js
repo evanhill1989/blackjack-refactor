@@ -170,6 +170,14 @@ function playerSplit() {
   splitUI();
 
   updateGameState("canSplit", false);
+  console.log(
+    GameState.hands.focusHand,
+    "GameState.focusHand in playerSplit()"
+  );
+  console.log(
+    GameState.hands.previewHand,
+    "GameState.previewHand in playerSplit()"
+  );
 }
 
 function playerDouble() {
