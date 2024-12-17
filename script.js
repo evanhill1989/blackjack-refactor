@@ -101,10 +101,6 @@ function startNewHand(event) {
 
 function dealInitialCards() {
   // playerHand first
-  console.log(
-    GameState.hands.userFirst.cards,
-    "GameState.playerHandOne in dealInitialCards()"
-  );
 
   let staticCardForTesting = { suit: "♥", rank: "A", value: 11 };
   dealSingleCard("userFirst", staticCardForTesting);
@@ -138,24 +134,14 @@ function dealInitialCards() {
   if (canSplit) {
     splitBtn.disabled = false;
   }
-  console.log("userFirst handscore", GameState.hands.userFirst.score);
 }
 
 function playerHit() {
   dealSingleCard(GameState.hands.focus, { suit: "♣", rank: "K", value: 10 });
-  // updateScoresDisplay();
-  console.log(
-    GameState.hands.focusHand.score,
-    "focusHand.score in playerHit()"
-  );
 
   notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
   updateScoresDisplay();
   checkBust();
-  // const didBust = checkBust();
-  // if (didBust) {
-  //   setTimeout(() => resetGameState(), 0); // Defer reset to end of event loop
-  // }
 }
 
 function playerSplit() {
@@ -192,37 +178,24 @@ async function playerStand() {
   let handName = GameState.hands.focus;
 
   updateGameState(`hands.${handName}.outcome`, "standing");
+  if (!GameState.isSplit) {
+    determineOutcome();
+    resetGameState();
+  }
 
   if (
     GameState.hands.userFirst.outcome === "standing" &&
     GameState.hands.userSecond.outcome === "standing"
   ) {
     await splitShowdown();
-
     resolveGame();
     return;
   }
-  shouldToggleSplitHands(handName) ? toggleSplitHands() : determineOutcome();
-
-  resolveGame();
 }
 
 // More specific functions
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/
-export function resolveGame() {
-  const shouldResolveGame = shouldResolveGame();
-  ("handStates in resolveGame");
-  resetGameState();
-  // if (GameState.split === true) {
-  //   if (
-  //     GameState.handOneState === "resolved" &&
-  //     GameState.handTwoState === "resolved"
-  //   ) {
-  //     resetGameState();
-  //   }
-  // }
-}
 
 export function shouldResolveGame() {
   if (
@@ -233,4 +206,18 @@ export function shouldResolveGame() {
   } else {
     return false;
   }
+}
+
+export function resolveGame() {
+  let resolver = shouldResolveGame();
+  resolver ? resetGameState() : false;
+
+  // if (GameState.split === true) {
+  //   if (
+  //     GameState.handOneState === "resolved" &&
+  //     GameState.handTwoState === "resolved"
+  //   ) {
+  //     resetGameState();
+  //   }
+  // }
 }

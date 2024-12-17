@@ -151,7 +151,6 @@ export function outcomeAnnouncement() {
     outcome === "lose" ||
     outcome === "bust"
   ) {
-    console.log("outcomeAnnouncement is running at resolution?");
     const tempDiv = document.createElement("div");
     const outcomeHTML = `
     <div class="outcome-message">

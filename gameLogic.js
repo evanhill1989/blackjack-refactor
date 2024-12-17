@@ -66,13 +66,6 @@ export function checkCanDouble() {
 
 // SPLIT
 
-// TypeError: newHandObj is undefined
-//     mapOverHand http://127.0.0.1:5500/ui.js:249
-//     renderFocusHand http://127.0.0.1:5500/ui.js:207
-//     splitUI http://127.0.0.1:5500/ui.js:192
-//     playerSplit http://127.0.0.1:5500/script.js:170
-//     EventListener.handleEvent* http://127.0.0.1:5500/script.js:81
-
 export function splitHandArr() {
   const handOne = GameState.hands.userFirst.cards;
   const handTwo = handOne.splice(1, 1);
@@ -163,9 +156,6 @@ function totalWithAces(numAces, nonAcesTotal) {
 
 export function checkBust() {
   const focusHandScore = GameState.hands.focusHand.score;
-  const userFirstScore = GameState.hands.userFirst.score;
-  console.log(focusHandScore, "focusHandScore in checkBust()");
-  console.log(userFirstScore, "userFirstScore in checkBust()");
   focusHandScore > 21 ? handleBust() : false;
 }
 
@@ -209,7 +199,7 @@ export function dealerAction() {
   } else if (GameState.dealerScore > 21) {
     updateGameState("hands.dealer.outcome", "bust");
   } else {
-    console.error("Error: Invalid outcome inside dealerAction function");
+    // else what?
   }
 }
 
@@ -217,20 +207,18 @@ export function determineOutcome() {
   const focusHandName = GameState.hands.focus;
   dealerAction();
   if (GameState.hands.dealer.outcome === "bust") {
-    updateGameState(`hand.${focusHandName}.outcome`, "win");
+    updateGameState(`hands.${focusHandName}.outcome`, "win");
   } else if (GameState.hands.focusHand.outcome === "bust") {
     // shouldn't ever really run this code, as a player bust should be handled by handleBust() preempting the need to call determineOutcome()
   } else if (GameState.hands.dealer.score > GameState.hands.focusHand.score) {
-    updateGameState(`hand.${focusHandName}.outcome`, "lose");
+    updateGameState(`hands.${focusHandName}.outcome`, "lose");
   } else if (GameState.hands.dealer.score < GameState.hands.focusHand.score) {
-    updateGameState(`hand.${focusHandName}.outcome`, "win");
+    updateGameState(`hands.${focusHandName}.outcome`, "win");
   } else if (GameState.hands.dealer.score === GameState.hands.focusHand.score) {
-    updateGameState(`hand.${focusHandName}.outcome`, "push");
+    updateGameState(`hands.${focusHandName}.outcome`, "push");
   } else {
     console.error("Error: Invalid outcome inside determine outcome function");
   }
 
-  updateGameState(`hand.${focusHandName}.outcome`, "resolved");
-
-  return handOutcome; // returns to outcomeAnnouncement(GameState, outcome)
+  updateGameState(`hands.${focusHandName}.outcome`, "resolved");
 }
