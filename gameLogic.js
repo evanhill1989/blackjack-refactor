@@ -111,19 +111,22 @@ export function checkCanSplit() {
 }
 
 export async function splitShowdown() {
-  updateGameState("focusHand", "playerHandOne");
-  updateGameState("previewHand", "playerHandTwo");
-  togglePreviewFocusDisplay();
-  determineOutcome();
+  // you know you'd only get here coming from standing on hand 2 w/out busting
+  if (
+    GameState.hands.userFirst.outcome === "bust" ||
+    GameState.hands.userFirst.resolved === true
+  ) {
+    determineOutcome();
+  } else {
+    // focus back to hand 1 to compare scores to dealerHand
+    // dealer needs to act
+    // focus back to hand 2 to compare scores to dealerHand
+    // resolveGame();
+    updateGameState("hands.focus", "userFirst");
+    updateGameState("hands.preview", "userSecond");
 
-  setTimeout(() => {
-    updateGameState("focusHand", "playerHandTwo");
-    updateGameState("previewHand", "playerHandOne");
-    togglePreviewFocusDisplay();
-    setTimeout(() => {
-      determineOutcome();
-    }, 1000);
-  }, 2000);
+    determineOutcome();
+  }
 }
 
 // SCORE
@@ -184,8 +187,8 @@ export function handleBust() {
 export function dealerAction() {
   updateGameState("dealerHoleCardExposed", true);
 
-  while (GameState.dealerScore < 17) {
-    dealSingleCard("hands.dealer.cards", {
+  while (GameState.hands.dealer.score < 17) {
+    dealSingleCard(`dealer`, {
       suit: "♠",
       rank: "8",
       value: 8,
@@ -194,9 +197,12 @@ export function dealerAction() {
     notifyObservers(); // because I'm not closing this function before calling it again, so i have to notify observers manually before I call it again to get the updated dealerScore state
     updateScoresDisplay();
   }
-  if (GameState.dealerScore >= 17 && GameState.dealerScore <= 21) {
+  if (
+    GameState.hands.dealer.score >= 17 &&
+    GameState.hands.dealer.score <= 21
+  ) {
     return;
-  } else if (GameState.dealerScore > 21) {
+  } else if (GameState.hands.dealer.score > 21) {
     updateGameState("hands.dealer.outcome", "bust");
   } else {
     // else what?
@@ -220,5 +226,5 @@ export function determineOutcome() {
     console.error("Error: Invalid outcome inside determine outcome function");
   }
 
-  updateGameState(`hands.${focusHandName}.outcome`, "resolved");
+  updateGameState(`hands.${focusHandName}.resolved`, true);
 }

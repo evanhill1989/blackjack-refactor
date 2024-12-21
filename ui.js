@@ -224,6 +224,13 @@ export function renderPreviewHand() {
     GameState.hands.previewHand.score || "";
 }
 
+export function renderSplitHands() {
+  if (GameState.isSplit) {
+    renderFocusHand();
+    renderPreviewHand();
+  }
+}
+
 export function togglePreviewFocusDisplay(toggleToFocus, toggleToPreview) {
   console.log("Does this run?");
   if (toggleToFocus) {
