@@ -195,12 +195,15 @@ async function playerStand() {
         );
     } else if (GameState.hands.focus === "userSecond") {
       await splitShowdown();
-      if (GameState.hands.userSecond.resolved === false) {
-        updateGameState("hands.focus", "userSecond");
-        updateGameState("hands.preview", "userFirst");
+      setTimeout(() => {
+        if (GameState.hands.userSecond.resolved === false) {
+          updateGameState("hands.focus", "userSecond");
+          updateGameState("hands.preview", "userFirst");
 
-        determineOutcome();
-      }
+          determineOutcome();
+          resetGameState();
+        }
+      }, 1500);
     }
   }
 
