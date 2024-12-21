@@ -2,7 +2,7 @@
 
 import { calculateHandScore } from "./gameLogic.js";
 
-import { updateScoresDisplay } from "./ui.js";
+import { updateScoresDisplay, resetUI } from "./ui.js";
 
 const deck = [
   { suit: "♠", rank: "A", value: 11 },
@@ -189,6 +189,8 @@ export function resetGameState() {
   GameState.testState = "";
   GameState.deck = deck;
 
+  resetUI();
+
   notifyObservers();
 }
 
@@ -241,17 +243,6 @@ export function updateGameState(property, value, callback) {
     if (typeof callback === "function") {
       callback();
     }
-  }
-}
-
-export function updateBankroll() {
-  const handOneOutcome = GameState.playerHandOneOutcome;
-  const handTwoOutcome = GameState.playerHandTwoOutcome;
-  if (handOneOutcome === "lose" || handTwoOutcome === "lose") {
-  } else if (handOneOutcome === "win" || handTwoOutcome === "win") {
-    GameState.bankroll += GameState.currentBet * 2;
-  } else if (handOneOutcome === "push" || handTwoOutcome === "push") {
-    GameState.bankroll += GameState.currentBet * 1;
   }
 }
 

@@ -32,6 +32,12 @@ export const DOMElements = {
   previewScore: document.getElementById("preview-score"),
 };
 
+export function resetUI() {
+  DOMElements.focusHand.innerHTML = "";
+  DOMElements.dealerHand.innerHTML = "";
+  DOMElements.previewHand.innerHTML = "";
+}
+
 export function toggleView() {
   if (GameState.view === "wager") {
     DOMElements.gameBoardView.classList.add("hidden");
@@ -166,7 +172,6 @@ export function outcomeAnnouncement() {
   } else if (outcome === null || outcome === undefined) {
     // console.error("Outcome i null or undefined!");
   } else {
-    // console.log("Outcome in outcomeAnnouncement is:", outcome);
   }
 }
 
@@ -188,16 +193,8 @@ export function toggleSplitBtn() {
 }
 
 export function splitUI() {
-  renderFocusHand();
-  renderPreviewHand();
+  renderSplitHands();
   DOMElements.splitBtn.disabled = true;
-  // toggleVisibility(DOMElements.previewHand);
-  const testButton = document.createElement("button");
-  testButton.textContent = "Test Button";
-  testButton.addEventListener("click", () => {
-    toggleSplitHands();
-  });
-  DOMElements.actionsDiv.appendChild(testButton);
 }
 
 export function renderFocusHand() {
@@ -232,7 +229,6 @@ export function renderSplitHands() {
 }
 
 export function togglePreviewFocusDisplay(toggleToFocus, toggleToPreview) {
-  console.log("Does this run?");
   if (toggleToFocus) {
     GameState.hands.focus = toggleToFocus;
     GameState.hands.preview = toggleToPreview || null;

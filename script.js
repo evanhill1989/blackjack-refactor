@@ -34,7 +34,6 @@ import {
   getFocusHand,
   setHandState,
   addObserver,
-  updateBankroll,
   notifyObservers,
 } from "./state.js";
 
@@ -49,7 +48,6 @@ addObserver(renderSplitHands);
 // addObserver(updateScoresDisplay); keeping this out of observers. Feels like some race conditions with updateScores might happen, and I want fine tuning of timing of display updates anyway.
 
 // gameState observers
-addObserver(updateBankroll);
 
 // gameLogic observers
 // addObserver(checkCanSplit);
@@ -159,14 +157,6 @@ function playerSplit() {
   splitUI();
 
   updateGameState("canSplit", false);
-  console.log(
-    GameState.hands.focusHand,
-    "GameState.focusHand in playerSplit()"
-  );
-  console.log(
-    GameState.hands.previewHand,
-    "GameState.previewHand in playerSplit()"
-  );
 }
 
 function playerDouble() {
@@ -188,12 +178,10 @@ async function playerStand() {
     if (GameState.hands.focus === "userFirst") {
       updateGameState(`hands.focus`, "userSecond");
       updateGameState(`hands.preview`, "userFirst"); // heavy-handed?
-      GameState.hands.focus,
-        console.log(
-          GameState.hands.preview,
-          "!!!!!!!!!!!GameState.preview in playerStand()"
-        );
-    } else if (GameState.hands.focus === "userSecond") {
+    } else if (
+      GameState.hands.focus === "userSecond" &&
+      GameState.hands.userFirst.outcome === "standing"
+    ) {
       await splitShowdown();
       setTimeout(() => {
         if (GameState.hands.userSecond.resolved === false) {
@@ -204,6 +192,12 @@ async function playerStand() {
           resetGameState();
         }
       }, 1500);
+    } else if (
+      GameState.hands.focus === "userSecond" &&
+      GameState.hands.userFirst.resolved === true
+    ) {
+      determineOutcome();
+      resetGameState();
     }
   }
 

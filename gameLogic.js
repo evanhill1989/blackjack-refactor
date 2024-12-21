@@ -72,8 +72,6 @@ export function splitHandArr() {
 
   updateGameState("hands.userFirst.cards", handOne);
   updateGameState("hands.userSecond.cards", handTwo);
-  console.log(GameState.hands.userFirst, "handOne in splitHandArr()");
-  console.log(GameState.hands.userSecond, "handTwo in splitHandArr()");
 }
 
 export function shouldToggleSplitHands(handName) {
@@ -132,9 +130,6 @@ export async function splitShowdown() {
 // SCORE
 
 export function calculateHandScore(hand) {
-  // Almost seems like this should be a method on GameState ?
-
-  // console.log(hand[0].value, "hand[0].value in calculateHandScore()");
   let numAces = hand.filter((card) => card.value === 11).length;
   let nonAces = hand.filter((card) => card.value !== 11);
 
@@ -172,10 +167,16 @@ export function handleBust() {
     resetGameState();
   } else if (GameState.isSplit === true) {
     // base next logic on both resolved?
-    GameState.hands.userFirst.resolved === false ||
-    GameState.hands.userSecond.resolved === false
-      ? toggleSplitHands()
-      : resolveGame();
+    if (GameState.hands.userFirst.outcome === "standing") {
+      toggleSplitHands();
+      determineOutcome();
+      resetGameState();
+    } else {
+      GameState.hands.userFirst.resolved === false ||
+      GameState.hands.userSecond.resolved === false
+        ? toggleSplitHands()
+        : resolveGame();
+    }
   } else {
     console.error(
       "Error: Invalid outcome inside handleBust function for GameState.isSplit -->",
@@ -220,8 +221,10 @@ export function determineOutcome() {
     updateGameState(`hands.${focusHandName}.outcome`, "lose");
   } else if (GameState.hands.dealer.score < GameState.hands.focusHand.score) {
     updateGameState(`hands.${focusHandName}.outcome`, "win");
+    updateGameState(`bankroll`, GameState.bankroll + GameState.currentBet * 2);
   } else if (GameState.hands.dealer.score === GameState.hands.focusHand.score) {
     updateGameState(`hands.${focusHandName}.outcome`, "push");
+    updateGameState(`bankroll`, GameState.bankroll + GameState.currentBet * 1);
   } else {
     console.error("Error: Invalid outcome inside determine outcome function");
   }
