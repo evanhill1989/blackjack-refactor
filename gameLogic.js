@@ -59,12 +59,27 @@ export function validateWager(wager, bankroll) {
 }
 
 export function checkCanDouble() {
-  if (GameState.playerHandOneScore >= 9 && GameState.playerHandOneScore <= 11) {
-    return true;
+  console.log(GameState.hands.userFirst.score);
+  if (
+    GameState.hands.userFirst.score >= 9 &&
+    GameState.hands.userFirst.score <= 11
+  ) {
+    updateGameState("canDouble", true);
   }
 }
 
 // SPLIT
+
+// *observer
+export function checkCanSplit() {
+  if (
+    GameState.isSplit === false &&
+    GameState.hands.userFirst.cards[0].value ===
+      GameState.hands.userFirst.cards[1].value
+  ) {
+    updateGameState("canSplit", true);
+  }
+}
 
 export function splitHandArr() {
   const handOne = GameState.hands.userFirst.cards;
@@ -96,16 +111,6 @@ export function toggleSplitHands() {
     ? updateGameState("hands.preview", "userSecond")
     : updateGameState("hands.preview", "userFirst");
   togglePreviewFocusDisplay(); // First, is the GameState update above completed in time for this? this probably makes more sense as an observer function watching for changes to hands.focus/hands.preview
-}
-// *observer
-export function checkCanSplit() {
-  if (
-    GameState.isSplit === false &&
-    GameState.hands.userFirst.cards[0].value ===
-      GameState.hands.userFirst.cards[1].value
-  ) {
-    updateGameState("canSplit", true);
-  }
 }
 
 export async function splitShowdown() {

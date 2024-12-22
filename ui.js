@@ -181,6 +181,15 @@ export function clearHandHTML() {
   DOMElements.previewHand.innerHTML = "";
 }
 
+// DOUBLE THINGS
+export function toggleDoubleBtn() {
+  if (GameState.canDouble) {
+    DOMElements.doubleBtn.disabled = false;
+  } else {
+    DOMElements.doubleBtn.disabled = true;
+  }
+}
+
 // SPLIT THINGS
 
 // *observer

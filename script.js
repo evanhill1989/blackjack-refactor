@@ -24,6 +24,7 @@ import {
   outcomeAnnouncement,
   splitUI,
   renderSplitHands,
+  toggleDoubleBtn,
 } from "./ui.js";
 
 import {
@@ -43,6 +44,7 @@ addObserver(updateBankrollDisplay);
 addObserver(outcomeAnnouncement);
 addObserver(toggleView);
 addObserver(toggleSplitBtn);
+addObserver(toggleDoubleBtn);
 addObserver(renderSplitHands);
 
 // addObserver(updateScoresDisplay); keeping this out of observers. Feels like some race conditions with updateScores might happen, and I want fine tuning of timing of display updates anyway.
@@ -103,12 +105,12 @@ function startNewHand(event) {
 function dealInitialCards() {
   // playerHand first
 
-  let staticCardForTesting = { suit: "♥", rank: "A", value: 11 };
+  let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
   dealSingleCard("userFirst", staticCardForTesting);
 
   updateScoresDisplay();
 
-  staticCardForTesting = { suit: "♠", rank: "A", value: 11 };
+  staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
   dealSingleCard("userFirst", staticCardForTesting);
 
   updateScoresDisplay();
@@ -125,16 +127,10 @@ function dealInitialCards() {
 
   updateScoresDisplay();
 
-  const canDouble = checkCanDouble();
-  const canSplit = checkCanSplit();
+  console.log(GameState.hands.userFirst);
 
-  if (canDouble) {
-    doubleBtn.disabled = false;
-  }
-
-  if (canSplit) {
-    splitBtn.disabled = false;
-  }
+  checkCanDouble();
+  checkCanSplit();
 }
 
 function playerHit() {
@@ -160,11 +156,12 @@ function playerSplit() {
 }
 
 function playerDouble() {
-  GameState.isDouble = true;
-  GameState.currentBet *= 2;
-
+  updateGameState("isDouble", true);
+  updateGameState("bankroll", GameState.bankroll - GameState.currentBet);
   updateScores();
   updateScoresDisplay();
+
+  updateGameState("canDouble", false);
 }
 
 async function playerStand() {
