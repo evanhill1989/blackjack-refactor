@@ -204,6 +204,7 @@ export function toggleSplitBtn() {
 export function splitUI() {
   renderSplitHands();
   DOMElements.splitBtn.disabled = true;
+  DOMElements.doubleBtn.disabled = true;
 }
 
 export function renderFocusHand() {
@@ -231,7 +232,7 @@ export function renderPreviewHand() {
 }
 
 export function renderSplitHands() {
-  if (GameState.isSplit) {
+  if (GameState.isSplit || GameState.isDouble) {
     renderFocusHand();
     renderPreviewHand();
   }

@@ -16,7 +16,7 @@ import {
 export function dealSingleCard(handName, staticCardForTesting) {
   const card = addCardToHandArr(handName, staticCardForTesting);
   dealCardInUI(handName, card);
-  // notifyObservers();
+  notifyObservers(); // hack to get the scores to update? Or solid logic?
 }
 
 export function addCardToHandArr(hand, staticCardForTesting) {
@@ -58,6 +58,8 @@ export function validateWager(wager, bankroll) {
   return null; // No errors
 }
 
+// DOUBLE
+
 export function checkCanDouble() {
   console.log(GameState.hands.userFirst.score);
   if (
@@ -66,6 +68,21 @@ export function checkCanDouble() {
   ) {
     updateGameState("canDouble", true);
   }
+}
+
+export function doubleHit() {
+  console.log("double hit");
+  dealSingleCard(GameState.hands.focus, { suit: "♣", rank: "K", value: 10 });
+
+  notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
+  updateScoresDisplay();
+  setTimeout(toggleSplitHands, 1000);
+  setTimeout(() => {
+    dealSingleCard(GameState.hands.focus, { suit: "♣", rank: "J", value: 10 });
+
+    notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
+    updateScoresDisplay();
+  }, 2000);
 }
 
 // SPLIT

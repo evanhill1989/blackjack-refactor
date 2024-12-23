@@ -13,6 +13,7 @@ import {
   splitShowdown,
   handleBust,
   shouldToggleSplitHands,
+  doubleHit,
 } from "./gameLogic.js";
 
 import {
@@ -108,37 +109,31 @@ function dealInitialCards() {
   let staticCardForTesting = { suit: "♥", rank: "5", value: 5 };
   dealSingleCard("userFirst", staticCardForTesting);
 
-  updateScoresDisplay();
-
   staticCardForTesting = { suit: "♠", rank: "5", value: 5 };
   dealSingleCard("userFirst", staticCardForTesting);
-
-  updateScoresDisplay();
 
   // dealerHand
 
   staticCardForTesting = { suit: "♣", rank: "4", value: 4 };
   dealSingleCard("dealer", staticCardForTesting);
 
-  updateScoresDisplay();
-
   staticCardForTesting = { suit: "♥", rank: "9", value: 9 };
   dealSingleCard("dealer", staticCardForTesting);
-
-  updateScoresDisplay();
-
-  console.log(GameState.hands.userFirst);
 
   checkCanDouble();
   checkCanSplit();
 }
 
 function playerHit() {
-  dealSingleCard(GameState.hands.focus, { suit: "♣", rank: "K", value: 10 });
+  if (!GameState.isDouble) {
+    dealSingleCard(GameState.hands.focus, { suit: "♣", rank: "K", value: 10 });
 
-  notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
-  updateScoresDisplay();
-  checkBust();
+    notifyObservers(); // heavy handed , cleaner if actual state change triggered notify...
+    updateScoresDisplay();
+    checkBust();
+  } else {
+    doubleHit();
+  }
 }
 
 function playerSplit() {
@@ -158,10 +153,14 @@ function playerSplit() {
 function playerDouble() {
   updateGameState("isDouble", true);
   updateGameState("bankroll", GameState.bankroll - GameState.currentBet);
-  updateScores();
+
+  splitHandArr();
+  splitUI();
   updateScoresDisplay();
 
   updateGameState("canDouble", false);
+
+  doubleHit();
 }
 
 async function playerStand() {
@@ -173,8 +172,7 @@ async function playerStand() {
     resetGameState();
   } else if (GameState.isSplit) {
     if (GameState.hands.focus === "userFirst") {
-      updateGameState(`hands.focus`, "userSecond");
-      updateGameState(`hands.preview`, "userFirst"); // heavy-handed?
+      switchToSecondHand();
     } else if (
       GameState.hands.focus === "userSecond" &&
       GameState.hands.userFirst.outcome === "standing"
@@ -182,8 +180,7 @@ async function playerStand() {
       await splitShowdown();
       setTimeout(() => {
         if (GameState.hands.userSecond.resolved === false) {
-          updateGameState("hands.focus", "userSecond");
-          updateGameState("hands.preview", "userFirst");
+          switchToSecondHand();
 
           determineOutcome();
           resetGameState();
@@ -211,6 +208,11 @@ async function playerStand() {
 // More specific functions
 
 /* HELPER FUNCTIONS THAT MAY MOVE Modules*/
+
+export function switchToSecondHand() {
+  updateGameState(`hands.focus`, "userSecond");
+  updateGameState(`hands.preview`, "userFirst");
+}
 
 export function shouldResolveGame() {
   if (
